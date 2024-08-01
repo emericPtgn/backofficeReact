@@ -3,7 +3,7 @@ import { useState, useEffect} from "react";
 import Header from "../../component/layout/levelTwo/Header";
 import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
 import ProgrammationForm from "../../component/form/programmation/ProgrammationForm";
-import { getActivities, getArtistes, getProgrammation, updateProgrammation } from "../../service/api";
+import { getArtistes, getProgrammation, updateProgrammation } from "../../service/api";
 import { useParams } from "react-router-dom";
 
 const ProgrammationEdit = () => {
