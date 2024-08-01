@@ -195,13 +195,13 @@ padding: 20px;
   width: 100%;
 }
 
-.artiste-table {
+.table-level2 {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
 }
 
-.artiste-table th, .artiste-table td {
+.table-level2 th, .table-level2 td {
   padding: 8px;
   border: 1px solid #ddd;
   overflow: hidden;
@@ -209,7 +209,7 @@ padding: 20px;
   white-space: nowrap;
 }
 
-.artiste-table td {
+.table-level2 td {
   text-align: center;
 }
 

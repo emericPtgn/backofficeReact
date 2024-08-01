@@ -16,7 +16,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "HTTPS=true SSL_CRT_FILE='.././server.crt' SSL_KEY_FILE='.././server.key.unencrypted' react-scripts start",
+    "start": "HTTPS=true SSL_CRT_FILE='/Applications/MAMP/conf/server/default.crt' SSL_KEY_FILE='/Applications/MAMP/conf/server/default.key' react-scripts start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"

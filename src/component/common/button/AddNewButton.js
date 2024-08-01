@@ -1,9 +1,9 @@
 import React from "react";
 
-const AddNewButton = () => {
+const AddNewButton = ({handleOnClick}) => {
     return (
         <>
-        <button className="btn-primary" type='button'>Ajouter</button>
+        <button onClick={handleOnClick} className="btn-primary" type='button'>Ajouter</button>
         </>
     )
 }

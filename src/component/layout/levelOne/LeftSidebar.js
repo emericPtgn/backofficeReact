@@ -3,7 +3,7 @@ import '../../.././App.css'
 
 // LeftSidebar levelOne est le menu principal de navigation aligné à gauche de l'écran visible sur ttes les pages du backoffice
 const LeftSidebar = () => {
-    const onglets = ['Artistes', 'Évènements', 'Programmations', 'Activités', 'Commerces', 'Partenaires', 'Carte', 'Utilisateurs'];
+    const onglets = ['Artistes', 'Scene', 'Programmation', 'Activites', 'Commerce', 'Partenaire', 'Carte', 'Utilisateur'];
     return (
         <div id="container-main-nav-left-sidebar">
             <nav id="main-nav-sidebar">
