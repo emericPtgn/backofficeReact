@@ -1,39 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { getActivities } from "../../../service/api";
+import {useActiviteState, useActiviteDispatch} from '../../../context/ActiviteContext'
 
 const ActivityTable = () => {
-    const [activities, setActivities] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const state = useActiviteState();
+    const dispatch = useActiviteDispatch();
 
-    useEffect(() => {
-        const fetchActivities = async () => {
-            try {
-                setIsLoading(true);
-                const response = await getActivities();
-                if (Array.isArray(response)) {
-                    setActivities(response);
-                } else {
-                    console.warn('No activities found or invalid response format');
-                    setActivities([]);
-                }
-            } catch (error) {
-                console.error('Failed to fetch activities:', error);
-                setError('Failed to fetch activities');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchActivities();
-    }, []);
-
-    if (isLoading) {
-        return <div>Loading...</div>;
+    if (state.fetchError) {
+        return <div>Error: {state.fetchError}</div>;
     }
 
-    if (error) {
-        return <div>Error: {error}</div>;
+    if (!state.activities || state.activities.length === 0) {
+        return <div>No artistes available.</div>;
     }
 
     return (
@@ -49,12 +27,12 @@ const ActivityTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {activities.length === 0 ? (
+                    {state.activities.length === 0 ? (
                         <tr>
                             <td colSpan="5" style={{textAlign: 'center'}}>Aucune activité trouvée</td>
                         </tr>
                     ) : (
-                        activities.map((activity, index) => (
+                        state.activities.map((activity, index) => (
                             <Activity key={activity.id || index} id={index + 1} activity={activity} />
                         ))
                     )}

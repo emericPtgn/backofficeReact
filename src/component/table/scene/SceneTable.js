@@ -1,44 +1,29 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { getScenes } from "../../../service/api";
+import { useSceneState } from "../../../context/SceneContext";
+import { SceneRow } from "./SceneRow";
+
+const ERROR_MESSAGE = "Une erreur est survenue lors du chargement des programmations.";
+const CREATE_FIRST_MESSAGE = "Créez votre première programmation.";
+const ISLOADING_MESSAGE = "Chargement en cours"
 
 const SceneTable = () => {
-    const [scenes, setScenes] = useState([]);
+    const { scenes, fetchError } = useSceneState();
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(()=>{
-        const fetchScenes = async () => {
-            try {
-                setIsLoading(true);
-                const data = await getScenes();
-                if(Array.isArray(data)){
-                    setScenes(data);
-                    setIsLoading(false);
-                } else {
-                    console.warn('No scenes found or invalid response format');
-                    setScenes([]);
-                }
-                console.log(data);
-                return data;
-            } catch (error) {
-                console.error('error while fetching scenes:', error);
-                setError('failed to fetch Scenes:', error);
-                throw error;
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchScenes();
-    }, [])
+        if(scenes || fetchError){
+            setIsLoading(false)
+        }
+    }, [scenes, fetchError])
 
+    if(fetchError){
+        return <div>{ERROR_MESSAGE}</div>
+    }
     if(isLoading){
-        return <div>"loading..."</div>;
+        return <div>{ISLOADING_MESSAGE}</div>
     }
-    if(error){
-        return <div>"error... :{error}"</div>;
-    }
-
     return (
         <>
             <div className="container-table">
@@ -53,13 +38,13 @@ const SceneTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {scenes.length === 0 ? (
+                        {scenes.length === 0 || !scenes ? (
                             <tr>
-                                <td colSpan="5" style={{textAlign: 'center'}}>"create a first scene"</td>
+                                <td colSpan="5" style={{textAlign: 'center'}}>{CREATE_FIRST_MESSAGE}</td>
                             </tr>
                         ): 
                         scenes.map((scene, index)=>
-                            <Scene scene={scene} id={index+1}  key={index} />
+                            <SceneRow scene={scene} id={index+1}  key={index} />
                         )}
                     </tbody>
                 </table>
@@ -68,22 +53,6 @@ const SceneTable = () => {
     )
 }
 
-const Scene = ({scene, id}) => {
-    return (
-        <>
-        <tr>
-            <td hidden dataset={scene.id}></td>
-            <td >{id}</td>
-            <td scope="row">{scene.nom}</td>
-            <td>{scene.emplacement.latitude}</td>
-            <td>{scene.emplacement.longitude}</td>
-            <td>
-                <button className="btn-primary" type="button"> <a href={`/scene-edit/${scene.id}`}>Modifier</a> </button>   
-                <button type="button">Supprimer</button>               
-            </td>
-        </tr>
-        </>
-    )
-}
+
 
 export default SceneTable

@@ -1,40 +1,20 @@
 // ArtisteTable.js
 import React, { useState, useEffect } from "react";
 import { getArtistes } from "../../../service/api";
+import { useArtistesDispatch, useArtistesState } from "../../../context/ArtisteContext";
 
 const ArtisteTable = () => {
-    const [artistes, setArtistes] = useState([]);
+    const state = useArtistesState();
+    const dispatch = useArtistesDispatch();
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchArtistes = async () => {
-            try {
-                setIsLoading(true);
-                const response = await getArtistes();
-                if (Array.isArray(response)) {
-                    setArtistes(response);
-                } else {
-                    console.warn('No artistes found or invalid response format');
-                    setArtistes([]);
-                }
-            } catch (error) {
-                console.error("Failed to fetch artistes", error);
-                setError('Failed to fetch artistes');
-            } finally {
-                setIsLoading(false);
-            }
-        };
 
-        fetchArtistes();
-    }, []);
-
-    if (isLoading) {
-        return <div>Loading...</div>;
+    if (state.error) {
+        return <div>Error: {state.error}</div>;
     }
 
-    if (error) {
-        return <div>Error: {error}</div>;
+    if (!state.artistes || state.artistes.length === 0) {
+        return <div>No artistes available.</div>;
     }
 
     return (
@@ -49,12 +29,12 @@ const ArtisteTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {artistes.length === 0 ? (
+                    {state.artistes.length === 0 ? (
                         <tr>
                             <td colSpan="4" style={{textAlign: 'center'}}>Aucun artiste trouvé</td>
                         </tr>
                     ) : (
-                        artistes.map((artiste, index) => (
+                        state.artistes.map((artiste, index) => (
                             <ArtisteRow key={artiste.id || index} id={index + 1} artiste={artiste} />
                         ))
                     )}

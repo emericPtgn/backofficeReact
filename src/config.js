@@ -7,3 +7,5 @@ export const ENDPOINT_COMMERCES = '/api/commerce';
 export const ENDPOINT_SCENES = '/api/scene';
 export const ENDPOINT_PROGRAMMATIONS = '/api/programmation';
 export const ENDPOINT_USERS = '/api/user'
+export const ENDPOINT_TYPECOMMERCE = '/api/type_commerce'
+export const ENDPOINT_TYPEPRODUIT = '/api/type_produit'

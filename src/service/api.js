@@ -3,11 +3,14 @@ import { DOMAINE_URL,
   ENDPOINT_ACTIVITE, 
   ENDPOINT_EVENTS, 
   ENDPOINT_ARTISTE, 
-  ENDPOINT_COMMERCES, 
+  ENDPOINT_COMMERCES,
+  ENDPOINT_TYPECOMMERCE,
   ENDPOINT_SCENES,
   ENDPOINT_PROGRAMMATIONS,
-  ENDPOINT_USERS} from '../config';
+  ENDPOINT_USERS,
+  ENDPOINT_TYPEPRODUIT} from '../config';
 import { useAuth } from '../context/Context';
+import useAppContext from '../context/CommerceContext';
 
 // const DOMAINE_URL = '/api';
 
@@ -18,13 +21,16 @@ export const updateUser = (id, userData) => axios.put(`${DOMAINE_URL}/users/${id
 
 // Similaire pour les artistes, activités, etc.
 
-export const getArtistes = async () => {
+export const getArtistes = async (dispatch) => {
   try {
+      console.log('fetching artiste...')
       const data = await AuthenticatedFetch(ENDPOINT_ARTISTE, { method: 'GET' });
       console.log("Fetched artistes:", data);
+      dispatch({type:'getArtistes', payload: data});
       return data;
   } catch (error) {
-      console.error('Failed to fetch artistes:', error);
+      console.error('Failed to fetch artistes:', error.message0);
+      dispatch({type:'fetchError', payload: error.message})
       throw error;
   }
 };
@@ -79,16 +85,17 @@ export const addActivity = async (activity) => {
   }
 
 }
-export const getActivities = async () => {
+export const getActivities = async (dispatch) => {
   try {
+    console.log('fetching activites...')
     const data = await AuthenticatedFetch(ENDPOINT_ACTIVITE, {
       method: 'GET'
     });
     console.log('fetched activites :', data);
-    return data;
+    dispatch({type: 'getActivities', payload: data})
   } catch (error) {
-    console.error('error while fetching activities: ', error);
-    throw error;
+    console.error('Error while fetching activites:', error.message);
+    dispatch({ type: 'fetchError', payload: error.message });
   }
 }
 export const getActivity = async (id) => {
@@ -131,43 +138,116 @@ export const getEvents = async () => {
 
 }
 
-export const getCommerces = async () => {
+export const getCommerces = async (dispatch) => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_COMMERCES, {
+    console.log('Fetching commerces...');
+    const data = await AuthenticatedFetch(ENDPOINT_COMMERCES, { 
+      method: 'GET' 
+    });
+    console.log('Fetched commerces data:', data);
+    dispatch({ type: 'getCommerces', payload: data });
+  } catch (error) {
+    console.error('Error while fetching commerces:', error.message);
+    dispatch({ type: 'fetchError', payload: error.message });
+  }
+};
+
+
+
+export const getCommerce = async (id) => {
+  try {
+    console.log('id commerce', id);
+    const response = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, {
+      method: 'GET'
+    })
+    console.log('response datas : ', response);
+    return response;
+  } catch (error) {
+    console.error('something wrong happend : ', error);
+    throw error;
+  }
+}
+
+export const getTypeCommerces = async () => {
+  try {
+    const data = await AuthenticatedFetch(ENDPOINT_TYPECOMMERCE, {
       method: 'GET'
     });
-    console.log('fetched commerces:', data);
+    console.log('fetched types commerces:', data);
     return data;
   } catch (error) {
-    console.error('error while fetching commerces:', error);
+    console.error('error while fetching types commerces:', error);
     throw error;
   }
 
 }
-
-export const getScenes = async () => {
+export const getTypeCommerce = async (id) => {
   try {
+    console.log('id type commerce', id);
+    const response = await AuthenticatedFetch(`${ENDPOINT_TYPECOMMERCE}/${id}`, {
+      method: 'GET'
+    })
+    console.log('response datas : ', response);
+    return response;
+  } catch (error) {
+    console.error('something wrong happend : ', error);
+    throw error;
+  }
+}
+export const getTypesProduits = async () => {
+  try {
+    const data = await AuthenticatedFetch(ENDPOINT_TYPEPRODUIT, {
+      method: 'GET'
+    });
+    console.log('fetched types produits:', data);
+    return data;
+  } catch (error) {
+    console.error('error while fetching types produits:', error);
+    throw error;
+  }
+
+}
+export const getTypeProduit = async (id) => {
+  try {
+    console.log('id type produit', id);
+    const response = await AuthenticatedFetch(`${getTypesProduits}/${id}`, {
+      method: 'GET'
+    })
+    console.log('response datas : ', response);
+    return response;
+  } catch (error) {
+    console.error('something wrong happend : ', error);
+    throw error;
+  }
+}
+
+export const getScenes = async (dispatch) => {
+  try {
+    console.log('fetching scenes....')
     const data = await AuthenticatedFetch(ENDPOINT_SCENES, {
       method: 'GET'
     });
+    dispatch({type: 'getScenes', payload : data})
     console.log('fetched scenes:', data);
-    return data;
   } catch (error) {
-    console.error('error while fetching scenes:', error);
+    console.error('error while fetching scenes:', error.message);
+    dispatch({type: 'fetchError', payload : error.message})
     throw error;
   }
 
 }
 
-export const getProgrammations = async () => {
+export const getProgrammations = async (dispatch) => {
   try {
+    console.log('fetching programmation....')
     const data = await AuthenticatedFetch(ENDPOINT_PROGRAMMATIONS, {
       method: 'GET'
     });
-    console.log('fetched programmation:', data);
-    return data;
+    dispatch({type: 'getProgrammations', payload: data})
+    console.log('fetched programmation :', data)
   } catch (error) {
     console.error('error while fetching programmations:', error);
+    dispatch({type: 'fetchError', payload: error.message})
     throw error;
   }
 
@@ -197,15 +277,17 @@ export const updateProgrammation = async (id, programmation) => {
   }
 }
 
-export const getUsers = async () => {
+export const getUsers = async (dispatch) => {
   try {
-    const listeUsers = await AuthenticatedFetch(ENDPOINT_USERS, {
+    console.log('fetching users...')
+    const data = await AuthenticatedFetch(ENDPOINT_USERS, {
       methods: 'GET'
     });
-    return listeUsers;
+    dispatch({type:'getUsers', payload : data})
+    console.log('fetched Users : ', data)
   } catch (error) {
     console.error('oups something went wrong while fetching users:', error);
-    throw error;
+    dispatch({type:'fetchError', payload: error.message})
   }
 }
 

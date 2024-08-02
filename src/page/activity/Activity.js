@@ -1,18 +1,33 @@
-import React from "react";
-import Header from "../../component/layout/levelTwo/Header";
+import React, { useEffect } from "react";
+import { ActiviteProvider, useActiviteDispatch } from "../../context/ActiviteContext";
 import ActivityTable from "../../component/table/activity/ActivityTable";
+import Header from "../../component/layout/levelTwo/Header";
+import { getActivities } from "../../service/api";
 
-const Activity = () => {
+// Composant principal pour l'activité
+export default function ActivityComponent() {
     return (
-        <>
-        <div className="container-level2">
-            <Header />
-        <div className="container-main-content-level2">
-            <ActivityTable />
-        </div>
-        </div>
-        </>
-    )
+        <ActiviteProvider>
+            <Activity />
+        </ActiviteProvider>
+    );
 }
 
-export default Activity;
+// Composant pour afficher les activités
+const Activity = () => {
+    const dispatch = useActiviteDispatch();
+
+    useEffect(() => {
+        // Appel de la fonction pour obtenir les artistes
+        getActivities(dispatch);
+    }, [dispatch]);
+
+    return (
+        <div className="container-level2">
+            <Header />
+            <div className="container-main-content-level2">
+                <ActivityTable />
+            </div>
+        </div>
+    );
+};
