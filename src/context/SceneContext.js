@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
+import { getScenes } from "../service/api";
 
 // provider state, disptach avec children
 // provider prend des props : state et dispatch
@@ -22,11 +23,30 @@ function sceneReducer(state, action){
             ...state,
             fetchError: action.payload
         }
+        case 'updateScene':
+            return {
+                ...state,
+                scenes: state.scenes.map(scene => 
+                    scene.id === action.payload.id ? action.payload : scene
+                )
+            }
+        case 'addNewScene':
+            console.log(state.scenes);
+            return {
+                ...state,
+                scenes: [...state.scenes, action.payload]
+            };
+              
+        
+        
     }
 }
 
 export function SceneProvider ({children}){
     const [state, dispatch] = useReducer(sceneReducer, initialSceneState);
+    useEffect(()=>{
+        getScenes(dispatch);
+    }, [dispatch])
     return (
         <SceneStateContext.Provider value={state}>
             <SceneDispatchContext.Provider value={dispatch}>

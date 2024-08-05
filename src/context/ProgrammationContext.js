@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer } from "react";
+import { getProgrammations } from "../service/api";
 
 // créer context state et dispatch
 // créer une function provider pour provider state et provider dispatch aux enfants
@@ -27,6 +28,9 @@ function programmationReducer(state, action){
 
 export function ProgrammationProvider({children}){
     const [state, dispatch] = useReducer(programmationReducer, initialProgrammationState)
+    useContext(()=>{
+        getProgrammations(dispatch)
+    }, [dispatch])
     return(
         <ProgrammationStateContext.Provider value={state}>
             <ProgrammationDispatchContext.Provider value={dispatch}>

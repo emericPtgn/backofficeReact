@@ -8,7 +8,8 @@ import { DOMAINE_URL,
   ENDPOINT_SCENES,
   ENDPOINT_PROGRAMMATIONS,
   ENDPOINT_USERS,
-  ENDPOINT_TYPEPRODUIT} from '../config';
+  ENDPOINT_TYPEPRODUIT,
+  ENDPOINT_SOCIAL} from '../config';
 import { useAuth } from '../context/Context';
 import useAppContext from '../context/CommerceContext';
 
@@ -236,6 +237,33 @@ export const getScenes = async (dispatch) => {
   }
 
 }
+export const updateScene = async (id, scene, dispatch) => {
+  try {
+    console.log('fetching scene....')
+    const data = await AuthenticatedFetch(`${ENDPOINT_SCENES}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(scene)
+    });
+    dispatch({type: 'updateScene', payload: data})
+    console.log('fetched scene :', data)
+  } catch (error) {
+    console.error('error while fetching scene:', error);
+    dispatch({type: 'fetchError', payload: error.message})
+    throw error;
+  }
+}
+export const addScene = async (scene, dispatch) => {
+  try {
+    console.log('posting')
+    const data = await AuthenticatedFetch(ENDPOINT_SCENES, {
+      method: 'POST',
+      body: JSON.stringify(scene)
+    })
+    dispatch({type:'addNewScene', payload: data})
+  } catch (error) {
+    console.error('error: ', error);
+  }
+}
 
 export const getProgrammations = async (dispatch) => {
   try {
@@ -276,6 +304,19 @@ export const updateProgrammation = async (id, programmation) => {
     throw error;
   }
 }
+export const addProgrammation = async (programmation, dispatch) => {
+  try {
+    console.log('adding programmation...');
+    const programmationJson = AuthenticatedFetch(ENDPOINT_PROGRAMMATIONS, {
+      method: 'POST',
+      body: JSON.stringify(programmation)
+    })
+    console.log(programmationJson);
+    dispatch({type: 'addProgrammation', payload: programmationJson})
+  } catch (error) {
+    console.error('error occured while adding prog', error.message);
+  }
+}
 
 export const getUsers = async (dispatch) => {
   try {
@@ -291,6 +332,17 @@ export const getUsers = async (dispatch) => {
   }
 }
 
+export const deleteSocial = async (id, dispatch) => {
+  try {
+    const response = await AuthenticatedFetch(`${ENDPOINT_SOCIAL}/${id}`, {
+      method: 'DELETE'
+    })
+    console.log(response);
+    dispatch({type:'deleteSocialFromArtiste', payload: {reseauSocial: id}})
+  } catch (error) {
+    
+  }
+}
 // AUTH ET TOKEN API
 
 export const AuthenticatedFetch = async (endpoint, options = {}) => {

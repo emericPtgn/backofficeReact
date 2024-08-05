@@ -1,20 +1,13 @@
 import React, { useEffect } from "react";
 import ArtisteTable from "../../component/table/artiste/ArtisteTable";
 import Header from "../../component/layout/levelTwo/Header";
-import { ArtistesProvider, useArtistesDispatch } from "../../context/ArtisteContext";
-import { getArtiste, getArtistes } from "../../service/api";
-
-
-export default function ArtisteComponent(){
-    return (
-        <ArtistesProvider>
-            <Artiste></Artiste>
-        </ArtistesProvider>
-    )
-} 
+import { ArtistesProvider, useArtistesDispatch, useArtistesState} from "../../context/ArtisteContext";
+import { getArtistes } from "../../service/api";
 
 const Artiste = () => {
     const dispatch = useArtistesDispatch();
+    const state = useArtistesState();
+    console.log(state.artistes)
     useEffect(()=>{
         getArtistes(dispatch);
     }, [dispatch])
@@ -29,3 +22,5 @@ const Artiste = () => {
         </>
     )
 }
+
+export default Artiste;

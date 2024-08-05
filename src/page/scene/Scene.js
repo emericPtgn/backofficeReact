@@ -1,23 +1,14 @@
 import React, { useEffect } from "react";
 import Header from "../../component/layout/levelTwo/Header";
 import SceneTable from "../../component/table/scene/SceneTable";
-import { ActiviteProvider } from "../../context/ActiviteContext";
-import { SceneProvider, useSceneDispatch } from "../../context/SceneContext";
-import { getScenes } from "../../service/api";
+import { useSceneDispatch, useSceneState } from "../../context/SceneContext"
 
-export default function SceneComponent(){
-    return (
-        <SceneProvider>
-            <Scene></Scene>
-        </SceneProvider>
-    )
-}
 
 function Scene(){
     const dispatch = useSceneDispatch();
-    useEffect(()=>{
-        getScenes(dispatch);
-    }, [dispatch])
+    const state = useSceneState();
+    console.log(state.scenes)
+
     return (
         <div className="container-level2">
             <Header />
@@ -27,3 +18,5 @@ function Scene(){
         </div>
     )
 }
+
+export default Scene;

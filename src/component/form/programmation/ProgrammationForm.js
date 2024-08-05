@@ -1,4 +1,5 @@
 import React from "react";
+import { useArtistesDispatch, useArtistesState } from "../../../context/ArtisteContext";
 
 const formatDate = (dateString) => {
   if (!dateString) return '';
@@ -89,19 +90,16 @@ const ProgrammationForm = ({ programmation, setProgrammation, artistes }) => {
       {programmation.activites.map((activite, index) => (
         <ActiviteForm 
           key={index} 
-          activite={activite} 
-          artistes={artistes} 
-          handleOnChange={(e) => handleOnChange(e, index)} 
+          activite={activite}
+          onChange={handleOnChange}
         />
       ))}
     </form>
   );
 };
 
-const ActiviteForm = ({ activite, artistes, handleOnChange }) => {
-  if (!activite || !artistes) {
-    return <div>Loading...</div>;
-  }
+const ActiviteForm = ({activite, handleOnChange}) => {
+  const state = useArtistesState()
 
   return (
     <div>
@@ -110,7 +108,7 @@ const ActiviteForm = ({ activite, artistes, handleOnChange }) => {
         id="nom" 
         type="text" 
         name="nom" 
-        value={activite.nom || ''} 
+        value={activite?.nom || ''} 
         onChange={handleOnChange} 
         placeholder="type activite : concert, dedicace.." 
       />
@@ -143,7 +141,7 @@ const ActiviteForm = ({ activite, artistes, handleOnChange }) => {
         value={activite.artiste?.nom || ''}
       >
         <option value="">Sélectionner un artiste</option>
-        {artistes.map(artiste => (
+        {state.artistes.map(artiste => (
           <option key={artiste.id} value={artiste.nom}>
             {artiste.nom}
           </option>
