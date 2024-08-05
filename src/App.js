@@ -22,40 +22,46 @@ import SceneEdit from './page/scene/SceneEdit';
 import { ProgrammationProvider } from './context/ProgrammationContext';
 import SceneNew from './page/scene/SceneNew';
 import ProgrammationNew from './page/programmation/ProgrammationNew';
+import ActivityNew from './page/activity/ActivityNew';
+import { ActiviteProvider } from './context/ActiviteContext';
+import Programmation from './page/programmation/Programmation';
 function App() {
   return (
     <AuthProvider>
       <Router>
         <ArtistesProvider> {/* Envelopper ici */}
           <SceneProvider>
-            <ProgrammationProvider>
-            <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route element={<PrivateRoute />}>
-              <Route path="/" element={<LevelOneLayout />}>
-                <Route index element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/artiste" element={<Artiste />} />
-                <Route path="/artiste-edit/:id" element={<ArtisteEdit />} />
-                <Route path="/artiste-new" element={<ArtisteNew />} />
-                <Route path='/activite' element={<ActivityComponent />} />
-                <Route path='/activity-edit/:id' element={<ActivityEdit />} />
-                {/* <Route path='/activity-new' element={<ActivityNew />} /> */}
-                <Route path='/commerce' element={<CommerceComponent />} />
-                <Route path='/commerce-edit/:id' element={<CommerceEdit />} />
-                <Route path='/scene' element={<Scene />} />
-                <Route path='/scene-edit/:id' element={<SceneEdit />} />
-                <Route path='/scene-new' element={<SceneNew />} />
-                <Route path='/programmation' element={<ProgrammationComponent />} />
-                <Route path='/programmation-edit/:id' element={<ProgrammationEdit />} />
-                <Route path='/programmation-new' element={<ProgrammationNew />} />
-                <Route path='/utilisateur' element={<UserComponent />} />
-                {/* <Route path='/programmation' element={<Scene />} /> */}
-                {/* <Route path="/activity-edit/:id" element={<ActivityEdit />} /> */}
-            </Route>
-            </Route>
-            </Routes>    
-            </ProgrammationProvider>
+            <ActiviteProvider>
+              <ProgrammationProvider>
+              <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route element={<PrivateRoute />}>
+                <Route path="/" element={<LevelOneLayout />}>
+                  <Route index element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/artiste" element={<Artiste />} />
+                  <Route path="/artiste-edit/:id" element={<ArtisteEdit />} />
+                  <Route path="/artiste-new" element={<ArtisteNew />} />
+                  <Route path='/activite' element={<ActivityComponent />} />
+                  <Route path='/activite-edit/:id' element={<ActivityEdit />} />
+                  <Route path='/activite-new' element={<ActivityNew />} />
+                  {/* <Route path='/activity-new' element={<ActivityNew />} /> */}
+                  <Route path='/commerce' element={<CommerceComponent />} />
+                  <Route path='/commerce-edit/:id' element={<CommerceEdit />} />
+                  <Route path='/scene' element={<Scene />} />
+                  <Route path='/scene-edit/:id' element={<SceneEdit />} />
+                  <Route path='/scene-new' element={<SceneNew />} />
+                  <Route path='/programmation' element={<Programmation />} />
+                  <Route path='/programmation-edit/:id' element={<ProgrammationEdit />} />
+                  <Route path='/programmation-new' element={<ProgrammationNew />} />
+                  <Route path='/utilisateur' element={<UserComponent />} />
+                  {/* <Route path='/programmation' element={<Scene />} /> */}
+                  {/* <Route path="/activity-edit/:id" element={<ActivityEdit />} /> */}
+              </Route>
+              </Route>
+              </Routes>    
+              </ProgrammationProvider>
+            </ActiviteProvider>
           </SceneProvider>
         </ArtistesProvider> {/* Fin de l'enveloppement */}
       </Router>

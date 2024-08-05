@@ -1,174 +1,106 @@
-import React from "react";
-import { useArtistesDispatch, useArtistesState } from "../../../context/ArtisteContext";
+import React, { useEffect, useState } from "react";
+import { format, parseISO } from 'date-fns';
+import { useProgrammationState } from "../../../context/ProgrammationContext";
+import { useActiviteState } from "../../../context/ActiviteContext";
+import { useParams } from "react-router-dom";
 
-const formatDate = (dateString) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  return date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
-};
+const ProgrammationForm = ({ programmation, setProgrammation }) => {
 
-const formatDateTime = (dateString) => {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  return date.toISOString().slice(0, 16); // 'YYYY-MM-DDTHH:mm'
-};
+  const { activities } = useActiviteState();
+  const [choosedActivites, setChoosedActivites] = useState(programmation?.activites || []);
 
-const ProgrammationForm = ({ programmation, setProgrammation, artistes }) => {
-  const handleOnChange = (e, activiteIndex) => {
-    const { name, value } = e.target;
-    
-    setProgrammation((prevProgrammation) => {
-      if (activiteIndex !== undefined) {
-        // Mise à jour d'une activité
-        const newActivites = [...prevProgrammation.activites];
-        if (name === "artiste") {
-          // Mise à jour spécifique pour l'artiste
-          const selectedArtiste = artistes.find(a => a.nom === value);
-          newActivites[activiteIndex] = {
-            ...newActivites[activiteIndex],
-            artiste: selectedArtiste
-          };
-        } else {
-          // Mise à jour des autres propriétés de l'activité
-          newActivites[activiteIndex] = {
-            ...newActivites[activiteIndex],
-            [name]: value
-          };
-        }
-        return {
-          ...prevProgrammation,
-          activites: newActivites
-        };
-      } else {
-        // Mise à jour des champs principaux de la programmation
-        return {
-          ...prevProgrammation,
-          [name]: value
-        };
-      }
-    });
+  useEffect(() => {
+    setChoosedActivites(programmation?.activites || []);
+    console.log(activities)
+  }, [programmation]);
+
+  const handleOnChange = (e) => {
+    const { name, value, selectedOptions } = e.target;
+  
+    if (name === "dateDebut" || name === "dateFin") {
+      setProgrammation(prev => ({
+        ...prev,
+        [name]: parseISO(value)
+      }));
+    } else if (name === 'activites') {
+      const selectedIds = Array.from(selectedOptions, option => option.value);
+      const selectedActivities = selectedIds.map(id => ({ id }));
+      setChoosedActivites(selectedActivities);
+      setProgrammation(prev => ({
+        ...prev,
+        activites: selectedActivities
+      }));
+    } else {
+      setProgrammation(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+  
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    return format(new Date(date), "yyyy-MM-dd");
   };
 
   return (
     <form>
       <label htmlFor="titre">TITRE PROGRAMMATION</label>
-      <input 
-        type="text" 
-        name="titre" 
-        id="titre" 
-        value={programmation.titre || ""} 
-        onChange={handleOnChange} 
+      <input
+        type="text"
+        name="titre"
+        id="titre"
+        value={programmation?.titre || ""}
+        onChange={handleOnChange}
       />
 
       <label htmlFor="description">DESCRIPTION</label>
-      <input 
-        type="text" 
-        name="description" 
-        id="description" 
-        value={programmation.description || ""} 
+      <input
+        type="text"
+        name="description"
+        id="description"
+        value={programmation?.description || ""}
         onChange={handleOnChange}
       />
 
       <label htmlFor="dateDebut">DATE DEBUT</label>
-      <input 
-        type="date" 
-        name="dateDebut" 
-        id="dateDebut" 
-        value={formatDate(programmation.dateDebut) || ""} 
+      <input
+        type="date"
+        name="dateDebut"
+        id="dateDebut"
+        value={formatDate(programmation?.dateDebut)}
         onChange={handleOnChange}
       />
 
       <label htmlFor="dateFin">DATE FIN</label>
-      <input 
-        type="date" 
-        name="dateFin" 
-        id="dateFin" 
-        value={formatDate(programmation.dateFin) || ""} 
+      <input
+        type="date"
+        name="dateFin"
+        id="dateFin"
+        value={formatDate(programmation?.dateFin)}
         onChange={handleOnChange}
       />
 
-      {programmation.activites.map((activite, index) => (
-        <ActiviteForm 
-          key={index} 
-          activite={activite}
-          onChange={handleOnChange}
-        />
-      ))}
+      <label htmlFor="activites">ACTIVITÉS</label>
+      {activities && (
+        <select
+  id="activites"
+  name="activites"
+  value={choosedActivites.map(activite => activite.id)} // Utiliser les IDs des activités choisies
+  onChange={handleOnChange}
+  multiple
+>
+  {activities.map((activite) => (
+    <option value={activite.id} key={activite.id}>
+      {activite.nom}
+    </option>
+  ))}
+</select>
+
+      )}
     </form>
   );
 };
-
-const ActiviteForm = ({activite, handleOnChange}) => {
-  const state = useArtistesState()
-
-  return (
-    <div>
-      <label htmlFor='nom'>Titre activite</label>
-      <input 
-        id="nom" 
-        type="text" 
-        name="nom" 
-        value={activite?.nom || ''} 
-        onChange={handleOnChange} 
-        placeholder="type activite : concert, dedicace.." 
-      />
-
-      <label htmlFor='type'>Type activite</label>
-      <input 
-        id="type" 
-        type="text" 
-        name="type" 
-        value={activite.type || ''} 
-        onChange={handleOnChange} 
-        placeholder="nom artiste : jazaphon, rapetou.." 
-      />
-
-      <label htmlFor='date'>Date activite</label>
-      <input 
-        id="date" 
-        type="datetime-local" 
-        name="date" 
-        value={formatDateTime(activite.date || '')} 
-        onChange={handleOnChange} 
-        placeholder="date activite : 12 mars..." 
-      />
-
-      <label htmlFor='artiste'>Artiste activite</label>
-      <select 
-        id="artiste" 
-        name="artiste" 
-        onChange={handleOnChange}
-        value={activite.artiste?.nom || ''}
-      >
-        <option value="">Sélectionner un artiste</option>
-        {state.artistes.map(artiste => (
-          <option key={artiste.id} value={artiste.nom}>
-            {artiste.nom}
-          </option>
-        ))}
-      </select>
-
-      <label htmlFor='emplacement'>Emplacement activite</label>
-      <input 
-        id="emplacement" 
-        type="text" 
-        name="emplacement" 
-        value={activite.emplacement?.nom || ''} 
-        onChange={handleOnChange} 
-        placeholder="emplacement activite : scene A, scene B..." 
-      />
-
-      <label htmlFor='description'>Description activite</label>
-      <input 
-        id="description" 
-        type="text" 
-        name="description" 
-        value={activite.description || ''} 
-        onChange={handleOnChange} 
-        placeholder="description activite : nouveau concert..." 
-      />
-    </div>
-  );
-}
 
 export default ProgrammationForm;

@@ -1,64 +1,36 @@
-import React from "react";
-import { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Header from "../../component/layout/levelTwo/Header";
 import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
 import ProgrammationForm from "../../component/form/programmation/ProgrammationForm";
-import { getArtistes, getProgrammation, updateProgrammation } from "../../service/api";
-import { useParams } from "react-router-dom";
+import { updateProgrammation } from "../../service/api";
+import { useProgrammationDispatch, useProgrammationState } from "../../context/ProgrammationContext";
 
 const ProgrammationEdit = () => {
-    const [programmation, setProgrammation] = useState(null); // Utiliser null pour l'état initial
-    const [artistes, setArtistes] = useState(null);
-    const [isLoading, setIsLoading] = useState(true); // Utiliser true pour l'état de chargement initial
+
+    const [programmation, setProgrammation] = useState(null);
+    const [error, setError] = useState(null);
+    const state = useProgrammationState();
+    const dispatch = useProgrammationDispatch();
     const { id } = useParams();
 
     useEffect(() => {
-        const fetchProgrammation = async () => {
-            try {
-                const programmationDatas = await getProgrammation(id);
-                console.log('fetched programmation ', programmationDatas)
-                setProgrammation(programmationDatas);
-            } catch (error) {
-                console.error("Erreur lors de la récupération de la programmation :", error);
-            } finally {
-                setIsLoading(false); // Fin du chargement
-            }
-        };
-        const fetchArtistes = async () => {
-            try {
-                const artistesDatas = await getArtistes();
-                console.log('fetched artistes :', artistesDatas)
-                setArtistes(artistesDatas);
-            } catch (error) {
-                console.error("Erreur lors de la récupération des activites :", error);
-            } finally {
-                setIsLoading(false); // Fin du chargement
-            }
-        };
-
-        fetchProgrammation();
-        fetchArtistes();
-    }, [id]);
+        const isProgrammation = state.programmations.find(programmation => programmation.id === id);
+        if (isProgrammation) {
+            setProgrammation(isProgrammation);
+            console.log(isProgrammation)
+        }
+    }, [id, state.programmations]);
 
     const handleOnClick = async () => {
         try {
-            console.log(programmation);
-            const response = await updateProgrammation(id, programmation);
-            if(response.ok){
-                console.log('response OK');
-            }
+            console.log(id, programmation)
+            const response = await updateProgrammation(id, programmation, dispatch);
+            console.log(response)
         } catch (error) {
-            console.error('oups error:', error);
+            console.error('Erreur:', error);
+            setError(error.message);
         }
-
-    }
-
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (!programmation) {
-        return <div>Programmation not found</div>;
     }
 
     return (
@@ -66,9 +38,13 @@ const ProgrammationEdit = () => {
             <Header />
             <div className="content-wrapper">
                 <div id="mainContent">
-                    <h2>Contenu principal</h2>
-                    <p>Ici se trouve le contenu principal de votre page d'édition.</p>
-                    <ProgrammationForm programmation={programmation} artistes={artistes} setProgrammation={setProgrammation}/>
+                    <h2>Édition de programmation</h2>
+                    {programmation && (
+                        <ProgrammationForm
+                            programmation={programmation}
+                            setProgrammation={setProgrammation}
+                        />
+                    )}
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />
             </div>

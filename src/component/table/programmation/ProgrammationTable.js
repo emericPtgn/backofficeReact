@@ -10,7 +10,7 @@ const CREATE_FIRST_MESSAGE = "Créez votre première programmation.";
 const ProgrammationTable = () => {
     const { programmations, fetchError } = useProgrammationState();
     const [isLoading, setIsLoading] = useState(true);
-
+    console.log(programmations)
     useEffect(() => {
         if (programmations || fetchError) {
             setIsLoading(false);

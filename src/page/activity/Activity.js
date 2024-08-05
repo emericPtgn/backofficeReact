@@ -15,13 +15,6 @@ export default function ActivityComponent() {
 
 // Composant pour afficher les activités
 const Activity = () => {
-    const dispatch = useActiviteDispatch();
-
-    useEffect(() => {
-        // Appel de la fonction pour obtenir les artistes
-        getActivities(dispatch);
-    }, [dispatch]);
-
     return (
         <div className="container-level2">
             <Header />

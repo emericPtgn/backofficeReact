@@ -9,7 +9,7 @@ import { DOMAINE_URL,
   ENDPOINT_PROGRAMMATIONS,
   ENDPOINT_USERS,
   ENDPOINT_TYPEPRODUIT,
-  ENDPOINT_SOCIAL} from '../config';
+  ENDPOINT_SOCIAL } from '../config';
 import { useAuth } from '../context/Context';
 import useAppContext from '../context/CommerceContext';
 
@@ -24,329 +24,272 @@ export const updateUser = (id, userData) => axios.put(`${DOMAINE_URL}/users/${id
 
 export const getArtistes = async (dispatch) => {
   try {
-      console.log('fetching artiste...')
-      const data = await AuthenticatedFetch(ENDPOINT_ARTISTE, { method: 'GET' });
-      console.log("Fetched artistes:", data);
-      dispatch({type:'getArtistes', payload: data});
-      return data;
+    const data = await AuthenticatedFetch(ENDPOINT_ARTISTE, { method: 'GET' });
+    dispatch({ type: 'getArtistes', payload: data });
+    return data;
   } catch (error) {
-      console.error('Failed to fetch artistes:', error.message0);
-      dispatch({type:'fetchError', payload: error.message})
-      throw error;
-  }
-};
-export const getArtiste = async (id) => {
-  try {
-      const data = await AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, { method: 'GET'})
-      console.log('Fetched artiste:', data)
-      return data;
-  } catch (error) {
-    console.error('failed to fetch artiste', error);
+    dispatch({ type: 'fetchError', payload: error.message });
     throw error;
   }
-}
+};
+
+export const getArtiste = async (id) => {
+  try {
+    const data = await AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, { method: 'GET' });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const updateArtiste = async (id, artiste) => {
   try {
     const data = await AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(artiste)  // Convertir l'objet artiste en JSON
     });
-    console.log('new datas : ', data);
     return data;
   } catch (error) {
-    console.error('error while put artiste :', error);
     throw error;
   }
 };
+
 export const addNewArtiste = async (artiste) => {
   try {
     const response = await AuthenticatedFetch(ENDPOINT_ARTISTE, {
       method: 'POST',
       body: JSON.stringify(artiste)
     });
-    console.log('response : ', response);
     return response;
   } catch (error) {
-    console.error('error while post artiste :', error);
     throw error;
   }
-}
+};
 
-export const addActivity = async (activity) => {
+export const addActivity = async (activity, dispatch) => {
   try {
-    const response = AuthenticatedFetch(ENDPOINT_ACTIVITE, {
+    const response = await AuthenticatedFetch(ENDPOINT_ACTIVITE, {
       method: 'POST',
       body: JSON.stringify(activity)
     });
-    console.log('response :', response);
-    return response; 
+    dispatch({ type: 'addActivite', payload: response });
+    return response;
   } catch (error) {
-    console.error('error while post activity');
     throw error;
   }
+};
 
-}
 export const getActivities = async (dispatch) => {
   try {
-    console.log('fetching activites...')
-    const data = await AuthenticatedFetch(ENDPOINT_ACTIVITE, {
-      method: 'GET'
-    });
-    console.log('fetched activites :', data);
-    dispatch({type: 'getActivities', payload: data})
+    const data = await AuthenticatedFetch(ENDPOINT_ACTIVITE, { method: 'GET' });
+    dispatch({ type: 'getActivities', payload: data });
   } catch (error) {
-    console.error('Error while fetching activites:', error.message);
     dispatch({ type: 'fetchError', payload: error.message });
-  }
-}
-export const getActivity = async (id) => {
-  try {
-      const data = await AuthenticatedFetch(`${ENDPOINT_ACTIVITE}/${id}`, { method: 'GET'})
-      console.log('Fetched activity:', data)
-      return data;
-  } catch (error) {
-    console.error('failed to fetch artiste', error);
     throw error;
   }
-}
+};
+
+export const getActivity = async (id) => {
+  try {
+    const data = await AuthenticatedFetch(`${ENDPOINT_ACTIVITE}/${id}`, { method: 'GET' });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const updateActivity = async (id, activity) => {
   try {
     const data = await AuthenticatedFetch(`${ENDPOINT_ACTIVITE}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(activity)  // Convertir l'objet artiste en JSON
     });
-    console.log('new datas : ', data);
-    console.log('id :', id);
-    console.log('Sending data:', JSON.stringify(activity));
     return data;
   } catch (error) {
-    console.error('error while put artiste :', error);
     throw error;
   }
 };
+export const deleteActivity = async (id, dispatch) => {
+  try {
+    const response = await AuthenticatedFetch(`${ENDPOINT_ACTIVITE}/${id}`, {
+      method: 'DELETE'
+    })
+    dispatch({type: 'deleteActivite', payload : id}) // Dispatch the action with the ID
+    return response;
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 
 export const getEvents = async () => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_EVENTS, {
-      method: 'GET'
-    });
-    console.log('fetched events:', data);
+    const data = await AuthenticatedFetch(ENDPOINT_EVENTS, { method: 'GET' });
     return data;
   } catch (error) {
-    console.error('error while fetching events:', error);
     throw error;
-  }
-
-}
-
-export const getCommerces = async (dispatch) => {
-  try {
-    console.log('Fetching commerces...');
-    const data = await AuthenticatedFetch(ENDPOINT_COMMERCES, { 
-      method: 'GET' 
-    });
-    console.log('Fetched commerces data:', data);
-    dispatch({ type: 'getCommerces', payload: data });
-  } catch (error) {
-    console.error('Error while fetching commerces:', error.message);
-    dispatch({ type: 'fetchError', payload: error.message });
   }
 };
 
-
+export const getCommerces = async (dispatch) => {
+  try {
+    const data = await AuthenticatedFetch(ENDPOINT_COMMERCES, { method: 'GET' });
+    dispatch({ type: 'getCommerces', payload: data });
+  } catch (error) {
+    dispatch({ type: 'fetchError', payload: error.message });
+    throw error;
+  }
+};
 
 export const getCommerce = async (id) => {
   try {
-    console.log('id commerce', id);
-    const response = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, {
-      method: 'GET'
-    })
-    console.log('response datas : ', response);
+    const response = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, { method: 'GET' });
     return response;
   } catch (error) {
-    console.error('something wrong happend : ', error);
     throw error;
   }
-}
+};
 
 export const getTypeCommerces = async () => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_TYPECOMMERCE, {
-      method: 'GET'
-    });
-    console.log('fetched types commerces:', data);
+    const data = await AuthenticatedFetch(ENDPOINT_TYPECOMMERCE, { method: 'GET' });
     return data;
   } catch (error) {
-    console.error('error while fetching types commerces:', error);
     throw error;
   }
+};
 
-}
 export const getTypeCommerce = async (id) => {
   try {
-    console.log('id type commerce', id);
-    const response = await AuthenticatedFetch(`${ENDPOINT_TYPECOMMERCE}/${id}`, {
-      method: 'GET'
-    })
-    console.log('response datas : ', response);
+    const response = await AuthenticatedFetch(`${ENDPOINT_TYPECOMMERCE}/${id}`, { method: 'GET' });
     return response;
   } catch (error) {
-    console.error('something wrong happend : ', error);
     throw error;
   }
-}
+};
+
 export const getTypesProduits = async () => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_TYPEPRODUIT, {
-      method: 'GET'
-    });
-    console.log('fetched types produits:', data);
+    const data = await AuthenticatedFetch(ENDPOINT_TYPEPRODUIT, { method: 'GET' });
     return data;
   } catch (error) {
-    console.error('error while fetching types produits:', error);
     throw error;
   }
+};
 
-}
 export const getTypeProduit = async (id) => {
   try {
-    console.log('id type produit', id);
-    const response = await AuthenticatedFetch(`${getTypesProduits}/${id}`, {
-      method: 'GET'
-    })
-    console.log('response datas : ', response);
+    const response = await AuthenticatedFetch(`${ENDPOINT_TYPEPRODUIT}/${id}`, { method: 'GET' });
     return response;
   } catch (error) {
-    console.error('something wrong happend : ', error);
     throw error;
   }
-}
+};
 
 export const getScenes = async (dispatch) => {
   try {
-    console.log('fetching scenes....')
-    const data = await AuthenticatedFetch(ENDPOINT_SCENES, {
-      method: 'GET'
-    });
-    dispatch({type: 'getScenes', payload : data})
-    console.log('fetched scenes:', data);
+    const data = await AuthenticatedFetch(ENDPOINT_SCENES, { method: 'GET' });
+    dispatch({ type: 'getScenes', payload: data });
   } catch (error) {
-    console.error('error while fetching scenes:', error.message);
-    dispatch({type: 'fetchError', payload : error.message})
+    dispatch({ type: 'fetchError', payload: error.message });
     throw error;
   }
+};
 
-}
 export const updateScene = async (id, scene, dispatch) => {
   try {
-    console.log('fetching scene....')
     const data = await AuthenticatedFetch(`${ENDPOINT_SCENES}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(scene)
     });
-    dispatch({type: 'updateScene', payload: data})
-    console.log('fetched scene :', data)
+    dispatch({ type: 'updateScene', payload: data });
   } catch (error) {
-    console.error('error while fetching scene:', error);
-    dispatch({type: 'fetchError', payload: error.message})
+    dispatch({ type: 'fetchError', payload: error.message });
     throw error;
   }
-}
+};
+
 export const addScene = async (scene, dispatch) => {
   try {
-    console.log('posting')
     const data = await AuthenticatedFetch(ENDPOINT_SCENES, {
       method: 'POST',
       body: JSON.stringify(scene)
-    })
-    dispatch({type:'addNewScene', payload: data})
+    });
+    dispatch({ type: 'addNewScene', payload: data });
   } catch (error) {
-    console.error('error: ', error);
+    throw error;
   }
-}
+};
 
 export const getProgrammations = async (dispatch) => {
   try {
-    console.log('fetching programmation....')
-    const data = await AuthenticatedFetch(ENDPOINT_PROGRAMMATIONS, {
-      method: 'GET'
-    });
-    dispatch({type: 'getProgrammations', payload: data})
-    console.log('fetched programmation :', data)
+    const data = await AuthenticatedFetch(ENDPOINT_PROGRAMMATIONS, { method: 'GET' });
+    dispatch({ type: 'getProgrammations', payload: data });
   } catch (error) {
-    console.error('error while fetching programmations:', error);
-    dispatch({type: 'fetchError', payload: error.message})
+    dispatch({ type: 'fetchError', payload: error.message });
     throw error;
   }
+};
 
-}
 export const getProgrammation = async (id) => {
   try {
-    const response = await AuthenticatedFetch(`${ENDPOINT_PROGRAMMATIONS}/${id}`, {
-      methods: 'GET'
-    });
-    console.log('fetched programmation', response);
+    const response = await AuthenticatedFetch(`${ENDPOINT_PROGRAMMATIONS}/${id}`, { method: 'GET' });
     return response;
   } catch (error) {
-    console.error(`something wront happened while fetching programmation (ID: ${id}`)
-  }
-}
-export const updateProgrammation = async (id, programmation) => {
-  try {
-    const data = await AuthenticatedFetch(`${ENDPOINT_PROGRAMMATIONS}/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(programmation)
-    })
-    console.log('new datas:', data);
-    return data;
-  } catch (error) {
-    console.error('error while updating programmation', error);
     throw error;
   }
-}
+};
+
+export const updateProgrammation = async (id, programmation, dispatch) => {
+  try {
+    console.log('UPDATING programmation ... (API)')
+    const updatedProgrammation = await AuthenticatedFetch(`${ENDPOINT_PROGRAMMATIONS}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(programmation)
+    });
+    console.log('UPDATED programmation, ', updatedProgrammation.data)
+    dispatch({type: 'updateProgrammation', payload: updatedProgrammation.data});
+    return updatedProgrammation.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const addProgrammation = async (programmation, dispatch) => {
   try {
-    console.log('adding programmation...');
-    const programmationJson = AuthenticatedFetch(ENDPOINT_PROGRAMMATIONS, {
+    console.log('adding programmation ... (API)')
+    const programmationJson = await AuthenticatedFetch(ENDPOINT_PROGRAMMATIONS, {
       method: 'POST',
       body: JSON.stringify(programmation)
-    })
-    console.log(programmationJson);
-    dispatch({type: 'addProgrammation', payload: programmationJson})
+    });
+    console.log('added programmation, ', programmationJson)
+    dispatch({ type: 'addProgrammation', payload: programmationJson });
   } catch (error) {
-    console.error('error occured while adding prog', error.message);
+    throw error;
   }
-}
+};
 
 export const getUsers = async (dispatch) => {
   try {
-    console.log('fetching users...')
-    const data = await AuthenticatedFetch(ENDPOINT_USERS, {
-      methods: 'GET'
-    });
-    dispatch({type:'getUsers', payload : data})
-    console.log('fetched Users : ', data)
+    const data = await AuthenticatedFetch(ENDPOINT_USERS, { method: 'GET' });
+    dispatch({ type: 'getUsers', payload: data });
   } catch (error) {
-    console.error('oups something went wrong while fetching users:', error);
-    dispatch({type:'fetchError', payload: error.message})
+    dispatch({ type: 'fetchError', payload: error.message });
   }
-}
+};
 
 export const deleteSocial = async (id, dispatch) => {
   try {
-    const response = await AuthenticatedFetch(`${ENDPOINT_SOCIAL}/${id}`, {
-      method: 'DELETE'
-    })
-    console.log(response);
-    dispatch({type:'deleteSocialFromArtiste', payload: {reseauSocial: id}})
+    const response = await AuthenticatedFetch(`${ENDPOINT_SOCIAL}/${id}`, { method: 'DELETE' });
+    dispatch({ type: 'deleteSocialFromArtiste', payload: { reseauSocial: id } });
   } catch (error) {
-    
+    throw error;
   }
-}
+};
+
 // AUTH ET TOKEN API
 
 export const AuthenticatedFetch = async (endpoint, options = {}) => {
-
   const token = localStorage.getItem('token');
   
   if (!token) {
@@ -377,7 +320,6 @@ export const AuthenticatedFetch = async (endpoint, options = {}) => {
     }
     return responseBody;
   } catch (error) {
-    console.error('API request error:', error);
     throw error;
   }
 };

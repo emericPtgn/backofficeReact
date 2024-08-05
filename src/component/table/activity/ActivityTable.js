@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getActivities } from "../../../service/api";
+import { format, parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { deleteActivity } from "../../../service/api";
+
+
 import {useActiviteState, useActiviteDispatch} from '../../../context/ActiviteContext'
 
 const ActivityTable = () => {
@@ -9,10 +13,15 @@ const ActivityTable = () => {
     if (state.fetchError) {
         return <div>Error: {state.fetchError}</div>;
     }
-
     if (!state.activities || state.activities.length === 0) {
         return <div>No artistes available.</div>;
     }
+
+    const handleOnClick = (id, dispatch) => {
+        deleteActivity(id, dispatch);
+    }
+    
+
 
     return (
         <div className="container-table">
@@ -20,6 +29,7 @@ const ActivityTable = () => {
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
+                        <th scope="col">NOM</th>
                         <th scope="col">TYPE</th>
                         <th scope="col">ARTISTE</th>
                         <th scope="col">DATE</th>
@@ -33,7 +43,7 @@ const ActivityTable = () => {
                         </tr>
                     ) : (
                         state.activities.map((activity, index) => (
-                            <Activity key={activity.id || index} id={index + 1} activity={activity} />
+                            <Activity key={activity.id || index} id={index + 1} activity={activity} handleOnClick={handleOnClick} />
                         ))
                     )}
                 </tbody>
@@ -43,23 +53,31 @@ const ActivityTable = () => {
 };
 
 
-const Activity = ({activity, id}) => {
+const Activity = ({activity, id, handleOnClick}) => {
+    // Fonction pour formater la date
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Date non définie';
+        const date = parseISO(dateString);
+        return format(date, "d MMMM yyyy 'à' HH:mm", { locale: fr });
+    }
+
     return (
-        <>
         <tr>
-            <td hidden dataset={activity.id}></td>
+            <td hidden data-id={activity.id}></td>
             <td>{id}</td>
+            <td scope="row">{activity.nom}</td>
             <td scope="row">{activity.type}</td>
             <td>{activity.artiste?.nom}</td>
-            <td>{activity.date}</td>
+            <td>{formatDate(activity.date)}</td>
             <td>
-                <button className="btn-primary" type="button"> <a href={`/activity-edit/${activity.id}`}>Modifier</a> </button>   
-                <button type="button">Supprimer</button>               
+                <button className="btn-primary" type="button">
+                    <a href={`/activite-edit/${activity.id}`}>Modifier</a>
+                </button>   
+                <button type="button" onClick={() => handleOnClick(activity.id)}>Supprimer</button>         
             </td>
-            
         </tr>
-        </>
     )
 }
+
 
 export default ActivityTable

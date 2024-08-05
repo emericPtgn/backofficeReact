@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useContext, useReducer, useEffect } from "react";
 import { getProgrammations } from "../service/api";
 
 // créer context state et dispatch
@@ -23,14 +23,27 @@ function programmationReducer(state, action){
             ...state,
             fetchError: action.payload
         }
+        case 'updateProgrammation':
+            const datas = action.payload;
+            const updatedProgrammations = state.programmations.map(programmation =>
+                programmation.id === datas.id ? { ...programmation, ...datas } : programmation
+            );
+            return {
+                ...state,
+                programmations: updatedProgrammations
+            }
+        
+
     }
 }
 
 export function ProgrammationProvider({children}){
     const [state, dispatch] = useReducer(programmationReducer, initialProgrammationState)
-    useContext(()=>{
-        getProgrammations(dispatch)
-    }, [dispatch])
+
+    useEffect(() => {
+        getProgrammations(dispatch);
+    }, []);
+
     return(
         <ProgrammationStateContext.Provider value={state}>
             <ProgrammationDispatchContext.Provider value={dispatch}>
@@ -39,6 +52,7 @@ export function ProgrammationProvider({children}){
         </ProgrammationStateContext.Provider>
     )
 };
+
 
 const initialProgrammationState = {
     programmations : [],
