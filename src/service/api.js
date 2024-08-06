@@ -9,7 +9,8 @@ import { DOMAINE_URL,
   ENDPOINT_PROGRAMMATIONS,
   ENDPOINT_USERS,
   ENDPOINT_TYPEPRODUIT,
-  ENDPOINT_SOCIAL } from '../config';
+  ENDPOINT_SOCIAL,
+  ENDPOINT_EMPLACEMENT } from '../config';
 import { useAuth } from '../context/Context';
 import useAppContext from '../context/CommerceContext';
 
@@ -220,6 +221,16 @@ export const addScene = async (scene, dispatch) => {
     throw error;
   }
 };
+
+export const getEmplacements = async (dispatch) => {
+  try {
+    const data = await AuthenticatedFetch(ENDPOINT_EMPLACEMENT, { method: 'GET' });
+    dispatch({ type: 'getEmplacements', payload: data });
+  } catch (error) {
+    dispatch({ type: 'fetchError', payload: error.message });
+    throw error;
+  }
+}
 
 export const getProgrammations = async (dispatch) => {
   try {

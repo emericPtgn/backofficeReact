@@ -6,6 +6,7 @@ import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
 import '../../App.css';
 import ArtisteForm from "../../component/form/artiste/ArtisteForm";
 import { useArtistesDispatch, useArtistesState } from "../../context/ArtisteContext";
+import ArtisteForm2 from "../../component/primereact/artiste/ArtisteForm2";
 
 const ArtisteEdit = () => {
     const { id } = useParams();

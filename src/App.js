@@ -25,14 +25,20 @@ import ProgrammationNew from './page/programmation/ProgrammationNew';
 import ActivityNew from './page/activity/ActivityNew';
 import { ActiviteProvider } from './context/ActiviteContext';
 import Programmation from './page/programmation/Programmation';
+import EmplacementProvider from './context/EmplacementContext';
+import "primereact/resources/themes/lara-light-cyan/theme.css";
+import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
+
 function App() {
   return (
     <AuthProvider>
       <Router>
         <ArtistesProvider> {/* Envelopper ici */}
+          <EmplacementProvider>
           <SceneProvider>
             <ActiviteProvider>
               <ProgrammationProvider>
+              <PrimeReactProvider>
               <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route element={<PrivateRoute />}>
@@ -60,10 +66,12 @@ function App() {
               </Route>
               </Route>
               </Routes>    
+              </PrimeReactProvider>
               </ProgrammationProvider>
             </ActiviteProvider>
           </SceneProvider>
-        </ArtistesProvider> {/* Fin de l'enveloppement */}
+          </EmplacementProvider>
+          </ArtistesProvider> {/* Fin de l'enveloppement */}
       </Router>
     </AuthProvider>
   );

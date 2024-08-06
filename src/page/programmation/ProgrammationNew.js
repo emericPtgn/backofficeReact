@@ -11,7 +11,6 @@ const ProgrammationNew = () => {
 
     const handleOnClick = () => {
         try {
-
             addProgrammation(programmation, dispatch)
         } catch (error) {
             

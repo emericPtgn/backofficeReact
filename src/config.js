@@ -9,4 +9,6 @@ export const ENDPOINT_PROGRAMMATIONS = '/api/programmation';
 export const ENDPOINT_USERS = '/api/user'
 export const ENDPOINT_TYPECOMMERCE = '/api/type_commerce'
 export const ENDPOINT_TYPEPRODUIT = '/api/type_produit'
-export const ENDPOINT_SOCIAL = '/api/social'
+export const ENDPOINT_SOCIAL = '/api/social';
+export const ENDPOINT_EMPLACEMENT  = '/api/emplacement';
+

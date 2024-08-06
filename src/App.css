@@ -213,3 +213,16 @@ padding: 20px;
   text-align: center;
 }
 
+#container-socialAccounts-artist {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+#container-socialAccounts-artist > input {
+  flex: 1;
+  width: 100%;
+  gap: 40px;
+}
+

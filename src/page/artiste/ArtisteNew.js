@@ -4,6 +4,7 @@ import ArtisteForm from "../../component/form/artiste/ArtisteForm";
 import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
 import { useArtistesDispatch, ArtistesProvider } from "../../context/ArtisteContext";
 import { addNewArtiste } from "../../service/api";
+import ArtisteForm2 from "../../component/primereact/artiste/ArtisteForm2";
 
 const SUCCESS_MESSAGE = 'Nouvel artiste a bien été ajouté';
 
@@ -33,7 +34,8 @@ const ArtisteNew = () => {
                     <h2>Contenu principal</h2>
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
                     <p id="successMessage"></p>
-                    <ArtisteForm artiste={artiste} setArtiste={setArtiste} />
+                    {/* <ArtisteForm artiste={artiste} setArtiste={setArtiste} /> */}
+                    <ArtisteForm2 artiste={artiste} setArtiste={setArtiste}></ArtisteForm2>
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />
             </div>
