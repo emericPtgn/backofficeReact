@@ -29,6 +29,10 @@ export default function ArtisteForm2({ artist, setArtist }) {
         console.log(activityField);
     };
 
+    useEffect(()=>{
+        setArtist({...artist, activities: activityField, reseauxSociaux : socialField});
+    }, [activityField, socialField])
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -58,9 +62,9 @@ export default function ArtisteForm2({ artist, setArtist }) {
             setArtist((artist) => ({...artist, activities : activityField}));
     
         } else if (name === 'deleteField') {
-            const updatedActivities = activityField.filter(a => a.index !== parseInt(value));
+            const updatedActivities = activityField.map(activity => activity);
+            updatedActivities.splice(value, 1);
             setActivityFields(updatedActivities);
-            setArtist({...artist, activites: updatedActivities.map(a => a.value)});
         }
         else if (name === 'nom' || name === 'description' || name === 'styles') {
             setArtist({ ...artist, [name]: value });
@@ -70,40 +74,28 @@ export default function ArtisteForm2({ artist, setArtist }) {
 
 
     return (
-        <Card className="p-4 m-4">
-            <div className="flex flex-column gap-5">
-                <div className="mb-4">
-                    <div className="d-flex">
-                        <h3 className="text-1xs font-bold mb-4">Artiste</h3>
-                    </div>
-                    <NameField artist={artist} name='nom' onChange={handleChange} />
-                    <ChooseStyleInput artist={artist} name='styles' onChange={handleChange} />
-                    <DescriptionField artist={artist} name='description' onChange={handleChange} />
-                </div>
-                <div className="mb-4">
-                    <div className="d-flex">
-                        <h3 className="text-1xs font-bold mb-4">Réseau social</h3>
-                        <div className="mb-2"><Button icon="pi pi-check" aria-label="Filter" rounded onClick={addSocialField}>+</Button></div>
-                    </div>
-                    <SocialAccountField artist={artist} socialField={socialField} setFields={setFields} addSocialField={addSocialField} onChange={handleChange} />
-                </div>
-                <div>
-                    <div className="d-flex">
-                        <h3 className="text-1xs font-bold mb-4">Activité</h3>
-                        <div className="mb-2"><Button icon="pi pi-check" aria-label="Filter" rounded onClick={addActivityField}>+</Button></div>
-                    </div>
-                    {activityField.map((activity, index) => (
-                        <div key={index}>
-                            <ActiviteForm2 
-                                index={index}
-                                activity={activity}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    ))}
-                </div>
+        <>
+            <div className="mb-4">
+                <h3 className="text-1xs font-bold mb-5">Artiste</h3>
+                <NameField artist={artist} name='nom' onChange={handleChange} />
+                <ChooseStyleInput artist={artist} name='styles' onChange={handleChange} />
+                <DescriptionField artist={artist} name='description' onChange={handleChange} />
             </div>
-        </Card>
+            <div className="mt-4 mb-4">
+                <div className="d-flex">
+                    <h3 className="text-1xs font-bold">Réseau social</h3>
+                    <button icon="pi pi-check" aria-label="Filter"  onClick={addSocialField}>+</button>
+                </div>
+                <SocialAccountField artist={artist} socialField={socialField} setFields={setFields} addSocialField={addSocialField} onChange={handleChange} />
+            </div>
+            <div className="mt-4 mb-4">
+                <div className="d-flex">
+                    <h3 className="text-1xs font-bold">Activité</h3>
+                    <button icon="pi pi-check" aria-label="Filter"  onClick={addActivityField}>+</button>
+                </div>
+                <ActivityBloc activityField={activityField} handleChange={handleChange}></ActivityBloc>
+            </div>
+        </>
     );
 }
 
@@ -170,22 +162,22 @@ const DescriptionField = ({ onChange, artist }) => {
 const SocialAccountField = ({ socialField, onChange }) => {
 
     return (
-        <div id="container-socialAccounts-artist">
+        <div id="container-socialAccounts-artist" className="mt-4">
             {socialField.map((field, index) => (
-                <div key={index}>
+                <div key={index} className="container-socialAccount-artist mb-1">
                     <InputText
                         name={`plateforme_${index}`}
                         value={field.plateforme}
                         onChange={(e) => {onChange(e)}}
                         placeholder="Facebook, Tiktok..."
-                        className="w-50 mb-3"
+                        className="mb-3"
                     />
                     <InputText
                         name={`url_${index}`}
                         value={field.url}
                         onChange={(e) => {onChange(e)}}
                         placeholder="URL"
-                        className="w-50 mb-3"
+                        className="mb-3"
                     />
                     <button name={`deleteSocial_${index}`} onClick={(e) => {onChange(e)}}>Delete</button>
                 </div>
@@ -193,3 +185,20 @@ const SocialAccountField = ({ socialField, onChange }) => {
         </div>
     );
 };
+
+const ActivityBloc = ({ activityField, handleChange }) => {
+
+    return (
+        <>
+        {activityField.map((activity, index) => (
+            <ActiviteForm2 
+                key={index}
+                index={index}
+                activity={activity}
+                onChange={handleChange}
+            />
+    ))}
+</>
+    )
+
+}

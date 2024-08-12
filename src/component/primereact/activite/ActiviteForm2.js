@@ -22,18 +22,25 @@ export const ActiviteForm2 = ({ activity, onChange, index }) => {
     };
 
     return (
-        <Card className="p-4 m-4" index={index}>
+        <>
+        <div className="mt-5">
             <div className="d-flex justify-content-between">
-                <h2 className="text-2xl font-bold mb-4">Ajouter une activité</h2>
+                <h4 className="text-2xl font-bold mb-4">Activité {index+1}</h4>
                 <button className="pi pi-times" onClick={handleDeleteField}>supprimer</button>
             </div>
             <div className="flex flex-column gap-5">
                 <SelectTypeActivity name='type' value={activity.type} onChange={(value, name) => handleLocalChange(name, value)} />
                 <NameField name='nom' value={activity.nom} onChange={(e) => handleLocalChange(e.target.name, e.target.value)} />
                 <LocalCalendar name='date' value={activity.date} onChange={(value, name) => handleLocalChange(name, value)} />
-                <SelectLocation name='location' typeActivity={activity.type} value={activity.location} onChange={(value) => handleLocalChange('location', value)} />
+                <SelectLocation 
+                    name='location' 
+                    typeActivity={activity.type} 
+                    activity={activity} 
+                    onChange={(value, name) => handleLocalChange(name, value)} 
+                />
             </div>
-        </Card>
+        </div>
+        </>
     );
 };
 

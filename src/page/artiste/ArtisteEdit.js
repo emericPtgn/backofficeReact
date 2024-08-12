@@ -32,9 +32,6 @@ const ArtisteEdit = () => {
         }
     }, [state.artistes, id]);
 
-
-    console.log(artist)
-
     const handleOnClick = async () => {
         try {
             console.log('Updating artist:', artist);
