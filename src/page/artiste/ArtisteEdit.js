@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import Header from "../../component/layout/levelTwo/Header";
 import { updateArtiste } from "../../service/api";
-import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
-import '../../App.css';
 import { useArtistesDispatch, useArtistesState } from "../../context/ArtisteContext";
-import ArtisteEdit2Form from "../../component/primereact/artiste/ArtisteEdit2Form";
+import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
+import Header from "../../component/layout/levelTwo/Header";
+import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
 import ArtisteForm2 from "../../component/primereact/artiste/ArtisteForm2";
+import '../../App.css';
+        
 
 const ArtisteEdit = () => {
     const { id } = useParams();
@@ -15,6 +17,7 @@ const ArtisteEdit = () => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [artist, setArtist] = useState(null);
+    const toast = useRef(null);
 
     useEffect(() => {
         // Check if the artists list is available and not empty
@@ -32,8 +35,13 @@ const ArtisteEdit = () => {
         }
     }, [state.artistes, id]);
 
+    const show = () => {
+        toast.current.show({ severity: 'success', summary: 'Update', detail: 'Artiste mis à jour' });
+    };
+
     const handleOnClick = async () => {
         try {
+            show()
             console.log('Updating artist:', artist);
             const response = await updateArtiste(id, artist, dispatch);
             console.log('Update response:', response);
@@ -53,6 +61,7 @@ const ArtisteEdit = () => {
     return (
         <div className="container-level2">
             <Header />
+            <Toast ref={toast} />
             <div className="content-wrapper">
                 <div id="mainContent">
                     <h2>Contenu principal</h2>

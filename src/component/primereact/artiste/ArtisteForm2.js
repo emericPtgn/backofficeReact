@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Chips } from "primereact/chips";
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from "primereact/inputtextarea";
-import { Card } from 'primereact/card';
 import { ActiviteForm2 } from "../activite/ActiviteForm2";
-import { Button } from "primereact/button";
 import { useParams } from "react-router-dom";
+import { useActiviteState } from "../../../context/ActiviteContext";
 
 export default function ArtisteForm2({ artist, setArtist }) {
     const {id} = useParams();
-    
+    const {activities} = useActiviteState();
     const [socialField, setFields] = useState(artist.reseauxSociaux || [{ plateforme: '', url: ''}]);
     const [activityField, setActivityFields] = useState(artist.activities || [{ nom: '', type: '', date: null, location: ''}]);
 
@@ -42,24 +41,28 @@ export default function ArtisteForm2({ artist, setArtist }) {
             const updatedFields = socialField.map(social => social);
             updatedFields[index][prefix] = value;
             setFields(updatedFields);
-            setArtist(prevArtiste => ({
-                ...prevArtiste,
-                reseauxSociaux: updatedFields.map(f => ({ plateforme: f.plateforme, url: f.url }))
-            }));
 
         } else if (name.startsWith('deleteSocial_')){
             const [prefix, index] = name.split('_');
             const updatedSocialFields = socialField.map(social => social);
             updatedSocialFields.splice(index, 1);
             setFields(updatedSocialFields);
-            setArtist((artist) => ({...artist, reseauxSociaux : updatedSocialFields}))
     
         } else if (name.startsWith('activite_')) {
             const [prefix, field, index] = name.split('_');
-            const updatedActivities = activityField.map(activity => activity);
-            updatedActivities[index][field] = value;
-            setActivityFields(updatedActivities);
-            setArtist((artist) => ({...artist, activities : activityField}));
+            if(field === 'autocomplet'){
+                const activity = activities.find(activity => activity.nom === value);
+                if(activity){
+                    const copyActivityField = activityField.map(activity => activity);
+                    copyActivityField.splice(index, 1, activity);
+                    setActivityFields(copyActivityField);
+                }
+
+            } else {
+                const updatedActivities = activityField.map(activity => activity);
+                updatedActivities[index][field] = value;
+                setActivityFields(updatedActivities);
+            }
     
         } else if (name === 'deleteField') {
             const updatedActivities = activityField.map(activity => activity);
@@ -93,7 +96,7 @@ export default function ArtisteForm2({ artist, setArtist }) {
                     <h3 className="text-1xs font-bold">Activité</h3>
                     <button icon="pi pi-check" aria-label="Filter"  onClick={addActivityField}>+</button>
                 </div>
-                <ActivityBloc activityField={activityField} handleChange={handleChange}></ActivityBloc>
+                <ActivityBloc activities={activities} activityField={activityField} handleChange={handleChange}></ActivityBloc>
             </div>
         </>
     );
@@ -186,7 +189,8 @@ const SocialAccountField = ({ socialField, onChange }) => {
     );
 };
 
-const ActivityBloc = ({ activityField, handleChange }) => {
+const ActivityBloc = ({ activityField, handleChange, activities }) => {
+
 
     return (
         <>
@@ -196,6 +200,7 @@ const ActivityBloc = ({ activityField, handleChange }) => {
                 index={index}
                 activity={activity}
                 onChange={handleChange}
+                activities={activities}
             />
     ))}
 </>

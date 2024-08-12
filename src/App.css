@@ -236,3 +236,7 @@ padding: 20px;
   gap: 40px;
 }
 
+.info_nb_artist {
+  font-style: italic;
+  font-size: 9px;
+}
