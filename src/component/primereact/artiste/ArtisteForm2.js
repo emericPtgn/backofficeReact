@@ -1,64 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Chips } from "primereact/chips";
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from "primereact/inputtextarea";
 import { Card } from 'primereact/card';
 import { ActiviteForm2 } from "../activite/ActiviteForm2";
 import { Button } from "primereact/button";
+import { useParams } from "react-router-dom";
 
-export default function ArtisteForm2({ artiste, setArtiste }) {
-    const [socialField, setFields] = useState([{ id: 1, value: '' }]);
-    const [activityField, setActivityFields] = useState([
-        { id: 1, nomActivite: '', typeActivity: '', dateTime: null }
-    ]);
-    const [activity, setActivities] = useState([{}])
+export default function ArtisteForm2({ artist, setArtist }) {
+    const {id} = useParams();
+    
+    const [socialField, setFields] = useState(artist.reseauxSociaux || [{ plateforme: '', url: ''}]);
+    const [activityField, setActivityFields] = useState(artist.activities || [{ nom: '', type: '', date: null, location: ''}]);
 
     const addSocialField = () => {
-        const newField = { id: socialField.length + 1, value: '' };
+        const newField = { plateforme: '', url: ''};
         setFields([...socialField, newField]);
     };
 
     const addActivityField = () => {
         const newField = { 
-            id: activityField.length + 1, 
-            nomActivite: '', 
-            typeActivity: '', 
-            dateTime: null 
+            nom: '', 
+            type: '', 
+            date: null,
+            location : ''
         };
         setActivityFields([...activityField, newField]);
+        console.log(activityField);
     };
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value);
-        if (name === 'style') {
-            // Vérifiez si value est un tableau, sinon traitez-le comme une chaîne
-            const styleArray = Array.isArray(value) ? value : value.split(',');
-            setArtiste({ ...artiste, style: styleArray });
-        } else if (name === 'social') {
-            const updatedFields = socialField.map(f =>
-                f.id === parseInt(e.target.dataset.id) ? { ...f, value } : f
-            );
+        console.log(name, value)
+        if (name.startsWith('plateforme_') || name.startsWith('url_')) {
+            const [prefix, index] = name.split('_');
+            const updatedFields = socialField.map(social => social);
+            updatedFields[index][prefix] = value;
             setFields(updatedFields);
-            setArtiste({ ...artiste, reseauxSociaux: updatedFields.map(f => f.value) });
+            setArtist(prevArtiste => ({
+                ...prevArtiste,
+                reseauxSociaux: updatedFields.map(f => ({ plateforme: f.plateforme, url: f.url }))
+            }));
+
+        } else if (name.startsWith('deleteSocial_')){
+            const [prefix, index] = name.split('_');
+            const updatedSocialFields = socialField.map(social => social);
+            updatedSocialFields.splice(index, 1);
+            setFields(updatedSocialFields);
+            setArtist((artist) => ({...artist, reseauxSociaux : updatedSocialFields}))
+    
         } else if (name.startsWith('activite_')) {
-            const [prefix, field, id] = name.split('_');
-            const updatedActivities = activityField.map(activity =>
-                activity.id === parseInt(id) ? { ...activity, [field]: value } : activity
-            );
+            const [prefix, field, index] = name.split('_');
+            const updatedActivities = activityField.map(activity => activity);
+            updatedActivities[index][field] = value;
             setActivityFields(updatedActivities);
-            setArtiste({ ...artiste, activites: updatedActivities });
-            console.log(updatedActivities)
-        } else if (name === 'typeActivity') {
-            // Update the typeActivity property of the activity object
-            const updatedActivites = activityField.map(a => a.id === activity.id ? { ...a, typeActivity: value } : a);
-            setActivityFields(updatedActivites);
-            
-        } else {
-            setArtiste({ ...artiste, [name]: value });
+            setArtist((artist) => ({...artist, activities : activityField}));
+    
+        } else if (name === 'deleteField') {
+            const updatedActivities = activityField.filter(a => a.index !== parseInt(value));
+            setActivityFields(updatedActivities);
+            setArtist({...artist, activites: updatedActivities.map(a => a.value)});
         }
-        console.log(artiste)
+        else if (name === 'nom' || name === 'description' || name === 'styles') {
+            setArtist({ ...artist, [name]: value });
+        }
+
     };
+
 
     return (
         <Card className="p-4 m-4">
@@ -67,44 +76,63 @@ export default function ArtisteForm2({ artiste, setArtiste }) {
                     <div className="d-flex">
                         <h3 className="text-1xs font-bold mb-4">Artiste</h3>
                     </div>
-                    <NameField onChange={handleChange} />
-                    <ChooseStyleInput onChange={handleChange} />
-                    <DescriptionField onChange={handleChange} />
+                    <NameField artist={artist} name='nom' onChange={handleChange} />
+                    <ChooseStyleInput artist={artist} name='styles' onChange={handleChange} />
+                    <DescriptionField artist={artist} name='description' onChange={handleChange} />
                 </div>
                 <div className="mb-4">
                     <div className="d-flex">
                         <h3 className="text-1xs font-bold mb-4">Réseau social</h3>
                         <div className="mb-2"><Button icon="pi pi-check" aria-label="Filter" rounded onClick={addSocialField}>+</Button></div>
                     </div>
-                    <SocialAccountField socialField={socialField} setFields={setFields} addSocialField={addSocialField} onChange={handleChange} setArtiste={setArtiste} artiste={artiste} />
+                    <SocialAccountField artist={artist} socialField={socialField} setFields={setFields} addSocialField={addSocialField} onChange={handleChange} />
                 </div>
                 <div>
                     <div className="d-flex">
                         <h3 className="text-1xs font-bold mb-4">Activité</h3>
                         <div className="mb-2"><Button icon="pi pi-check" aria-label="Filter" rounded onClick={addActivityField}>+</Button></div>
                     </div>
-                    {activityField.map(activity => (
-                        <div key={activity.id}>
+                    {activityField.map((activity, index) => (
+                        <div key={index}>
                             <ActiviteForm2 
+                                index={index}
                                 activity={activity}
                                 onChange={handleChange}
                             />
                         </div>
                     ))}
-                    <ActiviteForm2 artiste={artiste} setArtiste={setArtiste}/>
                 </div>
             </div>
         </Card>
     );
 }
 
-function ChooseStyleInput({ onChange }) {
-    const [value, setValue] = useState([]); // Initialize value as an empty array
+const NameField = ({ onChange, artist }) => {
+    const [value, setValue] = useState(artist.nom || '');
+
+    return (
+        <div className="mb-3">
+            <InputText
+                name="nom"
+                value={value}
+                onChange={(e) => {
+                    setValue(e.target.value);
+                    onChange(e);
+                }}
+                placeholder="Nom de l'artist"
+                className="w-100"
+            />
+        </div>
+    );
+}
+
+function ChooseStyleInput({ onChange, artist }) {
+    const [value, setValue] = useState(artist.styles || ''); // Initialize value as an empty array
 
     return (
         <div className="card p-fluid mb-3">
             <Chips
-                name="style"
+                name="styles"
                 value={value}
                 onChange={(e) => {
                     setValue(e.value);
@@ -119,27 +147,8 @@ function ChooseStyleInput({ onChange }) {
     );
 }
 
-const NameField = ({ onChange }) => {
-    const [value, setValue] = useState('');
-
-    return (
-        <div className="mb-3">
-            <InputText
-                name="nom"
-                value={value}
-                onChange={(e) => {
-                    setValue(e.target.value);
-                    onChange(e);
-                }}
-                placeholder="Nom de l'artiste"
-                className="w-100"
-            />
-        </div>
-    );
-}
-
-const DescriptionField = ({ onChange }) => {
-    const [value, setValue] = useState('');
+const DescriptionField = ({ onChange, artist }) => {
+    const [value, setValue] = useState(artist.description || '');
 
     return (
         <div className="mb-3">
@@ -151,42 +160,36 @@ const DescriptionField = ({ onChange }) => {
                     onChange(e);
                 }}
                 rows={5}
-                placeholder="Description de l'artiste"
+                placeholder="Description de l'artist"
                 className="w-100"
             />
         </div>
     );
 }
 
-const SocialAccountField = ({ socialField, setFields, addSocialField, onChange, setArtiste, artiste }) => {
-    const deleteField = (id) => {
-        const updatedFields = socialField.filter(field => field.id !== id);
-        setFields(updatedFields);
-        setArtiste({ ...artiste, reseauxSociaux: updatedFields.map(f => f.value) });
-    };
+const SocialAccountField = ({ socialField, onChange }) => {
 
     return (
         <div id="container-socialAccounts-artist">
-            {socialField.map(field => (
-                <div key={field.id}>
+            {socialField.map((field, index) => (
+                <div key={index}>
                     <InputText
-                        name="social"
-                        data-id={field.id}
-                        value={field.value}
-                        onChange={(e) => {
-                            const updatedFields = socialField.map(f =>
-                                f.id === field.id ? { ...f, value: e.target.value } : f
-                            );
-                            setFields(updatedFields);
-                            onChange(e);
-                        }}
-                        placeholder="Compte social"
+                        name={`plateforme_${index}`}
+                        value={field.plateforme}
+                        onChange={(e) => {onChange(e)}}
+                        placeholder="Facebook, Tiktok..."
                         className="w-50 mb-3"
                     />
-                    <button onClick={() => deleteField(field.id)}>Delete</button>
+                    <InputText
+                        name={`url_${index}`}
+                        value={field.url}
+                        onChange={(e) => {onChange(e)}}
+                        placeholder="URL"
+                        className="w-50 mb-3"
+                    />
+                    <button name={`deleteSocial_${index}`} onClick={(e) => {onChange(e)}}>Delete</button>
                 </div>
             ))}
         </div>
     );
 };
-

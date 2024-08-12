@@ -46,7 +46,7 @@ function ActiviteReducer(state, action) {
 export function ActiviteProvider({ children }) {
     const [state, dispatch] = useReducer(ActiviteReducer, initialActiviteState);
     useEffect(()=>{
-        getActivities(dispatch);
+        const test = getActivities(dispatch);
     }, [dispatch])
     return (
         <ActiviteStateContext.Provider value={state}>

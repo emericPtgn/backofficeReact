@@ -6,7 +6,7 @@ import { Button } from 'primereact/button';
 import { ButtonGroup } from 'primereact/buttongroup';
 import { useNavigate } from 'react-router-dom';
 
-const ActionTemplate = React.memo(({ id, onEdit, onDelete }) => (
+const ActionButtons = React.memo(({ id, onEdit, onDelete }) => (
   <ButtonGroup>
     <Button label="Edit" size="small" icon="pi pi-pencil" onClick={() => onEdit(id)} aria-label="Edit artist" />
     <Button label="Delete" size="small" icon="pi pi-trash" onClick={() => onDelete(id)} aria-label="Delete artist" />
@@ -35,9 +35,10 @@ export default function ArtistsTable() {
     dispatch({ type: 'deleteArtist', payload: id });
   }, [dispatch]);
 
-  const actionBodyTemplate = useCallback((rowData) => (
-    <ActionTemplate id={rowData.id} onEdit={handleEdit} onDelete={handleDelete} />
-  ), [handleEdit, handleDelete]);
+  const actionBodyTemplate = useCallback((rowData) => {
+    return (<ActionButtons id={rowData.id} onEdit={handleEdit} onDelete={handleDelete}></ActionButtons>)
+}, [handleEdit, handleDelete]);
+
 
   if (error) return <div>Error: {error}</div>;
   if (loading) return <div>Loading...</div>;

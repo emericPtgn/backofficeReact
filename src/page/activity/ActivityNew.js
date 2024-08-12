@@ -1,11 +1,10 @@
 import React from "react";
 import Header from "../../component/layout/levelTwo/Header";
-import ActiviteForm from "../../component/form/activite/ActiviteForm";
 import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
 import { useState } from "react";
-import { useArtistesState } from "../../context/ArtisteContext";
 import { addActivity } from "../../service/api";
 import { useActiviteDispatch } from "../../context/ActiviteContext";
+import { ActiviteForm2 } from "../../component/primereact/activite/ActiviteForm2";
 
 const ActivityNew = () => {
     const [activity, setActivity] = useState({});
@@ -29,7 +28,7 @@ const ActivityNew = () => {
                     <h2>Contenu principal</h2>
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
                     <p id="successMessage"></p>
-                    <ActiviteForm activity={activity} setActivity={setActivity} />
+                    <ActiviteForm2 activity={activity} setActivity={setActivity} />
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />
             </div>

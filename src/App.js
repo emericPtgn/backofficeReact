@@ -8,9 +8,8 @@ import { Dashboard } from './page/dashboard/Dashboard';
 import PrivateRoute from './route/PrivateRoute';
 import ArtisteEdit from './page/artiste/ArtisteEdit';
 import ArtisteNew from './page/artiste/ArtisteNew';
-import ActivityComponent from './page/activity/Activity';
+import Activity from './page/activity/Activity';
 import Scene from './page/scene/Scene';
-import ProgrammationComponent from './page/programmation/Programmation';
 import ActivityEdit from './page/activity/ActivityEdit';
 import UserComponent from './page/user/User';
 import ProgrammationEdit from './page/programmation/ProgrammationEdit';
@@ -28,6 +27,8 @@ import Programmation from './page/programmation/Programmation';
 import EmplacementProvider from './context/EmplacementContext';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
+import 'primeicons/primeicons.css';
+import MarkerProvider from './context/MarkerContext';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <ArtistesProvider> {/* Envelopper ici */}
           <EmplacementProvider>
           <SceneProvider>
+            <MarkerProvider>
             <ActiviteProvider>
               <ProgrammationProvider>
               <PrimeReactProvider>
@@ -48,7 +50,7 @@ function App() {
                   <Route path="/artiste" element={<Artiste />} />
                   <Route path="/artiste-edit/:id" element={<ArtisteEdit />} />
                   <Route path="/artiste-new" element={<ArtisteNew />} />
-                  <Route path='/activite' element={<ActivityComponent />} />
+                  <Route path='/activite' element={<Activity />} />
                   <Route path='/activite-edit/:id' element={<ActivityEdit />} />
                   <Route path='/activite-new' element={<ActivityNew />} />
                   {/* <Route path='/activity-new' element={<ActivityNew />} /> */}
@@ -69,6 +71,7 @@ function App() {
               </PrimeReactProvider>
               </ProgrammationProvider>
             </ActiviteProvider>
+            </MarkerProvider>
           </SceneProvider>
           </EmplacementProvider>
           </ArtistesProvider> {/* Fin de l'enveloppement */}

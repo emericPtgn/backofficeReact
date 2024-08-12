@@ -4,41 +4,53 @@ import Header from "../../component/layout/levelTwo/Header";
 import { updateArtiste } from "../../service/api";
 import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
 import '../../App.css';
-import ArtisteForm from "../../component/form/artiste/ArtisteForm";
 import { useArtistesDispatch, useArtistesState } from "../../context/ArtisteContext";
+import ArtisteEdit2Form from "../../component/primereact/artiste/ArtisteEdit2Form";
 import ArtisteForm2 from "../../component/primereact/artiste/ArtisteForm2";
 
 const ArtisteEdit = () => {
     const { id } = useParams();
     const dispatch = useArtistesDispatch();
     const state = useArtistesState();
-
-    const emptyArtist = { nom: '', style: '', description: '', reseauxSociaux: [] };
-    const [artiste, setArtiste] = useState(emptyArtist);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [artist, setArtist] = useState(null);
 
     useEffect(() => {
-        // Trouver l'artiste spécifique dans la liste des artistes
-        if (state.artistes.length > 0) {
-            const foundArtiste = state.artistes.find(a => a.id === id);
-            if (foundArtiste) {
-                setArtiste(foundArtiste);
+        // Check if the artists list is available and not empty
+        if (state.artistes && state.artistes.length > 0) {
+            const foundArtist = state.artistes.find(a => a.id === id);
+            if (foundArtist) {
+                setArtist(foundArtist);
+                setIsLoading(false);
+            } else {
+                setError('Artist not found');
+                setIsLoading(false);
             }
+        } else {
+            // If artists list is empty or not available yet
         }
     }, [state.artistes, id]);
 
+
+    console.log(artist)
+
     const handleOnClick = async () => {
         try {
-            console.log('update artiste:', artiste);
-            const response = await updateArtiste(id, artiste);
-            dispatch({ type: 'updateArtiste', payload: artiste });
-            console.log(response);
+            console.log('Updating artist:', artist);
+            const response = await updateArtiste(id, artist, dispatch);
+            console.log('Update response:', response);
         } catch (error) {
-            console.error('error : ', error);
+            console.error('Error updating artist:', error);
         }
     };
 
-    if (!artiste) {
+    if (isLoading) {
         return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
     }
 
     return (
@@ -48,7 +60,7 @@ const ArtisteEdit = () => {
                 <div id="mainContent">
                     <h2>Contenu principal</h2>
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
-                    <ArtisteForm artiste={artiste} setArtiste={setArtiste} />
+                    {artist && <ArtisteForm2 artist={artist} setArtist={setArtist} />}
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />
             </div>

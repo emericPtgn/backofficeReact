@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Calendar } from 'primereact/calendar';
 import { addLocale } from 'primereact/api';
 
-export default function LocalCalendar({dateTime24h, setDateTime24h}) {
-    console.log(dateTime24h)
+export default function LocalCalendar({ value, onChange }) {
     const currentDate = new Date();
 
     addLocale('fr', {
@@ -18,17 +17,21 @@ export default function LocalCalendar({dateTime24h, setDateTime24h}) {
         clear: 'Effacer'
     });
 
+
+    
+
     return (
         <div className="card flex justify-content-center">
             <Calendar 
-            id="calendar-24h" 
-            value={dateTime24h} 
-            onChange={(e) => setDateTime24h(e.value)} 
-            locale="fr" 
-            showTime 
-            hourFormat="24" 
-            minDate={currentDate}
+                id="calendar-24h" 
+                name='date'
+                value={value ? new Date(value) : null} 
+                onChange={(e) => onChange(e.value, e.target.name)} 
+                locale="fr" 
+                showTime 
+                hourFormat="24" 
+                minDate={currentDate}
             />
         </div>
-    )
+    );
 }

@@ -11,4 +11,5 @@ export const ENDPOINT_TYPECOMMERCE = '/api/type_commerce'
 export const ENDPOINT_TYPEPRODUIT = '/api/type_produit'
 export const ENDPOINT_SOCIAL = '/api/social';
 export const ENDPOINT_EMPLACEMENT  = '/api/emplacement';
+export const ENDPOINT_MARKER  = '/api/marker';
 

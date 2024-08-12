@@ -1,30 +1,25 @@
 import React from "react";
 import { useState } from "react";
-import SceneForm from "../../component/form/scene/SceneForm";
 import Header from "../../component/layout/levelTwo/Header";
 import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
-import { useSceneDispatch, useSceneState } from "../../context/SceneContext";
-import Scene from "./Scene";
-import { addScene } from "../../service/api";
+import { addMarker } from "../../service/api";
+import { useMarkerDispatch, useMarkerState } from "../../context/MarkerContext";
+import { SceneForm } from "../../component/primereact/scene/SceneForm";
 
 const SUCCES_MESSAGE = 'new scene registered successfully';
 const ERROR_MESSAGE = 'something occured while registering new scene, try again';
 
 const SceneNew = () => {
-    const state = useSceneState();
-    const dispatch = useSceneDispatch();
+    const dispatch = useMarkerDispatch();
     const [scene, setScene] = useState({
         nom: '',
-        emplacement: {
-            nom: '',
-            latitude: '',
-            longitude: ''
-        }
+        description: '',
+        type: 'scene'
     });
 
     const handleOnClick = () => {
         try {
-            addScene(scene, dispatch);
+            addMarker(scene, dispatch);
             console.log('handleClick, try ... addScene(scene,dispatch)', scene)
         } catch (error) {
             console.error('error occured: ', error);

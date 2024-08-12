@@ -10,7 +10,9 @@ import { DOMAINE_URL,
   ENDPOINT_USERS,
   ENDPOINT_TYPEPRODUIT,
   ENDPOINT_SOCIAL,
-  ENDPOINT_EMPLACEMENT } from '../config';
+  ENDPOINT_EMPLACEMENT,
+  ENDPOINT_MARKER
+} from '../config';
 import { useAuth } from '../context/Context';
 import useAppContext from '../context/CommerceContext';
 
@@ -22,6 +24,40 @@ export const createUser = (userData) => axios.post(`${DOMAINE_URL}/users`, userD
 export const updateUser = (id, userData) => axios.put(`${DOMAINE_URL}/users/${id}`, userData); */
 
 // Similaire pour les artistes, activités, etc.
+
+export const getMarkers = async (dispatch) => {
+  try {
+    const data = await AuthenticatedFetch(ENDPOINT_MARKER, {method: 'GET'});
+    dispatch({type: 'getMarkers', payload: data})
+    return data;
+  } catch (error) {
+    console.error('error while fetching markers', error.message)
+  }
+}
+
+export const addMarker = async (marker, dispatch) => {
+  try {
+    const data = await AuthenticatedFetch(ENDPOINT_MARKER, {
+      method: 'POST',
+      body: JSON.stringify(marker)
+    });
+    dispatch({type: 'addMarker', payload: data})
+    return data;
+  } catch (error) {
+    console.error('error, while fetching markers', error.message);
+  }
+}
+
+export const updateMarker = async (id, marker, dispatch) => {
+  try {
+    const data = await AuthenticatedFetch(`ENDPOINT_MARKER/${id}`, {
+      method: 'GET',
+      body: JSON.stringify(marker),
+    })
+  } catch (error) {
+    
+  }
+}
 
 export const getArtistes = async (dispatch) => {
   try {
@@ -43,12 +79,13 @@ export const getArtiste = async (id) => {
   }
 };
 
-export const updateArtiste = async (id, artiste) => {
+export const updateArtiste = async (id, artist, dispatch) => {
   try {
     const data = await AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(artiste)  // Convertir l'objet artiste en JSON
+      body: JSON.stringify(artist)  // Convertir l'objet artiste en JSON
     });
+    dispatch({ type: 'updateArtiste', payload: artist });
     return data;
   } catch (error) {
     throw error;
