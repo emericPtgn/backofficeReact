@@ -12,8 +12,7 @@ const MarkerState = createContext();
 const MarkerDispatch = createContext();
 
 const initialMarkerState = {
-    markers : [],
-    activMarker: null,
+    markers : []
 }
 
 export default function MarkerProvider ({children}) {

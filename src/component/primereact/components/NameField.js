@@ -5,9 +5,9 @@ export const NameField = ({ value, onChange }) => {
         <div>
             <InputText
                 name="nom"
-                value={value}
+                value={value}  // Utilisation de `value` au lieu de `defaultValue`
                 onChange={onChange}
-                placeholder="Titre Activité"
+                placeholder="Nom"
                 className="w-100"
             />
         </div>

@@ -190,8 +190,6 @@ const SocialAccountField = ({ socialField, onChange }) => {
 };
 
 const ActivityBloc = ({ activityField, handleChange, activities }) => {
-
-
     return (
         <>
         {activityField.map((activity, index) => (
@@ -202,8 +200,7 @@ const ActivityBloc = ({ activityField, handleChange, activities }) => {
                 onChange={handleChange}
                 activities={activities}
             />
-    ))}
-</>
+            ))}
+        </>
     )
-
 }

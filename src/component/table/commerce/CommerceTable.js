@@ -1,69 +1,69 @@
-import React, { useEffect, useState } from "react";
-import { useCommercesState, useCommercesDispatch } from "../../../context/CommerceContext";
-import { getCommerces } from "../../../service/api";
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Button } from 'primereact/button';
+import { ButtonGroup } from 'primereact/buttongroup';
+import { useNavigate } from 'react-router-dom';
+import { useCommercesDispatch, useCommercesState } from '../../../context/CommerceContext';
 
-export default function CommerceTable() {
+
+const ActionsButtons = React.memo(({id, onEdit, onDelete}) => (
+    <ButtonGroup>
+        <Button onClick={() => onEdit(id)}>edit</Button>
+        <Button onClick={() => onDelete(id)}>delete</Button>
+    </ButtonGroup>
+));
+
+
+const CommerceTable = () => {
+
     const state = useCommercesState();
-    const dispatch = useCommercesDispatch();
-    const [isLoading, setIsLoading] = useState(true);
+    if(state.commerces){
+        console.log(state.commerces)
+    }
+    const {dispatch} = useCommercesDispatch();
+    const [selectedCommerce, setSelectedCommerce] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const commerces = useMemo(()=> state.commerces, [ state.commerces ])
+    const commerceExemple = [{id: 23, nom: "kebab-king", description: "le roi du kebab", "typeProduit": "kebab", "typeCommerce":"restauration"}]
 
     useEffect(() => {
-        const fetchData = async () => {
-            await getCommerces(dispatch);
-            setIsLoading(false);
-        };
-        fetchData();
+        setLoading(false);
+      }, [commerces]);
+
+    const handleDelete = useCallback((id)=>{
+        dispatch({type: 'deleteCommerce', payload: id})
     }, [dispatch]);
 
-    console.log('CommerceTable state:', state);
+    const handleEdit = useCallback((id)=>{
+        navigate(`/commerce-edit/${id}`);
+    }, [navigate])
 
-    if (isLoading) {
-        return <div>Loading...</div>;
+    const actionsButtons = useCallback((rowData)=>{
+        return <ActionsButtons id={rowData.id} onDelete={handleDelete} onEdit={handleEdit}></ActionsButtons>
+    }, [handleDelete, handleEdit])
+
+    if(error){
+        return <div>error occured : {error}</div>
+    }
+    if(loading){
+        return <div>loading..</div>
     }
 
-    if (state.error) {
-        return <div>Error: {state.error}</div>;
-    }
-
-    if (!state.commerces || state.commerces.length === 0) {
-        return <div>No commerces available.</div>;
-    }
-
+    console.log(state.commerces)
     return (
-        <div className="container-table">
-            <table className="table-level2">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">NOM</th>
-                        <th scope="col">TYPE</th>
-                        <th scope="col">PRODUIT</th>
-                        <th scope="col">ACTION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {state.commerces.map((commerce, index) => (
-                        <Commerce commerce={commerce} id={index + 1} key={index} />
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+        <>
+        <DataTable value={commerces} selection={selectedCommerce} onSelectionChange={(e) => setSelectedCommerce(e.value) } dataKey="id" tableStyle={{ minWidth: '50rem' }} >
+            <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+            <Column sortable field="nom" header="nom"></Column>
+            <Column sortable field="typeCommerce.nom" header="type"></Column>
+            <Column sortable field="typeProduit.nom" header="produit"></Column>
+            <Column  header="actions" body={actionsButtons}></Column>
+        </DataTable>
+        </>
+    )
 }
 
-const Commerce = ({ commerce, id }) => {
-    return (
-        <tr>
-            <td>{id}</td>
-            <td>{commerce.nom}</td>
-            <td>{commerce.typeCommerce.nom}</td>
-            <td>{commerce.typeProduit?.nom || ''}</td>
-            <td>
-                <button className="btn-primary" type="button">
-                    <a href={`/commerce-edit/${commerce.id}`}>Modifier</a>
-                </button>
-                <button type="button">Supprimer</button>
-            </td>
-        </tr>
-    );
-};
+export default CommerceTable;

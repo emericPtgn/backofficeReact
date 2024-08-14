@@ -188,6 +188,32 @@ export const getCommerce = async (id) => {
   }
 };
 
+export const updateCommerce = async (id, dispatch, commerce) => {
+  try {
+    console.log(commerce);
+    const updatedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(commerce)
+    });
+    dispatch({type: 'updateCommerce', payload: updatedCommerce})
+  } catch (error) {
+    console.error('error occured', error.message);
+  }
+}
+
+export const addCommerce = async (dispatch, commerce) => {
+  try {
+    const updatedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}`, {
+      method: 'POST',
+      body: JSON.stringify(commerce)
+    });
+    dispatch({type: 'addCommerce', payload: updatedCommerce})
+    return updatedCommerce;
+  } catch (error) {
+    console.error('an error occured,', error.message)
+  }
+}
+
 export const getTypeCommerces = async () => {
   try {
     const data = await AuthenticatedFetch(ENDPOINT_TYPECOMMERCE, { method: 'GET' });

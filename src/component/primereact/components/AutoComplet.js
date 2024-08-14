@@ -8,8 +8,9 @@ export const AutoComplet = ({onChange, activities}) => {
     const [value, setValue] = useState('');
 
     useEffect(() => {
-        // Initialiser les items avec toutes les activités au chargement du composant
-        setItems(activities.map(activity => activity.nom));
+        if (activities && activities.length > 0) {
+            setItems(activities.map(activity => activity.nom));
+        }
     }, [activities]);
 
     const search = (e) => {
@@ -24,17 +25,18 @@ export const AutoComplet = ({onChange, activities}) => {
         setItems(filteredItems);
     }
     return (
-        <AutoComplete 
-            className="mb-4"
-            value={value} 
-            name="autocomplet"
-            suggestions={items} 
-            completeMethod={search} 
-            onChange={(e) => {
-                setValue(e.value);
-                onChange(e.value, "autocomplet")
-            }}
-            dropdown
-        />
+            <AutoComplete 
+                className="mb-4"
+                value={value || ''} 
+                name="autocomplet"
+                suggestions={items || []} 
+                completeMethod={search} 
+                onChange={(e) => {
+                    setValue(e.value);
+                    onChange(e.value, "autocomplet")
+                }}
+                dropdown
+            />
+
     )
 }

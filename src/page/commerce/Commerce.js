@@ -1,30 +1,12 @@
 import React, { useEffect } from "react";
-import { CommercesProvider } from "../../context/CommerceContext";
+import { CommercesProvider, useCommercesState } from "../../context/CommerceContext";
 import CommerceTable from "../../component/table/commerce/CommerceTable";
 import Header from "../../component/layout/levelTwo/Header";
 import { getCommerces } from "../../service/api";
 import { useCommercesDispatch } from "../../context/CommerceContext";
 
-export default function CommerceComponent(){
-    return (
-        <CommercesProvider>
-            <Commerce></Commerce>
-        </CommercesProvider>
-    )
-}
 
-const Commerce = () => {
-    const dispatch = useCommercesDispatch();
-
-    useEffect(() => {
-        // Fonction asynchrone pour obtenir les commerces
-        const fetchCommerces = async () => {
-            await getCommerces(dispatch);
-        };
-        
-        // Appel de la fonction
-        fetchCommerces();
-    }, [dispatch]);
+export const Commerce = () => {
 
     return (
         <div className="container-level2">

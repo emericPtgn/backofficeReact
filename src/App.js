@@ -14,7 +14,7 @@ import ActivityEdit from './page/activity/ActivityEdit';
 import UserComponent from './page/user/User';
 import ProgrammationEdit from './page/programmation/ProgrammationEdit';
 import CommerceEdit from './page/commerce/CommerceEdit';
-import CommerceComponent from './page/commerce/Commerce';
+import CommerceComponent, { Commerce } from './page/commerce/Commerce';
 import Artiste from './page/artiste/Artiste'
 import { SceneProvider } from './context/SceneContext';
 import SceneEdit from './page/scene/SceneEdit';
@@ -29,14 +29,21 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 import 'primeicons/primeicons.css';
 import MarkerProvider from './context/MarkerContext';
+import ErrorBoundary from './utils/ErrorBoundary';
+import { CommercesProvider } from './context/CommerceContext';
+import CommerceNew from './page/commerce/CommerceNew';
+import MyMap from './page/map/Map';
+
 
 function App() {
   return (
     <AuthProvider>
+      <ErrorBoundary>
       <Router>
         <ArtistesProvider> {/* Envelopper ici */}
           <EmplacementProvider>
           <SceneProvider>
+            <CommercesProvider>
             <MarkerProvider>
             <ActiviteProvider>
               <ProgrammationProvider>
@@ -54,14 +61,16 @@ function App() {
                   <Route path='/activite-edit/:id' element={<ActivityEdit />} />
                   <Route path='/activite-new' element={<ActivityNew />} />
                   {/* <Route path='/activity-new' element={<ActivityNew />} /> */}
-                  <Route path='/commerce' element={<CommerceComponent />} />
+                  <Route path='/commerce' element={<Commerce />} />
                   <Route path='/commerce-edit/:id' element={<CommerceEdit />} />
+                  <Route path='/commerce-new' element={<CommerceNew />} />
                   <Route path='/scene' element={<Scene />} />
                   <Route path='/scene-edit/:id' element={<SceneEdit />} />
                   <Route path='/scene-new' element={<SceneNew />} />
                   <Route path='/programmation' element={<Programmation />} />
                   <Route path='/programmation-edit/:id' element={<ProgrammationEdit />} />
                   <Route path='/programmation-new' element={<ProgrammationNew />} />
+                  <Route path='/map' element={<MyMap />} />
                   <Route path='/utilisateur' element={<UserComponent />} />
                   {/* <Route path='/programmation' element={<Scene />} /> */}
                   {/* <Route path="/activity-edit/:id" element={<ActivityEdit />} /> */}
@@ -72,10 +81,12 @@ function App() {
               </ProgrammationProvider>
             </ActiviteProvider>
             </MarkerProvider>
+            </CommercesProvider>
           </SceneProvider>
           </EmplacementProvider>
           </ArtistesProvider> {/* Fin de l'enveloppement */}
       </Router>
+      </ErrorBoundary>
     </AuthProvider>
   );
 }

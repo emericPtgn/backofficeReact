@@ -4,10 +4,15 @@ import { SelectTypeActivity } from "../components/SelectTypeActivity";
 import SelectLocation from "../components/SelectLocation";
 import { NameField } from "../components/NameField";
 import { AutoComplet } from "../components/AutoComplet";
+import { uzCyrl } from "date-fns/locale";
 
 export const ActiviteForm2 = ({ activity, onChange, index, activities }) => {
 
-    if (!activity) { return null; }
+    if (!activity || !activities) {
+        return null;
+    }
+    
+    
 
     const handleLocalChange = (field, value) => {
         const dateValue = field === 'date' ? new Date(value).toISOString() : value;
@@ -18,12 +23,18 @@ export const ActiviteForm2 = ({ activity, onChange, index, activities }) => {
         onChange({ target: { name: 'deleteField', value: index } });
     };
 
-    const artistesNamesArray = activity.artistesNames.split(',');
-    const artistesIdsArray = activity.artistesIds.split(',');
+    let artistesNamesArray = [];
+    let artistesIdsArray = [];
+    
+    if(activity.artistesNames && activity.artistesIds){
+        artistesNamesArray = activity.artistesNames.split(',')
+        artistesIdsArray = activity.artistesIds.split(',');
+    }
 
     const generateArtistLink = (itemId) => {
         const currentUrl = window.location.origin; // Récupère l'origine de l'URL actuelle (par exemple, https://localhost:3000)
         const pathName = window.location.pathname.split('/').slice(0, -1).join('/'); // Récupère le chemin sans la dernière partie
+        console.log(currentUrl, pathName)
         return `${currentUrl}${pathName}/${itemId.trim()}`; // Construit l'URL avec l'ID de l'artiste
     };
 
@@ -35,6 +46,7 @@ export const ActiviteForm2 = ({ activity, onChange, index, activities }) => {
             </a>
         );
     });
+
 
     return (
         <>
@@ -48,7 +60,11 @@ export const ActiviteForm2 = ({ activity, onChange, index, activities }) => {
                 </div>
                 <div className="flex flex-column">
                     <AutoComplet name='autocomplet' activities={activities} onChange={(value, name) => handleLocalChange(name, value)} />
-                    <NameField name='nom' value={activity.nom} onChange={(e) => handleLocalChange(e.target.name, e.target.value)} />
+                    <NameField 
+                            name='nom' 
+                            value={activity.nom} 
+                            onChange={(e) => handleLocalChange(e.target.name, e.target.value)} 
+                        />
                     <SelectTypeActivity name='type' value={activity.type} onChange={(value, name) => handleLocalChange(name, value)} />
                     <LocalCalendar name='date' value={activity.date} onChange={(value, name) => handleLocalChange(name, value)} />
                     <SelectLocation name='location' typeActivity={activity.type} activity={activity} onChange={(value, name) => handleLocalChange(name, value)} />

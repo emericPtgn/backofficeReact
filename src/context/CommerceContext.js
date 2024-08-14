@@ -1,4 +1,5 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
+import { getCommerces } from "../service/api";
 
 // Créez les contextes pour l'état et le dispatch séparément
 const CommercesStateContext = createContext();
@@ -9,12 +10,24 @@ const commercesInitialState = {
 };
 
 function commercesReducer(state, action) {
-    console.log('Reducer action:', action.type, action.payload);
     switch (action.type) {
       case 'getCommerces':
-        return { ...state, commerces: action.payload, error: null };
+        return { ...state, commerces: action.payload };
       case 'fetchError':
         return { ...state, error: action.payload };
+        case 'updateCommerce':
+          return {
+            ...state,
+            commerces: state.commerces.map(commerce =>
+              commerce.id === action.payload.id ? { ...commerce, ...action.payload } : commerce
+            ),
+          };    
+        case 'addCommerce': 
+        return {
+            ...state,
+            commerces: [...state.commerces, action.payload]
+        };      
+    
       default:
         return state;
     }
@@ -25,7 +38,9 @@ function commercesReducer(state, action) {
 // Fournit les deux contextes dans un seul fournisseur
 export function CommercesProvider({ children }) {
   const [state, dispatch] = useReducer(commercesReducer, commercesInitialState);
-
+  useEffect(()=>{
+    getCommerces(dispatch)
+}, [dispatch])
   return (
     <CommercesStateContext.Provider value={state}>
       <CommercesDispatchContext.Provider value={dispatch}>

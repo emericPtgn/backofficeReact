@@ -15,15 +15,16 @@ function Activity () {
     const [isLoading, setIsLoading] = useState(true);
     const [status, setStatus] = useState(IS_LOADING);
 
-    useUpdateEffect(()=>{
-        if(activities && activities.length > 0){
+    useUpdateEffect(() => {
+        if (activities && activities.length > 0) {
             setIsLoading(false);
-            setStatus(activities.length ? '' : ERROR)
+            setStatus('');
         } else {
             setIsLoading(false);
+            setStatus(NO_DATA);
         }
-        console.log(activities)
-    }, [activities])
+    }, [activities]);
+    
 
 
     return (
