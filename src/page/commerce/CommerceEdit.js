@@ -6,7 +6,8 @@ import { useParams } from "react-router-dom";
 import { useCommercesDispatch, useCommercesState } from "../../context/CommerceContext.js";
 import { updateCommerce } from "../../service/api.js";
 import { Toast } from 'primereact/toast';
-
+import { useUpdateEffect } from "primereact/hooks";
+import SetCommerceMap from "./SetCommerceMap.js";
 
 const CommerceEdit = () => {
     const { id } = useParams();
@@ -51,6 +52,10 @@ const CommerceEdit = () => {
         }
     };
 
+    useUpdateEffect(()=>{
+        console.log(commerce)
+    }, [commerce])
+
     const handleOnClick = async () => {
         try {
             console.log("Commerce data:", commerce);
@@ -64,7 +69,8 @@ const CommerceEdit = () => {
     if (isLoading) {
         return <div>Chargement en cours</div>;
     }
-    
+
+
     return (
         <div className="container-level2">
             <Header />
@@ -73,12 +79,10 @@ const CommerceEdit = () => {
                     <h2>Contenu principal</h2>
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
                     {commerce && (
-                        <CommerceForm
-                            commerces={memoCommerces}
-                            commerce={commerce}
-                            setCommerce={setCommerce}
-                            onChange={handleChange}
-                        />
+                        <>
+                        <CommerceForm commerces={memoCommerces} commerce={commerce} setCommerce={setCommerce} onChange={handleChange}/>
+                        <SetCommerceMap commerce={commerce} setCommerce={setCommerce} />
+                        </>
                     )}
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />

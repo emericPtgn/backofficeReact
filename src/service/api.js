@@ -25,7 +25,7 @@ export const updateUser = (id, userData) => axios.put(`${DOMAINE_URL}/users/${id
 
 // Similaire pour les artistes, activités, etc.
 
-export const getMarkers = async (dispatch) => {
+export const getMarkers = async ({dispatch}) => {
   try {
     const data = await AuthenticatedFetch(ENDPOINT_MARKER, {method: 'GET'});
     dispatch({type: 'getMarkers', payload: data})
@@ -50,12 +50,14 @@ export const addMarker = async (marker, dispatch) => {
 
 export const updateMarker = async (id, marker, dispatch) => {
   try {
-    const data = await AuthenticatedFetch(`ENDPOINT_MARKER/${id}`, {
-      method: 'GET',
+    const data = await AuthenticatedFetch(`${ENDPOINT_MARKER}/${id}`, {
+      method: 'PUT',
       body: JSON.stringify(marker),
     })
+    dispatch({type: 'updateMarker', payload: {id: id, data : data}});
+    return data;
   } catch (error) {
-    
+    console.error('error occured', error.message);
   }
 }
 
@@ -190,29 +192,91 @@ export const getCommerce = async (id) => {
 
 export const updateCommerce = async (id, dispatch, commerce) => {
   try {
-    console.log(commerce);
+    const formData = new FormData();
+    const commerceData = {
+      nom: commerce.nom,
+      description: commerce.description,
+      typeCommerce: commerce.typeCommerce,
+      typeProduit: commerce.typeProduit,
+      photos: []
+    };
+
+    // Ajouter les photos au formData
+    if (Array.isArray(commerce.photos)) {
+      commerce.photos.forEach(photo => {
+        if (photo.file instanceof File) {
+          // Si c'est un nouveau fichier, l'ajouter en tant que fichier
+          formData.append('photos[]', photo.file);
+        } else {
+          // Si c'est une URL ou un chemin existant, l'ajouter au tableau des photos
+          commerceData.photos.push(photo);
+        }
+      });
+    }
+
+    // Ajouter les données du commerce à formData
+    formData.append('data', JSON.stringify(commerceData));
+
+    // Debug: logFormData
+    logFormData(formData);
+
+    // Envoyer la requête au serveur
     const updatedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(commerce)
+      method: 'POST',
+      body: formData
     });
-    dispatch({type: 'updateCommerce', payload: updatedCommerce})
+
+    // Mise à jour du contexte ou de l'état avec le commerce mis à jour
+    dispatch({ type: 'updateCommerce', payload: updatedCommerce });
   } catch (error) {
-    console.error('error occured', error.message);
+    console.error('An error occurred', error.message);
   }
 }
 
+
+
+const logFormData = (formData) => {
+  for (let [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      console.log(`${key}: ${value.name}`);
+    } else {
+      console.log(`${key}: ${value}`);
+    }
+  }
+};
+
 export const addCommerce = async (dispatch, commerce) => {
   try {
-    const updatedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}`, {
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({
+      nom: commerce.nom,
+      description: commerce.description,
+      typeCommerce: commerce.typeCommerce,
+      typeProduit: commerce.typeProduit
+    }));
+    if (Array.isArray(commerce.photos)) {
+      commerce.photos.forEach(photo => {
+        if (photo.file instanceof File) {
+          formData.append('photos[]', photo.file);
+        }
+      });
+    }
+    
+    logFormData(formData); // Inspecte le contenu de formData (console.log(pas adapté))
+
+    const addedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}`, {
       method: 'POST',
-      body: JSON.stringify(commerce)
+      body: formData
     });
-    dispatch({type: 'addCommerce', payload: updatedCommerce})
-    return updatedCommerce;
+
+    dispatch({ type: 'addCommerce', payload: addedCommerce });
+    return addedCommerce;
   } catch (error) {
-    console.error('an error occured,', error.message)
+    console.error('An error occurred:', error.message);
   }
-}
+};
+
+
 
 export const getTypeCommerces = async () => {
   try {
@@ -370,19 +434,24 @@ export const AuthenticatedFetch = async (endpoint, options = {}) => {
     throw new Error('No authentication token found');
   }
 
-  const defaultOptions = {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+  // Default headers for JSON requests
+  const defaultHeaders = {
+    'Authorization': `Bearer ${token}`,
   };
+
+  // Check if the request is using FormData
+  const isFormData = options.body instanceof FormData;
+
+  // Add Content-Type header only if it's not FormData
+  if (!isFormData) {
+    defaultHeaders['Content-Type'] = 'application/json';
+  }
 
   try {
     const response = await fetch(`${DOMAINE_URL}${endpoint}`, {
-      ...defaultOptions,
       ...options,
       headers: {
-        ...defaultOptions.headers,
+        ...defaultHeaders,
         ...options.headers,
       },
     });
@@ -397,3 +466,4 @@ export const AuthenticatedFetch = async (endpoint, options = {}) => {
     throw error;
   }
 };
+

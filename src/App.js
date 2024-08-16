@@ -42,7 +42,6 @@ function App() {
       <Router>
         <ArtistesProvider> {/* Envelopper ici */}
           <EmplacementProvider>
-          <SceneProvider>
             <CommercesProvider>
             <MarkerProvider>
             <ActiviteProvider>
@@ -82,7 +81,6 @@ function App() {
             </ActiviteProvider>
             </MarkerProvider>
             </CommercesProvider>
-          </SceneProvider>
           </EmplacementProvider>
           </ArtistesProvider> {/* Fin de l'enveloppement */}
       </Router>

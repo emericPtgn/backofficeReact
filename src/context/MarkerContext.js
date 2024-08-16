@@ -1,56 +1,70 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { getMarkers } from "../service/api";
 
-
-// créer contexte dispatch / state
-// créer function provider qui partage cotexte state et dispatch à children
-// créer function pour context state dispatch
-// useEffect appelle les données au chargement du composant
-
-
-const MarkerState = createContext();
-const MarkerDispatch = createContext();
+// Create contexts
+const MarkerStateContext = createContext();
+const MarkerDispatchContext = createContext();
 
 const initialMarkerState = {
-    markers : []
-}
+    markers: []
+};
 
-export default function MarkerProvider ({children}) {
-    const [state, dispatch] = useReducer(markerReducer, initialMarkerState);
-    useEffect(()=>{
-        getMarkers(dispatch)
-    }, [dispatch])
-    return(
-        <MarkerState.Provider value={state}>
-            <MarkerDispatch.Provider value={dispatch}>
-                {children}
-            </MarkerDispatch.Provider>
-        </MarkerState.Provider>
-    ) 
-}
-
-function markerReducer(state, action){
-    switch(action.type){
+function markerReducer(state, action) {
+    switch (action.type) {
         case 'getMarkers':
             return {
                 ...state,
-                markers : action.payload,
-            }
-            case 'addMarker': 
-            const updatedMarkers = state.markers.map(marker => marker);
-            const newMarker = action.payload;
-            updatedMarkers.push(newMarker);
+                markers: action.payload,
+            };
+        case 'addMarker':
+            return {
+                ...state,
+                markers: [...state.markers, action.payload]
+            };
+        case 'updateMarker': 
+            const updatedMarkers = state.markers.map(marker =>
+                marker.id === action.payload.id
+                    ? { ...marker, ...action.payload.data }
+                    : marker
+            );
             return {
                 ...state,
                 markers: updatedMarkers
-            }
+            };
+        
+        default:
+            throw new Error(`Unhandled action type: ${action.type}`);
     }
 }
 
-export function useMarkerState(){
-    return useContext(MarkerState);
+export default function MarkerProvider({ children }) {
+    const [state, dispatch] = useReducer(markerReducer, initialMarkerState);
+
+    useEffect(() => {
+        getMarkers({dispatch});
+    }, []);
+
+    return (
+        <MarkerStateContext.Provider value={state}>
+            <MarkerDispatchContext.Provider value={dispatch}>
+                {children}
+            </MarkerDispatchContext.Provider>
+        </MarkerStateContext.Provider>
+    );
 }
 
-export function useMarkerDispatch(){
-    return useContext(MarkerDispatch);
+export function useMarkerState() {
+    const context = useContext(MarkerStateContext);
+    if (context === undefined) {
+        throw new Error('useMarkerState must be used within a MarkerProvider');
+    }
+    return context;
+}
+
+export function useMarkerDispatch() {
+    const context = useContext(MarkerDispatchContext);
+    if (context === undefined) {
+        throw new Error('useMarkerDispatch must be used within a MarkerProvider');
+    }
+    return context;
 }

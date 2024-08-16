@@ -6,9 +6,6 @@ import ScenesTable from "../../component/primereact/scene/Scene2";
 
 
 function Scene(){
-    const dispatch = useSceneDispatch();
-    const state = useSceneState();
-    console.log(state.scenes)
 
     return (
         <div className="container-level2">

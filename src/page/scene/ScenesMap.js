@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { APIProvider, Map, AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 import { useMarkerState } from "../../context/MarkerContext";
 import iconeScene from '../../ressources/icon_scene_24x24.png';
-import iconeCommerce from '../../ressources/icon_shop_24x24.png';
+import iconBurger from '../../ressources/icon_burger_24x24.png';
+import iconChineseFood from '../../ressources/icon_chineseFood_24x24.png';
+import iconPizza from '../../ressources/icon_pizza_24x24.png';
+import iconToilet from '../../ressources/icon_toilet_24x24.png';
 
-const MyMap = ({ handleClick }) => {
+const ScenesMap = ({ handleClick }) => {
     const { markers } = useMarkerState();
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     const initLat = parseFloat(process.env.REACT_APP_GOOGLE_MAPS_INIT_LAT);
@@ -16,21 +19,15 @@ const MyMap = ({ handleClick }) => {
     let findItem = pathParts[1].split('-')[0];
 
     let filter = '';
-    let iconeMarker = '';
     if (findItem === 'scene') {
         filter = 'scene';
-        iconeMarker = iconeScene;
     } else if (findItem === 'fanzone') {
         filter = 'fanzone';
-        // iconeMarker = 
     } else if (findItem === 'gamezone') {
         filter = 'gamezone';
-        // iconeMarker =
     } else if (findItem === 'commerce') {
+        // Filtrer pour les types qui ne sont pas 'scene', 'fanzone' ou 'gamezone'
         filter = 'commerce';
-        iconeMarker = iconeCommerce;
-    } else if (findItem === 'map') {
-        filter = 'scene';
     }
 
     const formattedMarkers = markers
@@ -41,8 +38,7 @@ const MyMap = ({ handleClick }) => {
                 key: `${i}-${marker.nom}`,
                 position: { lat, lng },
                 type: marker.type,
-                nom: marker.nom,
-                icone: iconeMarker
+                nom: marker.nom
             };
         })
         .filter(marker => !isNaN(marker.position.lat) && !isNaN(marker.position.lng))
@@ -74,18 +70,13 @@ const MyMap = ({ handleClick }) => {
 
 const Marker = ({ marker }) => {
     const [selectedMarker, setSelectedMarker] = useState(false);
-
-
     return (
-        <AdvancedMarker 
-            position={marker.position}
-            gmpDraggable={false}
-        >
-        <div>
-        <img src={marker.icone} />
-        </div>
+        <AdvancedMarker position={marker.position}>
+            <Pin>
+                <img src={iconeScene} alt="Custom Marker" style={{ width: '32px', height: '32px' }} />
+            </Pin>
         </AdvancedMarker>
     );
 }
 
-export default MyMap;
+export default ScenesMap;

@@ -5,6 +5,8 @@ import RightSidebar from "../../component/layout/levelTwo/RightSidebar";
 import { addMarker } from "../../service/api";
 import { useMarkerDispatch, useMarkerState } from "../../context/MarkerContext";
 import { SceneForm } from "../../component/primereact/scene/SceneForm";
+import SetScenesMap from "./SetScenesMap";
+import FileUpload2 from "../../component/primereact/commerce//FileUpload2"
 
 const SUCCES_MESSAGE = 'new scene registered successfully';
 const ERROR_MESSAGE = 'something occured while registering new scene, try again';
@@ -14,7 +16,11 @@ const SceneNew = () => {
     const [scene, setScene] = useState({
         nom: '',
         description: '',
-        type: 'scene'
+        type: 'scene',
+        position: {
+            lat: '',
+            lng: ''
+        }
     });
 
     const handleOnClick = () => {
@@ -37,6 +43,7 @@ const SceneNew = () => {
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
                     <p id="successMessage"></p>
                     <SceneForm  scene={scene} setScene={setScene}/>
+                    <SetScenesMap scene={scene} setScene={setScene} />
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />
             </div>
