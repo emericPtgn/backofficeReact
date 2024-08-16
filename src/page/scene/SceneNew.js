@@ -17,10 +17,8 @@ const SceneNew = () => {
         nom: '',
         description: '',
         type: 'scene',
-        position: {
-            lat: '',
-            lng: ''
-        }
+        latitude : '',
+        longitude : ''
     });
 
     const handleOnClick = () => {

@@ -35,7 +35,6 @@ const SceneEdit = () => {
     const handleOnClick = async () => {
         try {
             const response = await updateMarker(id, scene, dispatch);
-            // Update state with the updated marker
             dispatch({ type: 'updateMarker', payload: response });
             console.log(response);
         } catch (error) {
