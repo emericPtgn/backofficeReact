@@ -33,27 +33,27 @@ const MyMap = ({ handleClick, item }) => {
 
     // Update existing marker or add a new one
     const newMarkers = markers.map(marker => {
-        if (marker.nom === item.nom && marker.type === item.type) {
+        if (marker?.nom === item?.nom && marker?.type === item?.type) {
             return { ...marker, ...item };
         }
         return marker;
     });
 
     // If the item is not in newMarkers, add it
-    if (!newMarkers.find(marker => marker.nom === item.nom && marker.type === item.type)) {
+    if (!newMarkers.find(marker => marker?.nom === item?.nom && marker.type === item.type)) {
         newMarkers.push(item);
     }
 
     const formattedMarkers = newMarkers
         .map((marker, i) => {
-            const lat = parseFloat(marker.latitude);
-            const lng = parseFloat(marker.longitude);
+            const lat = parseFloat(marker?.latitude);
+            const lng = parseFloat(marker?.longitude);
             return {
-                key: `${i}-${marker.nom}`,
+                key: `${i}-${marker?.nom}`,
                 position: { lat, lng },
-                type: marker.type,
-                nom: marker.nom,
-                icone: marker.icone || iconeMarker,
+                type: marker?.type,
+                nom: marker?.nom,
+                icone: marker?.icone 
             };
         })
         .filter(marker => !isNaN(marker.position.lat) && !isNaN(marker.position.lng))
@@ -67,7 +67,7 @@ const MyMap = ({ handleClick, item }) => {
     return (
         <APIProvider apiKey={apiKey}>
             <Map
-                style={{ width: '100vw', height: '100vh' }}
+                style={{ width: '100', height: '500px' }}
                 defaultCenter={{ lat: initLat, lng: initLng }}
                 defaultZoom={19}
                 gestureHandling={'greedy'}

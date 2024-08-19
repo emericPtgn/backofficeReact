@@ -7,9 +7,11 @@ import { useState, useRef } from "react";
 import { useUpdateEffect } from "primereact/hooks";
 import { addCommerce } from "../../service/api";
 import { Toast } from 'primereact/toast';
+import SetCommerceMap from "./SetCommerceMap";
 
 const CommerceNew = () => {
-    const commerceModel = { nom: '', description: '', typeCommerce: { nom: '' }, typeProduit: { nom: '' }, photos: [] }
+    const commerceModel = { nom: '', description: '', typeCommerce: { nom: '' }, 
+    typeProduit: { nom: '' }, marker : { icone : '', latitude : '', longitude : ''}, photos: [] }
 
     const [commerce, setCommerce] = useState(commerceModel);
     const { commerces } = useCommercesState();
@@ -54,9 +56,6 @@ const CommerceNew = () => {
         }));
     };
 
-    useUpdateEffect(() => {
-        console.log(commerce)
-    }, [commerce])
 
     const handleOnClick = async () => {
         try {
@@ -80,6 +79,7 @@ const CommerceNew = () => {
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
                     <CommerceForm commerce={commerce} setCommerce={setCommerce} 
                     commerces={commerces} onChange={handleChange} onSelect={handleSelect} />
+                    <SetCommerceMap commerce={commerce} setCommerce={setCommerce} />
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />
             </div>

@@ -31,6 +31,12 @@ function markerReducer(state, action) {
                 ...state,
                 markers: updatedMarkers
             };
+        case 'deleteMarker':
+            const updatedMarker = state.markers.filter(marker => marker.id !== action.payload)
+            return {
+                ...state,
+                markers : updatedMarker
+            }
         
         default:
             throw new Error(`Unhandled action type: ${action.type}`);

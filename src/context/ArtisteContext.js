@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
-import { getArtistes } from "../service/api";
+import { getArtistes, updateArtiste } from "../service/api";
 
 // Créez les contextes pour l'état et le dispatch séparément
 const ArtistesStateContext = createContext();
@@ -26,10 +26,11 @@ function artistesReducer(state, action) {
           artiste.id === action.payload.id ? action.payload : artiste
         ),
       };
-    case 'deleteSocialFromArtiste':
-      
+    case 'deleteArtist':
+      const updatedArtist = state.artistes.filter(artiste => artiste.id !== action.payload);
       return {
         ...state,
+        artistes : updatedArtist
 
       }
     default:

@@ -61,6 +61,20 @@ export const updateMarker = async (id, marker, dispatch) => {
   }
 }
 
+export const deleteMarker = async (id, dispatch) => {
+  try {
+    let response = await AuthenticatedFetch(`${ENDPOINT_MARKER}/${id}`, {
+      method: 'DELETE',
+    })
+    if(response.statut == 'success'){
+      dispatch({type: 'deleteMarker', payload: id});
+    }
+    return response;
+  } catch (error) {
+    console.error('error occured, :', error.message);
+  }
+}
+
 export const getArtistes = async (dispatch) => {
   try {
     const data = await AuthenticatedFetch(ENDPOINT_ARTISTE, { method: 'GET' });
@@ -105,6 +119,21 @@ export const addNewArtiste = async (artiste) => {
     throw error;
   }
 };
+
+export const deleteArtiste = async (id, dispatch) => {
+  try {
+    const response = AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, {
+      method: 'DELETE',
+    });
+    if(response.statut = 'success'){
+      dispatch({type: 'deleteArtist', payload: id})
+      return response;
+    } 
+    return response;
+  } catch (error) {
+    console.error('error occured :', error.message);
+  }
+}
 
 export const addActivity = async (activity, dispatch) => {
   try {
@@ -154,7 +183,9 @@ export const deleteActivity = async (id, dispatch) => {
     const response = await AuthenticatedFetch(`${ENDPOINT_ACTIVITE}/${id}`, {
       method: 'DELETE'
     })
-    dispatch({type: 'deleteActivite', payload : id}) // Dispatch the action with the ID
+    if(response.statut == 'success'){
+      dispatch({type: 'deleteActivite', payload : id}) 
+    };
     return response;
   } catch (error) {
     console.error(error)
@@ -198,6 +229,7 @@ export const updateCommerce = async (id, dispatch, commerce) => {
       description: commerce.description,
       typeCommerce: commerce.typeCommerce,
       typeProduit: commerce.typeProduit,
+      marker : commerce.marker,
       photos: []
     };
 
@@ -248,21 +280,32 @@ const logFormData = (formData) => {
 export const addCommerce = async (dispatch, commerce) => {
   try {
     const formData = new FormData();
-    formData.append('data', JSON.stringify({
+
+    const commerceData = {
       nom: commerce.nom,
       description: commerce.description,
       typeCommerce: commerce.typeCommerce,
-      typeProduit: commerce.typeProduit
-    }));
+      typeProduit: commerce.typeProduit,
+      marker : commerce.marker,
+      photos: []
+    };
+
     if (Array.isArray(commerce.photos)) {
       commerce.photos.forEach(photo => {
         if (photo.file instanceof File) {
+          // Si c'est un nouveau fichier, l'ajouter en tant que fichier
           formData.append('photos[]', photo.file);
+        } else {
+          // Si c'est une URL ou un chemin existant, l'ajouter au tableau des photos
+          commerceData.photos.push(photo);
         }
       });
     }
-    
-    logFormData(formData); // Inspecte le contenu de formData (console.log(pas adapté))
+    // Ajouter les données du commerce à formData
+    formData.append('data', JSON.stringify(commerceData));
+
+    // Debug: logFormData
+    logFormData(formData);
 
     const addedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}`, {
       method: 'POST',
@@ -276,7 +319,19 @@ export const addCommerce = async (dispatch, commerce) => {
   }
 };
 
-
+export const deleteCommerce = async (id, dispatch) => {
+  try {
+    const response = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, {
+      method: 'DELETE'
+    })
+    if(response.statut == 'success'){
+      dispatch({type: 'deleteCommerce', payload : id})
+    }
+    return response;
+  } catch (error) {
+    console.error('error occured :', error.message)
+  }
+}
 
 export const getTypeCommerces = async () => {
   try {

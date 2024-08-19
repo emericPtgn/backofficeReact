@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { updateArtiste } from "../../service/api";
 import { useArtistesDispatch, useArtistesState } from "../../context/ArtisteContext";
-import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import Header from "../../component/layout/levelTwo/Header";
 import RightSidebar from "../../component/layout/levelTwo/RightSidebar";

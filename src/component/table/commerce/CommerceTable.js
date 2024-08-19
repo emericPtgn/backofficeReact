@@ -1,40 +1,44 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { ButtonGroup } from 'primereact/buttongroup';
 import { useNavigate } from 'react-router-dom';
 import { useCommercesDispatch, useCommercesState } from '../../../context/CommerceContext';
+import { Toast } from 'primereact/toast';
+import ActionButtons from '../../primereact/components/ActionButtons';
+import { deleteCommerce } from '../../../service/api';
 
-
-const ActionsButtons = React.memo(({id, onEdit, onDelete}) => (
-    <ButtonGroup>
-        <Button onClick={() => onEdit(id)}>edit</Button>
-        <Button onClick={() => onDelete(id)}>delete</Button>
-    </ButtonGroup>
-));
+// const ActionsButtons = React.memo(({id, onEdit, onDelete}) => (
+//     <ButtonGroup>
+//         <Button onClick={() => onEdit(id)}>edit</Button>
+//         <Button onClick={() => onDelete(id)}>delete</Button>
+//     </ButtonGroup>
+// ));
 
 
 const CommerceTable = () => {
 
     const state = useCommercesState();
-    if(state.commerces){
-        console.log(state.commerces)
-    }
-    const {dispatch} = useCommercesDispatch();
+    const dispatch = useCommercesDispatch();
     const [selectedCommerce, setSelectedCommerce] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const commerces = useMemo(()=> state.commerces, [ state.commerces ])
-    const commerceExemple = [{id: 23, nom: "kebab-king", description: "le roi du kebab", "typeProduit": "kebab", "typeCommerce":"restauration"}]
+    const commerces = useMemo(()=> state.commerces, [ state.commerces ]);
+    const toast = useRef(null);
+
+    const show = () => {
+        toast.current.show({severity : 'info', summary : 'info', detail : 'commerce deleted 🏬🚮' })
+    }
 
     useEffect(() => {
         setLoading(false);
       }, [commerces]);
 
     const handleDelete = useCallback((id)=>{
-        dispatch({type: 'deleteCommerce', payload: id})
+        const response = deleteCommerce(id, dispatch)
+        if(response.statut == 'success'){
+            show();
+        }
     }, [dispatch]);
 
     const handleEdit = useCallback((id)=>{
@@ -42,7 +46,7 @@ const CommerceTable = () => {
     }, [navigate])
 
     const actionsButtons = useCallback((rowData)=>{
-        return <ActionsButtons id={rowData.id} onDelete={handleDelete} onEdit={handleEdit}></ActionsButtons>
+        return <ActionButtons id={rowData.id} onDelete={handleDelete} onEdit={handleEdit}></ActionButtons>
     }, [handleDelete, handleEdit])
 
     if(error){
@@ -60,6 +64,7 @@ const CommerceTable = () => {
             <Column sortable field="nom" header="nom"></Column>
             <Column sortable field="typeCommerce.nom" header="type"></Column>
             <Column sortable field="typeProduit.nom" header="produit"></Column>
+            <Toast ref={toast} />
             <Column  header="actions" body={actionsButtons}></Column>
         </DataTable>
         </>

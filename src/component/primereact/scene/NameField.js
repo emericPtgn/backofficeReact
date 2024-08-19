@@ -1,14 +1,18 @@
+import React from "react";
 import { InputText } from "primereact/inputtext";
 
-const NameField = ({ scene, onChange }) => {
+const NameField = ({ value, onChange }) => {
     return (
-        <InputText
-            name="nom"
-            value={scene?.nom || ''}
-            onChange={onChange}
-            placeholder="Scene rap, scene montagne ..."
-        />
+        <div className="field">
+            <label htmlFor="nom">Nom</label>
+            <InputText 
+                id="nom" 
+                name="nom" 
+                value={value} 
+                onChange={(e) => onChange("nom", e.target.value)} 
+            />
+        </div>
     );
 };
 
-export default NameField;
+export default React.memo(NameField);

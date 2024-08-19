@@ -1,14 +1,19 @@
+import React from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 
-const DescriptionField = ({ scene, onChange }) => {
+const DescriptionField = ({ value, onChange }) => {
     return (
-        <InputTextarea
-            name="description"
-            value={scene?.description || ''}
-            onChange={onChange}
-            placeholder="Retrouvez les rois de la pop anglaise"
-        />
+        <div className="field">
+            <label htmlFor="description">Description</label>
+            <InputTextarea 
+                id="description" 
+                name="description" 
+                value={value} 
+                onChange={(e) => onChange("description", e.target.value)} 
+                rows={5} 
+            />
+        </div>
     );
 };
 
-export default DescriptionField;
+export default React.memo(DescriptionField);

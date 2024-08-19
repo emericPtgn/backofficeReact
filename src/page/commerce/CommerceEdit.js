@@ -19,6 +19,7 @@ const CommerceEdit = () => {
 
     const memoCommerces = useMemo(() => commerces, [commerces]);
 
+    
     useEffect(() => {
         if (memoCommerces && memoCommerces.length > 0) {
             const foundCommerce = memoCommerces.find(commerce => commerce.id === id);
@@ -37,13 +38,12 @@ const CommerceEdit = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value)
-        if(name === 'typeCommerce'){
-            const updatedType = {nom : value};
-            setCommerce(prevCommerce => ({...prevCommerce, [name] : updatedType}));
-        } else if (name === 'typeProduit'){
-            const updatedType = {nom: value}
-            setCommerce(prevCommerce => ({...prevCommerce, [name] : updatedType}));
+    
+        if(name === 'typeCommerce' || name === 'typeProduit'){
+            setCommerce(prevCommerce => ({
+                ...prevCommerce,
+                [name]: { nom: value } // Assurez-vous que cela correspond à la structure attendue
+            }));
         } else {
             setCommerce(prevCommerce => ({
                 ...prevCommerce,
@@ -51,10 +51,6 @@ const CommerceEdit = () => {
             }));
         }
     };
-
-    useUpdateEffect(()=>{
-        console.log(commerce)
-    }, [commerce])
 
     const handleOnClick = async () => {
         try {
@@ -69,6 +65,11 @@ const CommerceEdit = () => {
     if (isLoading) {
         return <div>Chargement en cours</div>;
     }
+    
+    if (!commerce) {
+        return <div>Commerce non trouvé</div>;
+    }
+    
 
 
     return (

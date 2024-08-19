@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { APIProvider, Map, AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
-import { useMarkerState } from "../../context/MarkerContext";
+import { useMarkerState } from "../context/MarkerContext";
 import iconeScene from '../../ressources/icon_scene_24x24.png';
 import iconBurger from '../../ressources/icon_burger_24x24.png';
 import iconChineseFood from '../../ressources/icon_chineseFood_24x24.png';

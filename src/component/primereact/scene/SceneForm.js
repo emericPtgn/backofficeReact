@@ -1,26 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { Card } from "primereact/card";
+import React, { useCallback } from 'react';
+import NameField from './NameField';
+import DescriptionField from './DescriptionField';
 
-import NameField from "./NameField";
-import DescriptionField from "./DescriptionField";
-
-export const SceneForm = ({ scene, setScene }) => {
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setScene((prevScene) => ({ ...prevScene, [name]: value }));
-    };
-
+const SceneForm = ({ scene, setScene }) => {
+    const handleChange = useCallback((name, value) => {
+        setScene(prevScene => ({
+            ...prevScene,
+            [name]: value
+        }));
+    }, [setScene]);
 
     return (
-        <Card className="d-flex">
-            <NameField scene={scene} onChange={handleChange} />
-            <DescriptionField scene={scene} onChange={handleChange} />
-        </Card>
+        <>
+            <NameField value={scene.nom} onChange={handleChange} />
+            <DescriptionField value={scene.description} onChange={handleChange} />
+        </>
     );
 };
 
-
-
+export default SceneForm;

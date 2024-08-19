@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import EmojiPicker from "emoji-picker-react";
-import MyMap from "../map/Map";
+import MyMap from "../page/map/Map";
 import { useUpdateEffect } from "primereact/hooks";
+import SceneMap from "./SceneMap";
 
 const SetScenesMap = ({ scene, setScene }) => {
   const [latLng, setLatLng] = useState('');
@@ -18,33 +19,24 @@ const SetScenesMap = ({ scene, setScene }) => {
     setScene((scene) => ({...scene, latitude: newLatLng.lat, longitude : newLatLng.lng}));
     console.log(newLatLng);
   };
-
   const onEmojiClick = (event) => {
     setIcone(event.emoji);
     setScene((scene) => ({...scene, icone : event.emoji}))
     resetEmojiPicker();
   };
 
-  const previewConfig = {
-    showPreview: false,
-  };
+  const previewConfig = {showPreview: false};
 
-  const reactions = [
-    "1f600", "1f601", "1f602", "1f603",
-  ];
+  const reactions = ["1f600", "1f601", "1f602", "1f603"];
 
   useUpdateEffect(() => {
     console.log('scene : ', scene, 'marker :', marker);
   }, [scene, marker]);
+  
+  const handleReactionClick = () => {resetEmojiPicker()};
 
-  const handleReactionClick = () => {
-    resetEmojiPicker();
-  }
-
-  const resetEmojiPicker = () => {
-    setEmojiPickerKey(prevKey => prevKey + 1);
-  }
-
+  const resetEmojiPicker = () => {setEmojiPickerKey(prevKey => prevKey + 1)};
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
@@ -75,40 +67,12 @@ const SetScenesMap = ({ scene, setScene }) => {
   }, []);
 
   return (
-    <div ref={containerRef}>
-      <div>
-        <div ref={emojiPickerRef}>
-          <EmojiPicker
-            key={emojiPickerKey}
-            reactionsDefaultOpen={true}
-            reactions={reactions}
-            onReactionClick={handleReactionClick}
-            previewConfig={previewConfig}
-            onEmojiClick={onEmojiClick}
-          />
-        </div>
-        <DisplayEmojiAndCoordonates marker={marker} scene={scene} />
-      </div>
-      <MyMap handleClick={handleClick} item={scene} />
-    </div>
+    <SceneMap containerRef={containerRef} emojiPickerRef={emojiPickerRef} 
+    emojiPickerKey={emojiPickerKey} handleReactionClick={handleReactionClick}
+    marker={marker} scene={scene} handleClick={handleClick} reactions={reactions} previewConfig={previewConfig}
+    onEmojiClick={onEmojiClick} />
   );
 };
+
 
 export default SetScenesMap;
-
-const DisplayEmojiAndCoordonates = ({ marker, scene }) => {
-  let icone = marker.icone ? marker.icone : scene.icone;
-  let isPlaced = scene.latitude && scene.longitude ? 'oui' : 'non';
-  return (
-    <>
-      <div>
-        <p>
-          Icone {scene?.nom} : <span>{icone}</span>
-        </p>
-        <p>
-          Marker placé : <span>{isPlaced}</span>
-        </p>
-      </div>
-    </>
-  );
-};

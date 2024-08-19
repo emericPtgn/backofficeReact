@@ -26,7 +26,13 @@ function commercesReducer(state, action) {
         return {
             ...state,
             commerces: [...state.commerces, action.payload]
-        };      
+        };
+        case 'deleteCommerce':
+          const commerceUpdate = state.commerces.filter(commerce => commerce.id !== action.payload);
+          return {
+            ...state,
+            commerces : commerceUpdate
+          }
     
       default:
         return state;
