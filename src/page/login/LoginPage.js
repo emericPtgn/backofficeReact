@@ -3,10 +3,12 @@ import { DOMAINE_URL } from '../../config';
 import { useAuth } from '../../context/Context';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from '../../component/form/login/LoginForm';
+import { useUserDispatch } from '../../context/UserContext';
 
 function LoginPage() {
   const { setToken } = useAuth();
   const navigate = useNavigate();
+  const dispatch = useUserDispatch();
 
   const handleSubmit = async ({ _username, _password }) => {
     try {
@@ -27,12 +29,12 @@ function LoginPage() {
 
       const responseData = await response.json();
 
-      if (responseData.token) {
-        await setToken(responseData.token);
-        console.log(responseData.token)
+      if (responseData.token && responseData.refreshToken) {
+        await setToken(responseData.token, responseData.refreshToken);
+        dispatch({type: 'setActivUser', payload :_username});
         navigate('/dashboard');
       } else {
-        throw new Error('Token not received');
+        throw new Error('Token or refreshToken not received');
       }
     } catch (error) {
       console.error('Erreur de connexion :', error);

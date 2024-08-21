@@ -1,4 +1,5 @@
 import { DOMAINE_URL } from '../config';
+import { useUserDispatch } from './UserContext';
 
 const HandleLogout = async (setIsAuthenticated, setToken) => {
   try {

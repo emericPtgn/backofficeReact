@@ -1,50 +1,81 @@
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
+import { getUsers, getActivUser } from "../service/api";
 
-// créer context state et dispatch
-// créer function Provider pour diffuser Provider state et Provider dispatch
-// créer functions pour s'abonner AUX contexteS state et dispatch
-// créer function reducer
-
+// Create contexts for state and dispatch
 const UserStateContext = createContext();
 const UserDispatchContext = createContext();
 
-function userReducer(state, action){
-    switch(action.type){
-        case'getUsers':
-        return {
-            ...state,
-            users: action.payload,
-            fetchError: null
-        }
-        case'fetchError':
-        return {
-            ...state,
-            fetchError : action.payload
-        }
+// Reducer function to manage state changes
+function userReducer(state, action) {
+    switch (action.type) {
+        case 'getUsers':
+            return {
+                ...state,
+                users: action.payload,
+            };
+        case 'updateUser':
+            let updatedUsers = state.users.filter(user => user.id !== action.payload.id);
+            updatedUsers.push(action.payload.data);
+            return {
+                ...state,
+                users: updatedUsers,
+            };
+            case 'setActivUser':
+                let user = state.users.find(user => user.email === action.payload.email);
+                let isAdmin = user?.roles[0] === 'ROLE_ADMIN';
+                return {
+                    ...state,
+                    activUser: user,
+                    isAdmin: isAdmin,
+                };
+    
+        default:
+            throw new Error(`Unknown action: ${action.type}`);
     }
 }
 
-export function UserProvider({children}){
-    const [state, dispatch] = useReducer(userReducer, initialUsersState)
+// Provider component to supply state and dispatch contexts
+export function UserProvider({ children }) {
+    const [state, dispatch] = useReducer(userReducer, initialUsersState);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await getUsers(dispatch);
+            let activUser = await getActivUser(dispatch)
+            console.log(activUser)
+        };
+        fetchData();
+    }, []);
+
     return (
         <UserStateContext.Provider value={state}>
             <UserDispatchContext.Provider value={dispatch}>
                 {children}
             </UserDispatchContext.Provider>
         </UserStateContext.Provider>
-    )
+    );
 }
 
-export function useUserState(){
-    return useContext(UserStateContext);
+// Custom hooks for using state and dispatch contexts
+export function useUserState() {
+    const context = useContext(UserStateContext);
+    if (context === undefined) {
+        throw new Error('useUserState must be used within a UserProvider');
+    }
+    return context;
 }
 
-export function useUserDispatch(){
-    return useContext(UserDispatchContext);
+export function useUserDispatch() {
+    const context = useContext(UserDispatchContext);
+    if (context === undefined) {
+        throw new Error('useUserDispatch must be used within a UserProvider');
+    }
+    return context;
 }
 
+// Initial state
 const initialUsersState = {
     users: [],
-    fetchError: null
-
-}
+    activUser: null,
+    isAdmin : false
+};

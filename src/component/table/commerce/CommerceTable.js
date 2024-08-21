@@ -59,7 +59,16 @@ const CommerceTable = () => {
     console.log(state.commerces)
     return (
         <>
-        <DataTable value={commerces} selection={selectedCommerce} onSelectionChange={(e) => setSelectedCommerce(e.value) } dataKey="id" tableStyle={{ minWidth: '50rem' }} >
+        <DataTable 
+        value={commerces} 
+        selection={selectedCommerce} 
+        onSelectionChange={(e) => setSelectedCommerce(e.value) } 
+        dataKey="id" 
+        tableStyle={{ minWidth: '50rem' }}
+        paginator
+        rows={10} // Display 10 users per page
+        responsiveLayout="scroll"
+         >
             <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
             <Column sortable field="nom" header="nom"></Column>
             <Column sortable field="typeCommerce.nom" header="type"></Column>

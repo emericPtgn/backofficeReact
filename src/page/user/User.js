@@ -1,30 +1,35 @@
 import React, { useEffect } from "react";
 import Header from '../../component/layout/levelTwo/Header.js'
-import UserTable from "../../component/table/user/UserTable";
-import {  UserProvider, useUserDispatch } from "../../context/UserContext.js";
-import { getUsers } from "../../service/api.js";
+import UserTable2 from "../../component/primereact/user/UserTable2.js";
+import { useUserState } from "../../context/UserContext.js";
+import { useMemo, useState } from "react";
+import useUserHooks from "./hooks/useUserHooks.js";
 
-export default function UserComponent(){
-    return (
-        <UserProvider>
-            <User></User>
-        </UserProvider>
-    )
-}
 const User = () => {
-    const dispatch = useUserDispatch();
-    useEffect(()=>{
-        getUsers(dispatch)
-    }, [dispatch])
+    const state = useUserState();
+    const isAdmin = state.isAdmin;
+    const allUsers = state.users;
+    const [isLoading, setIsLoading] = useState(true);
+    let users = [];
+    users = isAdmin ? allUsers : [state.activUser];
+
+    useEffect(() => {
+        if (users !== undefined && users !== null && users.length !== 0) {
+            setIsLoading(false);
+            console.log(users)
+        }
+    }, [isAdmin]);
+
     return (
         <>
             <div className="container-level2">
                 <Header />
                 <div className="container-main-content-level2">
-                    <UserTable />
+                    {!isLoading && <UserTable2 users={users} />}
                 </div>
             </div>
         </>
     )
 }
 
+export default User;

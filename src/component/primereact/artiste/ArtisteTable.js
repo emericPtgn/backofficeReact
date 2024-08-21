@@ -61,11 +61,14 @@ export default function ArtistsTable() {
         onSelectionChange={(e) => setSelectedArtists(e.value)} 
         dataKey="id" 
         tableStyle={{ minWidth: '50rem' }}
+        paginator
+        rows={10} // Display 10 users per page
+        responsiveLayout="scroll"
       >
         <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-        <Column field="nom" header="Nom"></Column>
-        <Column field="style" header="Style"></Column>
-        <Column field="description" header="Description"></Column>
+        <Column sortable field="nom" header="Nom"></Column>
+        <Column sortable field="style" header="Style"></Column>
+        <Column sortable field="description" header="Description"></Column>
         <Toast ref={toast} />
         <Column field="actions" header="Actions" body={actionBodyTemplate}></Column>
       </DataTable>

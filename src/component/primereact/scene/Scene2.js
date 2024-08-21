@@ -58,10 +58,12 @@ export default function ScenesTable() {
                 onSelectionChange={(e) => setSelectedScene(e.value)}
                 dataKey="id"
                 tableStyle={{ minWidth: '50rem' }}
+                paginator
+                rows={10} // Display 10 users per page
             >
                 <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                <Column field="nom" header="Nom"></Column>
-                <Column field="description" header="Description"></Column>
+                <Column  sortable field="nom" header="Nom"></Column>
+                <Column sortable  field="description" header="Description"></Column>
                 <Toast ref={toast} />
                 <Column field="actions" header="Actions" body={actionBodyTemplate}></Column>
             </DataTable>

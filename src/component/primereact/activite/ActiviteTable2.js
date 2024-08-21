@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState, useNavigate, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useActiviteDispatch } from "../../../context/ActiviteContext";
@@ -49,10 +50,20 @@ function ActiviteTable2({activities}){
     if (loading) return <div>Loading...</div>;
 
     return (
-        <DataTable value={listActivities} selection={selectedActivity} onSelectionChange={(e) => setSelectedActivity(e.target.value)} dataKey="id">
-            <Column field="nom" header="Nom"></Column>
-            <Column field="description" header="Description"></Column>
-            <Column field="date" header="Date"></Column>
+        <DataTable 
+        value={listActivities} 
+        selection={selectedActivity} 
+        onSelectionChange={(e) => setSelectedActivity(e.value)} 
+        dataKey="id"
+        tableStyle={{ minWidth: '50rem' }}
+        paginator
+        rows={10} // Display 10 users per page
+        responsiveLayout="scroll"
+        >
+            <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+            <Column sortable field="nom" header="Nom"></Column>
+            <Column sortable field="description" header="Description"></Column>
+            <Column sortable field="date" header="Date"></Column>
             <Toast ref={toast}/>
             <Column field="actions" header="Actions" body={actionButtons}></Column>
         </DataTable>

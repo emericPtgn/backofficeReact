@@ -33,50 +33,57 @@ import ErrorBoundary from './utils/ErrorBoundary';
 import { CommercesProvider } from './context/CommerceContext';
 import CommerceNew from './page/commerce/CommerceNew';
 import MyMap from './page/map/Map';
+import { UserProvider } from './context/UserContext';
+import User from './page/user/User';
+import UserEdit from './page/user/UserEdit';
+import ResetPass from './component/primereact/components/ResetPass';
 
 
 function App() {
   return (
     <AuthProvider>
-      <ErrorBoundary>
+      <UserProvider>
       <Router>
-        <ArtistesProvider> {/* Envelopper ici */}
+        <ArtistesProvider> 
           <EmplacementProvider>
             <CommercesProvider>
             <MarkerProvider>
             <ActiviteProvider>
               <ProgrammationProvider>
-              <PrimeReactProvider>
-              <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route element={<PrivateRoute />}>
-                <Route path="/" element={<LevelOneLayout />}>
-                  <Route index element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/artiste" element={<Artiste />} />
-                  <Route path="/artiste-edit/:id" element={<ArtisteEdit />} />
-                  <Route path="/artiste-new" element={<ArtisteNew />} />
-                  <Route path='/activite' element={<Activity />} />
-                  <Route path='/activite-edit/:id' element={<ActivityEdit />} />
-                  <Route path='/activite-new' element={<ActivityNew />} />
-                  {/* <Route path='/activity-new' element={<ActivityNew />} /> */}
-                  <Route path='/commerce' element={<Commerce />} />
-                  <Route path='/commerce-edit/:id' element={<CommerceEdit />} />
-                  <Route path='/commerce-new' element={<CommerceNew />} />
-                  <Route path='/scene' element={<Scene />} />
-                  <Route path='/scene-edit/:id' element={<SceneEdit />} />
-                  <Route path='/scene-new' element={<SceneNew />} />
-                  <Route path='/programmation' element={<Programmation />} />
-                  <Route path='/programmation-edit/:id' element={<ProgrammationEdit />} />
-                  <Route path='/programmation-new' element={<ProgrammationNew />} />
-                  <Route path='/map' element={<MyMap />} />
-                  <Route path='/utilisateur' element={<UserComponent />} />
-                  {/* <Route path='/programmation' element={<Scene />} /> */}
-                  {/* <Route path="/activity-edit/:id" element={<ActivityEdit />} /> */}
-              </Route>
-              </Route>
-              </Routes>    
-              </PrimeReactProvider>
+                  <PrimeReactProvider>
+                  <Routes>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/reset-password/:token" element={<ResetPass />} />
+                  <Route element={<PrivateRoute />}>
+                    <Route path="/" element={<LevelOneLayout />}>
+                      <Route index element={<Navigate to="/dashboard" replace />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/artiste" element={<Artiste />} />
+                      <Route path="/artiste-edit/:id" element={<ArtisteEdit />} />
+                      <Route path="/artiste-new" element={<ArtisteNew />} />
+                      <Route path='/activite' element={<Activity />} />
+                      <Route path='/activite-edit/:id' element={<ActivityEdit />} />
+                      <Route path='/activite-new' element={<ActivityNew />} />
+                      {/* <Route path='/activity-new' element={<ActivityNew />} /> */}
+                      <Route path='/commerce' element={<Commerce />} />
+                      <Route path='/commerce-edit/:id' element={<CommerceEdit />} />
+                      <Route path='/commerce-new' element={<CommerceNew />} />
+                      <Route path='/scene' element={<Scene />} />
+                      <Route path='/scene-edit/:id' element={<SceneEdit />} />
+                      <Route path='/scene-new' element={<SceneNew />} />
+                      <Route path='/programmation' element={<Programmation />} />
+                      <Route path='/programmation-edit/:id' element={<ProgrammationEdit />} />
+                      <Route path='/programmation-new' element={<ProgrammationNew />} />
+                      <Route path='/map' element={<MyMap />} />
+                      <Route path='/utilisateur' element={<User />} />
+                      <Route path='/utilisateur-edit/:id' element={<UserEdit />} />
+                      {/* <Route path='/utilisateur-new' element={<UserNew />} /> */}
+                      {/* <Route path='/programmation' element={<Scene />} /> */}
+                      {/* <Route path="/activity-edit/:id" element={<ActivityEdit />} /> */}
+                  </Route>
+                  </Route>
+                  </Routes>    
+                  </PrimeReactProvider>
               </ProgrammationProvider>
             </ActiviteProvider>
             </MarkerProvider>
@@ -84,7 +91,7 @@ function App() {
           </EmplacementProvider>
           </ArtistesProvider> {/* Fin de l'enveloppement */}
       </Router>
-      </ErrorBoundary>
+      </UserProvider>
     </AuthProvider>
   );
 }
