@@ -11,10 +11,10 @@ const SceneForm = ({ scene, setScene }) => {
     }, [setScene]);
 
     return (
-        <>
+        <div className='form-scene'>
             <NameField value={scene.nom} onChange={handleChange} />
             <DescriptionField value={scene.description} onChange={handleChange} />
-        </>
+        </div>
     );
 };
 

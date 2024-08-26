@@ -614,6 +614,20 @@ p {
   margin: 0 auto;
 }
 
+.form-scene {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-scene div:last-child {
+  width: 100%;
+}
+
+.form-scene div:last-child > textarea {
+  width: 100%;
+}
+
 @media (max-width: 768px) {
   .ham-menu {
     display: flex;

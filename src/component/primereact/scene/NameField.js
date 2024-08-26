@@ -3,13 +3,13 @@ import { InputText } from "primereact/inputtext";
 
 const NameField = ({ value, onChange }) => {
     return (
-        <div className="field">
-            <label htmlFor="nom">Nom</label>
+        <div>
             <InputText 
                 id="nom" 
                 name="nom" 
                 value={value} 
-                onChange={(e) => onChange("nom", e.target.value)} 
+                onChange={(e) => onChange("nom", e.target.value)}
+                placeholder="Nom de la scène ..."
             />
         </div>
     );
