@@ -26,8 +26,7 @@ const SceneEdit = () => {
             <Header />
             <div className="content-wrapper">
                 <div id="mainContent">
-                    <h2>Contenu principal</h2>
-                    <p>{stateMessage}</p>
+                    {}<p>{stateMessage}</p>
                     {scene && (
                         <>
                             <SceneForm scene={scene} setScene={setScene} />

@@ -62,10 +62,11 @@ export const ActiviteForm2 = ({ activity, onChange, index, activities }) => {
                 </div>
                 <div className="form-activity-p2">
                     <div>
-                        <AutoComplet name='autocomplet' activities={activities} onChange={(value, name) => handleLocalChange(name, value)} />
+                        
                     </div>
                     <div className="form-activity-p2-2cols">
-                        <NameField name='nom' value={activity.nom} onChange={(e) => handleLocalChange(e.target.name, e.target.value)} />
+                        {/* <NameField name='nom' value={activity.nom} onChange={(e) => handleLocalChange(e.target.name, e.target.value)} /> */}
+                        <AutoComplet name='nom' value={activity.nom} activities={activities} onChange={(value, name) => handleLocalChange(name, value)} />
                         <SelectTypeActivity name='type' value={activity.type} onChange={(value, name) => handleLocalChange(name, value)} />
                         <LocalCalendar name='date' value={activity.date} onChange={(value, name) => handleLocalChange(name, value)} />
                     </div>

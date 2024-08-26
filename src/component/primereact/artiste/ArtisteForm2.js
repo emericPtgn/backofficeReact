@@ -40,14 +40,16 @@ export default function ArtisteForm2({ artist, setArtist }) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value)
+        console.log("Name:", name, "Value:", value); // Ajoutez cette ligne
+    
         if (name.startsWith('plateforme_') || name.startsWith('url_')) {
             const [prefix, index] = name.split('_');
             const updatedFields = socialField.map(social => social);
             updatedFields[index][prefix] = value;
             setFields(updatedFields);
-
-        } else if (name.startsWith('deleteSocial_')){
+    
+        } 
+        else if (name.startsWith('deleteSocial_')){
             const [prefix, index] = name.split('_');
             const updatedSocialFields = socialField.map(social => social);
             updatedSocialFields.splice(index, 1);
@@ -55,31 +57,29 @@ export default function ArtisteForm2({ artist, setArtist }) {
     
         } else if (name.startsWith('activite_')) {
             const [prefix, field, index] = name.split('_');
-            if(field === 'autocomplet'){
+                console.log('click')
                 const activity = activities.find(activity => activity.nom === value);
                 if(activity){
                     const copyActivityField = activityField.map(activity => activity);
                     copyActivityField.splice(index, 1, activity);
                     setActivityFields(copyActivityField);
+                } else {
+                    console.log(prefix, field, index, name, value)
+                    const updatedActivities = activityField.map(activity => activity);
+                    updatedActivities[index][field] = value;
+                    setActivityFields(updatedActivities);
                 }
-
-            } else {
-                const updatedActivities = activityField.map(activity => activity);
-                updatedActivities[index][field] = value;
-                setActivityFields(updatedActivities);
-            }
+     }else if (name === 'deleteField') {
+        console.log('delete'); // Ce log devrait maintenant apparaître
+        const updatedActivities = activityField.map(activity => activity);
+        updatedActivities.splice(value, 1);
+        setActivityFields(updatedActivities);
+    } else if (name === 'nom' || name === 'description' || name === 'styles') {
+        setArtist({ ...artist, [name]: value });
+    }  
     
-        } else if (name === 'deleteField') {
-            console.log('delete')
-            const updatedActivities = activityField.map(activity => activity);
-            updatedActivities.splice(value, 1);
-            setActivityFields(updatedActivities);
-        }
-        else if (name === 'nom' || name === 'description' || name === 'styles') {
-            setArtist({ ...artist, [name]: value });
-        }
-
     };
+    
 
 
     return (
@@ -195,7 +195,17 @@ const SocialAccountField = ({ socialField, onChange }) => {
                         onChange={(e) => {onChange(e)}}
                         placeholder="URL"
                     />
-                    <DeleteButton2 name={`deleteSocial_${index}`}  onClick={(e) => {onChange(e)}}/>
+                    <DeleteButton2 
+                    name={`deleteSocial_${index}`}  
+                    onClick={(e) => {
+                        onChange({
+                            target: {
+                                name: `deleteSocial_${index}`,
+                                value: index
+                            }
+                        });
+    }}
+/>
                 </div>
             ))}
         </>

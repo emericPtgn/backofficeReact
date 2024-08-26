@@ -48,11 +48,13 @@ const ActivityEdit = () => {
             const [prefix, field, index] = name.split('_');
             console.log(prefix, field, value);
             if(field === 'autocomplet'){
+                console.log('tac')
                 let findActivity = activities.find(activity => activity.nom === value);
                 if(findActivity){
                     setActivity(findActivity)
                 } else {
-                    alert('this activity does not exist');
+                    console.log('tac')
+                    setActivity((prevActivity) => ({...prevActivity, nom : value}));
                 }
             } else {
                 setActivity((prevActivity) => ({

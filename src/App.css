@@ -272,7 +272,7 @@ p {
 
 #mainContent {
   flex: 1;
-  padding: 20px 40px 0 40px;
+  padding: 20px 40px 40px;
 }
 
 .rightSidebar {
@@ -395,6 +395,7 @@ p {
   width: 100%;
   align-items: center;
   justify-content: center;
+  border-top: 1px solid var(--background-50);
 }
 
 #footer > div {

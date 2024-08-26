@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { useActiviteState } from "../../../context/ActiviteContext";
 
-export const AutoComplet = ({onChange, activities}) => {
+export const AutoComplet = ({value, onChange, activities}) => {
     
     const [items, setItems] = useState([]);
-    const [value, setValue] = useState('');
 
     useEffect(() => {
         if (activities && activities.length > 0) {
@@ -27,14 +26,13 @@ export const AutoComplet = ({onChange, activities}) => {
     return (
             <AutoComplete 
                 value={value || ''} 
-                name="autocomplet"
+                name="nom"
                 suggestions={items || []} 
                 completeMethod={search} 
                 onChange={(e) => {
-                    setValue(e.value);
-                    onChange(e.value, "autocomplet")
+                    onChange(e.value, "nom")
                 }}
-                placeholder="Activite existantes"
+                placeholder="Nom activité .."
                 dropdown
             />
 

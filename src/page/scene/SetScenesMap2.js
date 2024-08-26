@@ -20,6 +20,7 @@ const SetScenesMap2 = ({ scene, setScene }) => {
     const onEmojiClick = (emoji) => {
         setScene({ ...scene, 
             icone: emoji.emoji });
+        resetEmojiPicker(); 
     };
 
     
