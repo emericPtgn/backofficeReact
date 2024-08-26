@@ -1,54 +1,40 @@
 import { useState, useEffect, useRef } from 'react';
 import EmojiPicker from 'emoji-picker-react';
+import DeleteButton from '../../component/common/button/DeleteButton2';
+import DeleteButton2 from '../../component/common/button/DeleteButton2';
+import DisplayInfosMap from './DisplayInfoMap';
 
-const EmojiPickerWrapper = ({ onEmojiClick, onDeleteMarker }) => {
-    const [emojiPickerKey, setEmojiPickerKey] = useState(0);
+const EmojiPickerWrapper = ({item, resetEmojiPicker, onEmojiClick, onDeleteMarker, emojiPickerKey }) => {
     const emojiPickerRef = useRef(null);
     const containerRef = useRef(null);
     const reactions = ["1f600", "1f601", "1f602", "1f603"];
 
-    const resetEmojiPicker = () => setEmojiPickerKey(prevKey => prevKey + 1);
-
-    const handleReactionClick = () => { resetEmojiPicker() };
-
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (
-                emojiPickerRef.current &&
-                !emojiPickerRef.current.contains(event.target) &&
-                containerRef.current &&
-                !containerRef.current.contains(event.target)
-            ) {
-                const emojiPickerRect = emojiPickerRef.current.getBoundingClientRect();
-                const { clientX, clientY } = event;
-
-                if (
-                    clientX < emojiPickerRect.left ||
-                    clientX > emojiPickerRect.right ||
-                    clientY < emojiPickerRect.top ||
-                    clientY > emojiPickerRect.bottom
-                ) {
-                    resetEmojiPicker();
-                }
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
+                resetEmojiPicker();
             }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []); 
 
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [resetEmojiPicker]);
+    
     return (
-        <div ref={containerRef}>
-            <div ref={emojiPickerRef}>
-                <EmojiPicker
-                    key={emojiPickerKey}
-                    reactionsDefaultOpen={true}
-                    reactions={reactions}
-                    onEmojiClick={onEmojiClick}
-                    previewConfig={{ showPreview: false }}
-                    onReactionClick={handleReactionClick}
-                />
-                <button onClick={onDeleteMarker}>supprimer marker</button>
+        <div className='emoji-wrapper' ref={emojiPickerRef}>
+            <EmojiPicker
+                key={emojiPickerKey}
+                reactionsDefaultOpen={true}
+                reactions={reactions}
+                onEmojiClick={onEmojiClick}
+                previewConfig={{ showPreview: false }}
+                onReactionClick={onEmojiClick}
+            />
+            <div style={{width: '30px', height : '30px'}}>
+                <DeleteButton2 onClick={onDeleteMarker} />
             </div>
         </div>
     );

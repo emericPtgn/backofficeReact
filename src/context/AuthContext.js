@@ -1,5 +1,5 @@
 import { DOMAINE_URL } from '../config';
-import { useUserDispatch } from './UserContext';
+import Cookies from 'js-cookie';
 
 const HandleLogout = async (setIsAuthenticated, setToken) => {
   try {
@@ -10,10 +10,11 @@ const HandleLogout = async (setIsAuthenticated, setToken) => {
         'Content-Type': 'application/json'
       }
     });
-
     if (!response.ok) {
       throw new Error('Logout failed');
     }
+    Cookies.remove('token');
+    Cookies.remove('refreshToken')
     setToken(null);
     setIsAuthenticated(false);
   } catch (error) {

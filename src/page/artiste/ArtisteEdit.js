@@ -63,8 +63,10 @@ const ArtisteEdit = () => {
             <Toast ref={toast} />
             <div className="content-wrapper">
                 <div id="mainContent">
-                    <h2>Contenu principal</h2>
-                    <p>Ici se trouve le contenu principal de votre page d'édition.</p>
+                    <div>
+                        <h2>Contenu principal</h2>
+                        <p>Ici se trouve le contenu principal de votre page d'édition.</p>
+                    </div>
                     {artist && <ArtisteForm2 artist={artist} setArtist={setArtist} />}
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />

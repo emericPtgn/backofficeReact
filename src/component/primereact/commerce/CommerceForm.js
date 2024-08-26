@@ -54,12 +54,14 @@ const CommerceForm = ({ commerce, commerces, setCommerce, onChange }) => {
     };
 
     return (
-        <div className="d-flex flex-column">
+        <div className="form-commerce">
             <NameField name='nom' value={commerce?.nom || ''} placeholder="test" onChange={onChange} />
             <InputTextarea name="description" value={commerce?.description || ''} onChange={onChange} />
-            <CommerceTypes2 name="typeCommerce" commerce={commerce} commerces={commerces} value={commerce?.typeCommerce?.nom || ''} onChange={onChange} />
-            <ProductType name="typeProduit" commerce={commerce} commerces={commerces} value={commerce?.typeProduit?.nom || ''} onChange={onChange} />
-            <FileUpload2 name="photos" commerce={commerce} value={commerce?.photos} setCommerce={setCommerce} onSelect={onSelect} files={files} setFiles={setFiles} onRemove={onRemove} />
+            <div className="form-commerce-p2">
+                <CommerceTypes2 name="typeCommerce" commerce={commerce} commerces={commerces} value={commerce?.typeCommerce?.nom || ''} onChange={onChange} />
+                <ProductType name="typeProduit" commerce={commerce} commerces={commerces} value={commerce?.typeProduit?.nom || ''} onChange={onChange} />
+            </div>
+            {/* <FileUpload2 name="photos" commerce={commerce} value={commerce?.photos} setCommerce={setCommerce} onSelect={onSelect} files={files} setFiles={setFiles} onRemove={onRemove} /> */}
         </div>
     );
 };

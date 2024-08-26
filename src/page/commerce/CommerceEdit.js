@@ -81,8 +81,8 @@ const CommerceEdit = () => {
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
                     {commerce && (
                         <>
-                        <CommerceForm commerces={memoCommerces} commerce={commerce} setCommerce={setCommerce} onChange={handleChange}/>
-                        <SetCommerceMap commerce={commerce} setCommerce={setCommerce} />
+                            <CommerceForm commerces={memoCommerces} commerce={commerce} setCommerce={setCommerce} onChange={handleChange}/>
+                            <SetCommerceMap commerce={commerce} setCommerce={setCommerce} />
                         </>
                     )}
                 </div>

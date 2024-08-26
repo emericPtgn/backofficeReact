@@ -23,11 +23,12 @@ function ActionButtons({ id, onEdit, onDelete }) {
     );
 
     return (
-        <div className="card flex justify-content-center">
-            <Button label="Edit" size="small" icon="pi pi-pencil" onClick={() => onEdit(id)} aria-label="Edit scene" />
-            <Button label="Delete" size="small" icon="pi pi-external-link" onClick={() => setVisible(true)} />
-            
-            <Dialog header="Confirmation" visible={visible} style={{ width: '150px' }} onHide={() => setVisible(false)} footer={footerContent}>
+        <div className="flex">
+            <div className="container-table-action-btns">
+                <Button className="table-btn" outlined label="Edit" size="small" icon="pi pi-pencil" onClick={() => onEdit(id)} aria-label="Edit scene" />
+                <Button className="table-btn" outlined severity="danger"  label="Delete" size="small" icon="pi pi-external-link" onClick={() => setVisible(true)} />
+            </div>
+            <Dialog header="Confirmation" visible={visible} onHide={() => setVisible(false)} footer={footerContent}>
                 <p className="m-0">
                     Vous supprimez un élément. Confirmer suppression ? 
                 </p>

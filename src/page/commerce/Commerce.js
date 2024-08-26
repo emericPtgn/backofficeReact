@@ -1,12 +1,9 @@
-import React, { useEffect } from "react";
-import { CommercesProvider, useCommercesState } from "../../context/CommerceContext";
+import React from "react";
 import CommerceTable from "../../component/table/commerce/CommerceTable";
 import Header from "../../component/layout/levelTwo/Header";
-import { getCommerces } from "../../service/api";
-import { useCommercesDispatch } from "../../context/CommerceContext";
 
 
-export const Commerce = () => {
+const Commerce = () => {
 
     return (
         <div className="container-level2">
@@ -18,3 +15,4 @@ export const Commerce = () => {
     );
 };
 
+export default Commerce;

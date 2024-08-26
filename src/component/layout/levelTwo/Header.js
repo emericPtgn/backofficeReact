@@ -1,6 +1,7 @@
 import React from "react";
 import '../../../App.css';
 import { Button } from 'primereact/button';
+import AddNewButton from "../../common/button/AddNewButton";
 
 const Header = () => {
     // Extract the current pathname and determine the page title
@@ -20,12 +21,16 @@ const Header = () => {
     return (
         <div id="container-header-level2">
             <div className="d-flex">
-                <h1>{capitalizedPageTitle}</h1>
-                <Button type="button" onClick={handleButtonClick}>
-                    Ajouter {capitalizedPageTitle}
-                </Button>
+                <div>
+                    <h1>{capitalizedPageTitle}</h1>
+                </div>
+                <div>
+                    <AddNewButton label={` Ajouter ${capitalizedPageTitle}`} handleOnClick={handleButtonClick} />
+                </div>
             </div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>
+            <div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>
+            </div>
         </div>
     );
 };

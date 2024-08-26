@@ -69,12 +69,11 @@ const CommerceTable = () => {
         rows={10} // Display 10 users per page
         responsiveLayout="scroll"
          >
-            <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-            <Column sortable field="nom" header="nom"></Column>
-            <Column sortable field="typeCommerce.nom" header="type"></Column>
-            <Column sortable field="typeProduit.nom" header="produit"></Column>
+            <Column sortable field="nom" header="Nom"></Column>
+            <Column sortable field="typeCommerce.nom" header="Type"></Column>
+            <Column sortable field="typeProduit.nom" header="Produit"></Column>
             <Toast ref={toast} />
-            <Column  header="actions" body={actionsButtons}></Column>
+            <Column  header="Actions" body={actionsButtons} className='default-column-width'></Column>
         </DataTable>
         </>
     )

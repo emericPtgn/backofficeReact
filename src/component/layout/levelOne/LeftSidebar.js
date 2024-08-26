@@ -3,11 +3,37 @@ import '../../.././App.css'
 
 // LeftSidebar levelOne est le menu principal de navigation aligné à gauche de l'écran visible sur ttes les pages du backoffice
 const LeftSidebar = () => {
-    const onglets = ['Artiste', 'Scene', 'Programmation', 'Activite', 'Commerce', 'Carte', 'Utilisateur'];
+    const onglets = 
+    [
+        {
+            nom : 'Artiste',
+            iconePathFile : '/uploads/artiste.png'
+        },
+        {
+            nom : 'Scene',
+            iconePathFile : '/uploads/scene.png'
+        },
+        {
+            nom : 'Activite',
+            iconePathFile : '/uploads/concert.png'
+        },
+        {
+            nom: 'Commerce',
+            iconePathFile : '/uploads/retail.png'
+        }, 
+        {
+            nom : 'Carte',
+            iconePathFile : '/uploads/marker.png'
+        },
+        {
+            nom: 'Utilisateur',
+            iconePathFile : '/uploads/users.png'
+        }
+    ];
     return (
         <div id="container-main-nav-left-sidebar">
             <nav id="main-nav-sidebar">
-                <ul>
+                <ul style={{textDecoration: 'none'}}>
                     {onglets.map((item, i) => (
                         <Onglet key={i} item={item} />
                     ))}
@@ -18,10 +44,13 @@ const LeftSidebar = () => {
 }
 
 const Onglet = ({ item }) => {
-    const url = encodeURIComponent(item.toLowerCase());    
+    const url = encodeURIComponent(item?.nom.toLowerCase());    
     return (
-        <li>
-            <a href={`/${url}`}>{item}</a>
+        <li >
+            <div >
+                <img src={item?.iconePathFile} />
+                <a href={`/${url}`}>{item?.nom}</a>
+            </div>
         </li>
     )
 }

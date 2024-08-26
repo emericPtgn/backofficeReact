@@ -12,14 +12,16 @@ const ActivityEdit = () => {
     const { id } = useParams();
     const {activities} = useActiviteState()
     const [activity, setActivity] = useState(null);
+    const [status, setStatus] = useState('');
 
     useEffect(() => {
         if(activities && activities.length > 0 ){
             const isActivity = activities.find(activite => activite.id === id);
             if (isActivity) {
                 setActivity(isActivity);
+                console.log(activity)
             } else {
-                return <div>No activity found</div>
+                setStatus('no activity found with this ID')
             }
         };
     }, [id, activities]);
@@ -68,6 +70,7 @@ const ActivityEdit = () => {
                 <div id="mainContent">
                     <h2>Contenu principal</h2>
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
+                    {status && <p>{status}</p>}
                     <ActiviteForm2 activities={activities} index={0} activity={activity} setActivity={setActivity} onChange={handleChange}  />
                 </div>
                 <RightSidebar handleOnClick={handleOnClick} />

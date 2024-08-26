@@ -13,6 +13,7 @@ import ActionButtons from '../components/ActionButtons';
 import { Toast } from "primereact/toast";
 import { deleteUser } from "../../../service/api";
 import { useNavigate } from "react-router-dom";
+import TableLayout from "../../layout/TableLayout";
 
 const UserTable2 = ({users}) => {
     const toast = useRef(null);
@@ -48,24 +49,19 @@ const UserTable2 = ({users}) => {
     }, [handleDelete, handleEdit]);
 
     return (
-        <>
-            <Toast ref={toast} />
-            <DataTable 
-                value={users ? users : ''} 
-                selection={selectedUser} 
-                onSelectionChange={(e) => setSelectedUser(e.value)} 
-                dataKey="id"
-                paginator
-                rows={10} // Display 10 users per page
-                responsiveLayout="scroll"
-            >
-                <Column selectionMode="multiple" />
-                <Column field="email" header="Email" sortable />
-                <Column field="roles" header="Roles" sortable />
-                <Column field="dateModification" header="Dernière Modification" sortable />
-                <Column body={actionButtons} />
-            </DataTable>
-        </>
+        <DataTable 
+            value={users ? users : ''} 
+            selection={selectedUser} 
+            onSelectionChange={(e) => setSelectedUser(e.value)} 
+            dataKey="id"
+            paginator
+            rows={10} // Display 10 users per page
+        >
+            <Column field="email" header="Email" sortable />
+            <Column field="roles" header="Roles" sortable />
+            <Column field="dateModification" header="Dernière Modification" sortable />
+            <Column header='Actions' body={actionButtons} className="default-column-width" />
+        </DataTable>
     );
 };
 

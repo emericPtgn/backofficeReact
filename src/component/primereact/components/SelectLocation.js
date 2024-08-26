@@ -28,18 +28,14 @@ export default function SelectLocation({ onChange, typeActivity, activity }) {
     }));
 
     return (
-        <div className="card flex justify-content-center">
-            <div className="flex flex-wrap gap-3">
-                <SelectButton 
-                    name="location" 
-                    value={value} 
-                    onChange={(e) => {
-                        setValue(e.value);
-                        onChange(e.value, e.target.name);
-                    }} 
-                    options={options} 
-                />
-            </div>
-        </div>
+        <SelectButton 
+            name="location" 
+            value={value} 
+            onChange={(e) => {
+                setValue(e.value);
+                onChange(e.value, e.target.name);
+            }} 
+            options={options} 
+        />
     );
 }

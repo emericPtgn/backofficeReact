@@ -30,8 +30,7 @@ const SetScenesMap2 = ({ scene, setScene }) => {
 
     return (
         <>
-            <EmojiPickerWrapper onEmojiClick={onEmojiClick} setScene={setScene} scene={scene} onDeleteMarker={handleDeleteMarker} />
-            <MapContainer marker={scene} handleClick={handleClick} />
+            <MapContainer marker={scene} handleClick={handleClick} onEmojiClick={onEmojiClick} setScene={setScene} scene={scene} onDeleteMarker={handleDeleteMarker}  />
         </>
     );
 };

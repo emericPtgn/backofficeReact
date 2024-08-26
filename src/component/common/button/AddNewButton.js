@@ -1,9 +1,13 @@
 import React from "react";
-
-const AddNewButton = ({handleOnClick}) => {
+import { PrimeIcons } from "primereact/api";
+import { Button } from "primereact/button";
+const AddNewButton = ({label, handleOnClick}) => {
     return (
         <>
-        <button onClick={handleOnClick} className="btn-primary" type='button'>Ajouter</button>
+        <div>
+            <Button size="small" label={label} onClick={handleOnClick} className="btn-primary" icon="pi pi-plus" type='button'></Button>
+        </div>
+        
         </>
     )
 }

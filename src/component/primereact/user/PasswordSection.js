@@ -1,45 +1,116 @@
 import { useRef, useState, useEffect } from "react";
-import { Password } from "primereact/password";
 import { emailResetPassword } from "../../../service/api";
 import { Toast } from "primereact/toast";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import validatePasswords from "./validatePassword";
+import { useParams } from "react-router-dom";
+import { useUserState } from "../../../context/UserContext";
 
-const PasswordSection = ({ id, isActivUserProfil }) => {
-    const [value, setValue] = useState('');
+const PasswordSection = ({ setUser }) => {
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [showResetLink, setShowResetLink] = useState(false);
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [error, setError] = useState('');
     const toast = useRef(null);
+    const {id} = useParams();
+    const state = useUserState();
 
-    // This useEffect ensures that the reset link is hidden if the user is not viewing their own profile
+    // Gestion de la visibilité du lien de réinitialisation
     useEffect(() => {
-        if (isActivUserProfil) {
-            setShowResetLink(false);
-        } else {
-            setShowResetLink(true);
-        }
-    }, [isActivUserProfil]);
+        console.log("isDataActivUserData:", state.isDataActivUserData); // Ajoutez cette ligne pour déboguer
+        setShowResetLink(!state.isDataActivUserData);
+    }, [state?.isDataActivUserData]);
+    
 
     const show = () => {
         toast.current.show({ severity: 'info', summary: 'Info', detail: 'Email sent, check mailbox' });
-    }
+    };
+
+    const handleChange = (e) => {
+        const { value, name } = e.target;
+        if (name === 'oldPassword') {
+            setOldPassword(value);
+            setUser((user) => ({ ...user, checkPassword: value }));
+        } else if (name === 'newPassword') {
+            setNewPassword(value);
+            setUser((user) => ({ ...user, newPassword: value }));
+        } else if (name === 'confirmPassword') {
+            setConfirmPassword(value);
+        }
+    };
 
     const handleClick = async (e) => {
         e.preventDefault();
         const response = await emailResetPassword(id);
         show();
-        setShowResetLink(false);  // Hide the reset link after the email is sent
         console.log(response);
     };
 
+    useEffect(() => {
+        const errorMessage = validatePasswords(newPassword, confirmPassword);
+        setError(errorMessage);
+    }, [newPassword, confirmPassword]);
+    
+
     return (
-        <div className="card flex justify-content-center">
-            <Toast ref={toast} />
-            {showResetLink ?  
-                <p id="resetPass">
+            <div>
+                <Toast ref={toast} />
+                <h4>Modifier votre mot de passe</h4>
+                {state?.isDataActivUserData ?  
+                    <div className="d-flex flex-column">
+                    <div className="p-inputgroup my-2">
+                        <InputText
+                            placeholder="Saisir le mot de passe actuel"
+                            value={oldPassword}
+                            name="oldPassword"
+                            onChange={handleChange}
+                            type={showOldPassword ? 'text' : 'password'}
+                        />
+                        <Button
+                            icon={showOldPassword ? 'pi pi-eye-slash' : 'pi pi-eye'}
+                            onClick={() => setShowOldPassword(!showOldPassword)}
+                        />
+                    </div>
+                    <div className="p-inputgroup my-2">
+                        <InputText
+                            placeholder="Saisir le nouveau mot de passe"
+                            value={newPassword}
+                            name="newPassword"
+                            onChange={handleChange}
+                            type={showNewPassword ? 'text' : 'password'}
+                        />
+                        <Button
+                            icon={showNewPassword ? 'pi pi-eye-slash' : 'pi pi-eye'}
+                            onClick={() => setShowNewPassword(!showNewPassword)}
+                        />
+                    </div>
+                    <div className="p-inputgroup my-2">
+                        <InputText
+                            placeholder="Confirmer le nouveau mot de passe"
+                            value={confirmPassword}
+                            name="confirmPassword"
+                            onChange={handleChange}
+                            type={showConfirmPassword ? 'text' : 'password'}
+                        />
+                        <Button
+                            icon={showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'}
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        />
+                    </div>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                </div> 
+                    :
+                    <p id="resetPass">
                     <a href="#" onClick={handleClick}>Reset password link</a>
-                </p>
-                : 
-                <Password value={value} onChange={(e) => setValue(e.target.value)} />
-            }
-        </div>
+                    </p>
+
+                }
+            </div>
     );
 }
 

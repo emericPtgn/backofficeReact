@@ -55,17 +55,15 @@ function ActiviteTable2({activities}){
         selection={selectedActivity} 
         onSelectionChange={(e) => setSelectedActivity(e.value)} 
         dataKey="id"
-        tableStyle={{ minWidth: '50rem' }}
         paginator
         rows={10} // Display 10 users per page
         responsiveLayout="scroll"
         >
-            <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
             <Column sortable field="nom" header="Nom"></Column>
-            <Column sortable field="description" header="Description"></Column>
+            <Column sortable field="type" header="Type"></Column>
             <Column sortable field="date" header="Date"></Column>
             <Toast ref={toast}/>
-            <Column field="actions" header="Actions" body={actionButtons}></Column>
+            <Column field="actions" header="Actions" body={actionButtons} className="default-column-width"></Column>
         </DataTable>
     )
 }

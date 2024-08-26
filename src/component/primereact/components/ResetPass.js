@@ -1,57 +1,74 @@
-import React, { useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { updatePassWord } from "../../../service/api";
 import { Toast } from "primereact/toast";
 
 const ResetPass = () => {
     const { token } = useParams();
     const toast = useRef(null);
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState({
+        password: ''
+    });
+    const navigate = useNavigate();
 
-    const show = () => {
+    const showToast = (severity, summary, detail) => {
         toast.current.show({
-            severity: 'info',
-            summary: 'Info',
-            detail: 'Password updated successfully ✅',
+            severity,
+            summary,
+            detail,
         });
     };
 
     const handleChange = (e) => {
-        console.log(e.target.value)
-        setValue(e.target.value);
+        setValue((prev) => ({...prev, password: e.target.value}));
+        console.log(value);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const response = await updatePassWord(value, token);
-        if(response.status === 'success'){
-            console.log(response.status);
-            show();
+    useEffect(()=>{
+        console.log(value);
+    }, [value])
+
+    const handleClick = async () => {
+        if (!value.password) {
+            showToast('error', 'Erreur', 'Veuillez entrer un mot de passe.');
+            return;
+        }
+
+        try {
+            const response = await updatePassWord({ password: value.password }, token);
+            if (response.status === 'success') {
+                showToast('info', 'Info', 'Password updated successfully ✅');
+                navigate("/login");
+            } else {
+                showToast('error', 'Erreur', response.message || 'Une erreur est survenue.');
+            }
+        } catch (error) {
+            showToast('error', 'Erreur', 'Une erreur réseau est survenue.');
         }
     };
 
     return (
         <>
             <Toast ref={toast} />
-            <ResetPassForm value={value} onSubmit={handleSubmit} onChange={handleChange} />
+            <ResetPassForm value={value} handleClick={handleClick} onChange={handleChange} />
         </>
     );
 };
 
-export default ResetPass;
-
-const ResetPassForm = ({ value, onSubmit, onChange }) => {
+const ResetPassForm = ({ value, handleClick, onChange }) => {
     return (
-        <form id="resetPassForm" onSubmit={onSubmit}>
+        <form onSubmit={(e) => e.preventDefault()}>
             <label htmlFor='resetPass'>New Password</label>
             <input
                 type="password"
-                value={value}
+                value={value.password}  // Utilisez value.password ici
                 name="resetPass"
                 id='resetPass'
                 onChange={onChange}
             />
-            <button type="submit">Reset Password</button>
+            <button type="button" onClick={handleClick}>Reset Password</button>
         </form>
     );
 };
+
+export default ResetPass;

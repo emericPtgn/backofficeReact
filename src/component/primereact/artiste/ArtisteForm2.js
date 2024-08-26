@@ -5,6 +5,11 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { ActiviteForm2 } from "../activite/ActiviteForm2";
 import { useParams } from "react-router-dom";
 import { useActiviteState } from "../../../context/ActiviteContext";
+import DeleteButton2 from '../../common/button/DeleteButton2'
+import AddNewButton from "../../common/button/AddNewButton";
+import { Button } from "primereact/button";
+
+
 
 export default function ArtisteForm2({ artist, setArtist }) {
     const {id} = useParams();
@@ -65,6 +70,7 @@ export default function ArtisteForm2({ artist, setArtist }) {
             }
     
         } else if (name === 'deleteField') {
+            console.log('delete')
             const updatedActivities = activityField.map(activity => activity);
             updatedActivities.splice(value, 1);
             setActivityFields(updatedActivities);
@@ -78,26 +84,36 @@ export default function ArtisteForm2({ artist, setArtist }) {
 
     return (
         <>
-            <div className="mb-4">
-                <h3 className="text-1xs font-bold mb-5">Artiste</h3>
-                <NameField artist={artist} name='nom' onChange={handleChange} />
-                <ChooseStyleInput artist={artist} name='styles' onChange={handleChange} />
-                <DescriptionField artist={artist} name='description' onChange={handleChange} />
-            </div>
-            <div className="mt-4 mb-4">
-                <div className="d-flex">
-                    <h3 className="text-1xs font-bold">Réseau social</h3>
-                    <button icon="pi pi-check" aria-label="Filter"  onClick={addSocialField}>+</button>
+        <div className="form-artist">
+            <div>
+                <h3 className="text-1xs font-bold">Artiste</h3>
+                <div className="form-artist-p1">
+                    <div>
+                        <NameField  artist={artist} name='nom' onChange={handleChange} />
+                        <ChooseStyleInput artist={artist} name='styles' onChange={handleChange} />
+                    </div>
+                    <DescriptionField artist={artist} name='description' onChange={handleChange} />
                 </div>
-                <SocialAccountField artist={artist} socialField={socialField} setFields={setFields} addSocialField={addSocialField} onChange={handleChange} />
             </div>
-            <div className="mt-4 mb-4">
-                <div className="d-flex">
-                    <h3 className="text-1xs font-bold">Activité</h3>
-                    <button icon="pi pi-check" aria-label="Filter"  onClick={addActivityField}>+</button>
+            <div>
+                <h3 className="text-1xs font-bold">Réseau social</h3>
+                <div className="form-artist-p2">
+                    <SocialAccountField artist={artist} socialField={socialField} setFields={setFields} addSocialField={addSocialField} onChange={handleChange} />
+                    <div>
+                        <AddNewButton rounded icon="pi pi-check" aria-label="Filter" handleOnClick={addSocialField} />
+                    </div>
                 </div>
-                <ActivityBloc activities={activities} activityField={activityField} handleChange={handleChange}></ActivityBloc>
             </div>
+            <div>
+                <h3 className="text-1xs font-bold mt-3">Activité</h3>
+                <div className="form-artist-p3">
+                    <ActivityBloc activities={activities} activityField={activityField} handleChange={handleChange}></ActivityBloc>
+                    <div>
+                        <AddNewButton rounded icon="pi pi-check" aria-label="Filter" handleOnClick={addActivityField} />
+                    </div>
+                </div>
+            </div>
+        </div>
         </>
     );
 }
@@ -106,7 +122,7 @@ const NameField = ({ onChange, artist }) => {
     const [value, setValue] = useState(artist.nom || '');
 
     return (
-        <div className="mb-3">
+        <div className="namefield-artist">
             <InputText
                 name="nom"
                 value={value}
@@ -115,7 +131,7 @@ const NameField = ({ onChange, artist }) => {
                     onChange(e);
                 }}
                 placeholder="Nom de l'artist"
-                className="w-100"
+                
             />
         </div>
     );
@@ -125,7 +141,7 @@ function ChooseStyleInput({ onChange, artist }) {
     const [value, setValue] = useState(artist.styles || ''); // Initialize value as an empty array
 
     return (
-        <div className="card p-fluid mb-3">
+        <div className="styles-artist">
             <Chips
                 name="styles"
                 value={value}
@@ -135,8 +151,7 @@ function ChooseStyleInput({ onChange, artist }) {
                 }}
                 separator=","
                 placeholder="Entrez les styles et appuyez sur Entrée"
-                style={{ width: '100%', height: '100%', border: 'none' }}
-                className="mb-0"
+                
             />
         </div>
     );
@@ -165,27 +180,25 @@ const DescriptionField = ({ onChange, artist }) => {
 const SocialAccountField = ({ socialField, onChange }) => {
 
     return (
-        <div id="container-socialAccounts-artist" className="mt-4">
+        <>
             {socialField.map((field, index) => (
-                <div key={index} className="container-socialAccount-artist mb-1">
+                <div key={index} className="container-socialAccount-artist">
                     <InputText
                         name={`plateforme_${index}`}
                         value={field.plateforme}
                         onChange={(e) => {onChange(e)}}
                         placeholder="Facebook, Tiktok..."
-                        className="mb-3"
                     />
                     <InputText
                         name={`url_${index}`}
                         value={field.url}
                         onChange={(e) => {onChange(e)}}
                         placeholder="URL"
-                        className="mb-3"
                     />
-                    <button name={`deleteSocial_${index}`} onClick={(e) => {onChange(e)}}>Delete</button>
+                    <DeleteButton2 name={`deleteSocial_${index}`}  onClick={(e) => {onChange(e)}}/>
                 </div>
             ))}
-        </div>
+        </>
     );
 };
 

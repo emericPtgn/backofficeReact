@@ -1,27 +1,30 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
-import { DOMAINE_URL, ENDPOINT_REFRESH_TOKEN } from '../config';
+import { DOMAINE_URL } from '../config';
+import Cookies from 'js-cookie';
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [token, setTokenState] = useState(localStorage.getItem('token'));
-  const [refreshToken, setRefreshTokenState] = useState(localStorage.getItem('refreshToken'));
+  // Initialize state from cookies
+  const [token, setTokenState] = useState(Cookies.get('token'));
+  const [refreshToken, setRefreshTokenState] = useState(Cookies.get('refreshToken'));
   const [isAuthenticated, setIsAuthenticated] = useState(!!token);
 
   const setToken = useCallback((newToken, newRefreshToken) => {
     setTokenState(newToken);
     setRefreshTokenState(newRefreshToken);
     if (newToken) {
-      localStorage.setItem('token', newToken);
-      localStorage.setItem('refreshToken', newRefreshToken);
+      // utilise cookies pour stocker les tokens 
+      Cookies.set('token', newToken);
+      Cookies.set('refreshToken', newRefreshToken);
       setIsAuthenticated(true);
     } else {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
+      // si newToken est vide, null ou undefined, supprimer les cookies
+      Cookies.remove('token');
+      Cookies.remove('refreshToken');
       setIsAuthenticated(false);
     }
   }, []);
-
 
   const refreshAccessToken = useCallback(async () => {
     try {
@@ -60,5 +63,11 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }
+
+export default AuthContext;

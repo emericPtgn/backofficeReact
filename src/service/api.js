@@ -14,7 +14,7 @@ import { DOMAINE_URL,
   ENDPOINT_MARKER,
   ENDPOINT_REFRESH_TOKEN
 } from '../config';
-
+import Cookies from 'js-cookie';
 // fichier centralise les appels à l'API // distinct des hooks react
 //
 // Similaire pour les artistes, activités, etc.
@@ -163,10 +163,12 @@ export const getActivity = async (id) => {
 
 export const updateActivity = async (id, activity) => {
   try {
+    console.log(activity)
     const data = await AuthenticatedFetch(`${ENDPOINT_ACTIVITE}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(activity)  // Convertir l'objet artiste en JSON
     });
+    console.log(data)
     return data;
   } catch (error) {
     throw error;
@@ -217,7 +219,6 @@ export const getCommerce = async (id) => {
 
 export const updateCommerce = async (id, dispatch, commerce) => {
   try {
-    const formData = new FormData();
     const commerceData = {
       nom: commerce.nom,
       description: commerce.description,
@@ -226,40 +227,16 @@ export const updateCommerce = async (id, dispatch, commerce) => {
       marker : commerce.marker,
       photos: []
     };
-
-    // Ajouter les photos au formData
-    if (Array.isArray(commerce.photos)) {
-      commerce.photos.forEach(photo => {
-        if (photo.file instanceof File) {
-          // Si c'est un nouveau fichier, l'ajouter en tant que fichier
-          formData.append('photos[]', photo.file);
-        } else {
-          // Si c'est une URL ou un chemin existant, l'ajouter au tableau des photos
-          commerceData.photos.push(photo);
-        }
-      });
-    }
-
-    // Ajouter les données du commerce à formData
-    formData.append('data', JSON.stringify(commerceData));
-
-    // Debug: logFormData
-    logFormData(formData);
-
-    // Envoyer la requête au serveur
     const updatedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, {
-      method: 'POST',
-      body: formData
+      method: 'PUT',
+      body: JSON.stringify(commerceData)
     });
-
     // Mise à jour du contexte ou de l'état avec le commerce mis à jour
     dispatch({ type: 'updateCommerce', payload: updatedCommerce });
   } catch (error) {
     console.error('An error occurred', error.message);
   }
 }
-
-
 
 const logFormData = (formData) => {
   for (let [key, value] of formData.entries()) {
@@ -273,7 +250,6 @@ const logFormData = (formData) => {
 
 export const addCommerce = async (dispatch, commerce) => {
   try {
-    const formData = new FormData();
 
     const commerceData = {
       nom: commerce.nom,
@@ -284,26 +260,9 @@ export const addCommerce = async (dispatch, commerce) => {
       photos: []
     };
 
-    if (Array.isArray(commerce.photos)) {
-      commerce.photos.forEach(photo => {
-        if (photo.file instanceof File) {
-          // Si c'est un nouveau fichier, l'ajouter en tant que fichier
-          formData.append('photos[]', photo.file);
-        } else {
-          // Si c'est une URL ou un chemin existant, l'ajouter au tableau des photos
-          commerceData.photos.push(photo);
-        }
-      });
-    }
-    // Ajouter les données du commerce à formData
-    formData.append('data', JSON.stringify(commerceData));
-
-    // Debug: logFormData
-    logFormData(formData);
-
     const addedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}`, {
       method: 'POST',
-      body: formData
+      body: JSON.stringify(commerceData)
     });
 
     dispatch({ type: 'addCommerce', payload: addedCommerce });
@@ -494,19 +453,44 @@ export const updateUser = async (id, dispatch, user) => {
       body: JSON.stringify(user)
     });
     dispatch({type: 'updateUser', payload: {id : id, user : data}});
+    return data;
   } catch (error) {
     console.error('error occured during put request : ', error.message);
   }
 }
 
-export const addUser = async (dispatch, user) => {
+export const emailConfirmEmailUpdate = async (id, email, dispatch) => {
+  try {
+    const data = await AuthenticatedFetch(`${ENDPOINT_USERS}/update-mail/${id}`, {
+      method: 'POST',
+      body : JSON.stringify(email)
+    });
+    console.log(data);
+    dispatch({type: 'updateMail', payload: {id: id}})
+  } catch (error) {
+    console.error('error occured :', error.message);
+  }
+}
+
+export const addUser = async (user) => {
   try {
     const data = await AuthenticatedFetch(ENDPOINT_USERS, {
       method: 'POST',
       body: JSON.stringify(user)
     });
-    dispatch({type : 'addUser', payload: data});
     return data;
+  } catch (error) {
+    console.error('error occured during post request : ', error.message);
+  }
+}
+
+export const validateUser = async (data, token) => {
+  try {
+    const response = await AuthenticatedFetch(`${ENDPOINT_USERS}/validate-user/${token}`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+    return response;
   } catch (error) {
     console.error('error occured during post request : ', error.message);
   }
@@ -537,30 +521,39 @@ export const deleteSocial = async (id, dispatch) => {
 
 export const AuthenticatedFetch = async (endpoint, options = {}) => {
   const getTokens = () => ({
-    token: localStorage.getItem('token'),
-    refreshToken: localStorage.getItem('refreshToken'),
+    token: Cookies.get('token'),
+    refreshToken: Cookies.get('refreshToken'),
   });
 
   const setTokens = (token, refreshToken) => {
-    localStorage.setItem('token', token);
-    if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
-  };
+    // Stocke le token dans les cookies
+    Cookies.set('token', token, { secure: true, sameSite: 'Strict' });
+    
+    // Si un refreshToken est fourni, le stocke également dans les cookies
+    if (refreshToken) {
+        Cookies.set('refreshToken', refreshToken, { secure: true, sameSite: 'Strict' });
+    }
+};
+
 
   const makeRequest = async (authToken) => {
     const { token, refreshToken } = getTokens();
-    if (!token) throw new Error('No authentication token found');
-  
+    if (!token) {
+      console.log('No authentication token found');
+      throw new Error('No authentication token found');
+    }
+
     const defaultHeaders = {
       'Authorization': `Bearer ${authToken}`,
       'Content-Type': options.body instanceof FormData ? undefined : 'application/json',
     };
-  
+
     try {
       const response = await fetch(`${DOMAINE_URL}${endpoint}`, {
         ...options,
         headers: { ...defaultHeaders, ...options.headers },
       });
-  
+
       if (!response.ok) {
         if (response.status === 401 && refreshToken) {
           const newTokens = await refreshTokens(refreshToken);
@@ -569,7 +562,7 @@ export const AuthenticatedFetch = async (endpoint, options = {}) => {
         }
         throw new Error(`API request failed: ${response.status} ${response.statusText}`);
       }
-  
+
       // Tentative de parse JSON
       try {
         const data = await response.json();
@@ -585,7 +578,6 @@ export const AuthenticatedFetch = async (endpoint, options = {}) => {
       throw error;
     }
   };
-  
 
   const refreshTokens = async (refreshToken) => {
     const response = await fetch(`${DOMAINE_URL}${ENDPOINT_REFRESH_TOKEN}`, {
@@ -605,7 +597,8 @@ export const AuthenticatedFetch = async (endpoint, options = {}) => {
   };
 
   return makeRequest(getTokens().token);
-}
+};
+
 
 export const emailResetPassword = async (id) => {
   try {
@@ -618,7 +611,6 @@ export const emailResetPassword = async (id) => {
     throw error;
   }
 };
-
 
 export const updatePassWord = async (password, token) => {
   try {

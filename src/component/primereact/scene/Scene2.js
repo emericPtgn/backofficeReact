@@ -51,7 +51,6 @@ export default function ScenesTable() {
     if (loading) return <div>Loading...</div>;
 
     return (
-        <div className="card">
             <DataTable
                 value={scenes}
                 selection={selectedScene}
@@ -60,13 +59,13 @@ export default function ScenesTable() {
                 tableStyle={{ minWidth: '50rem' }}
                 paginator
                 rows={10} // Display 10 users per page
+                style={{tableLayout: 'auto'}}
             >
-                <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                <Column  sortable field="nom" header="Nom"></Column>
-                <Column sortable  field="description" header="Description"></Column>
+                <Column sortable field="nom" header="Nom"></Column>
+                <Column sortable  field="description" header="Description" style={{width: '40%'}}></Column>
+                <Column sortable  field="icone" header="Icone"></Column>
                 <Toast ref={toast} />
-                <Column field="actions" header="Actions" body={actionBodyTemplate}></Column>
+                <Column field="actions" header="Actions" body={actionBodyTemplate} className='default-column-width'></Column>
             </DataTable>
-        </div>
     );
 }

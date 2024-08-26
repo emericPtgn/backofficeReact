@@ -11,26 +11,31 @@ function userReducer(state, action) {
         case 'getUsers':
             return {
                 ...state,
-                users: action.payload,
+                users: action?.payload,
             };
         case 'updateUser':
-            let updatedUsers = state.users.filter(user => user.id !== action.payload.id);
-            updatedUsers.push(action.payload.data);
+            let updatedUsers = state?.users.filter(user => user?.id !== action?.payload?.id);
+            updatedUsers.push(action?.payload?.data);
             return {
                 ...state,
                 users: updatedUsers,
             };
             case 'setActivUser':
-                let user = state.users.find(user => user.email === action.payload.email);
+                let user = state?.users.find(user => user?.email === action?.payload?.email);
                 let isAdmin = user?.roles[0] === 'ROLE_ADMIN';
                 return {
                     ...state,
                     activUser: user,
                     isAdmin: isAdmin,
                 };
+            case 'setIsDataActivUserData':
+                return {
+                    ...state,
+                    isDataActivUserData : action?.payload
+                }
     
         default:
-            throw new Error(`Unknown action: ${action.type}`);
+            throw new Error(`Unknown action: ${action?.type}`);
     }
 }
 
@@ -41,8 +46,7 @@ export function UserProvider({ children }) {
     useEffect(() => {
         const fetchData = async () => {
             await getUsers(dispatch);
-            let activUser = await getActivUser(dispatch)
-            console.log(activUser)
+            await getActivUser(dispatch);
         };
         fetchData();
     }, []);
@@ -77,5 +81,6 @@ export function useUserDispatch() {
 const initialUsersState = {
     users: [],
     activUser: null,
-    isAdmin : false
+    isAdmin : false,
+    isDataActivUserData: null
 };

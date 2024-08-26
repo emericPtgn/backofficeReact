@@ -26,7 +26,6 @@ export const AutoComplet = ({onChange, activities}) => {
     }
     return (
             <AutoComplete 
-                className="mb-4"
                 value={value || ''} 
                 name="autocomplet"
                 suggestions={items || []} 
@@ -35,6 +34,7 @@ export const AutoComplet = ({onChange, activities}) => {
                     setValue(e.value);
                     onChange(e.value, "autocomplet")
                 }}
+                placeholder="Activite existantes"
                 dropdown
             />
 

@@ -6,17 +6,14 @@ import RolesSection from "./RolesSection";
 import PasswordSection from "./PasswordSection";
         
     
-const UserForm2 = ({ id, user, setUser, isActivUserAdmin, isDatasFromAdminUser }) => {
-    let isActivUserProfil = isDatasFromAdminUser ? true : isActivUserAdmin ? false : true;
+const UserForm2 = ({ user, setUser  }) => {
+
     return (
-        <>
-        <h2>User consulte sa propre fiche : {isActivUserProfil.toString()}</h2>
-            <form>
-                <EmailSection user={user} setUser={setUser} />
-                <RolesSection user={user} setUser={setUser} isActivUserAdmin={isActivUserAdmin} isActivUserProfil={isActivUserProfil} />
-                <PasswordSection isActivUserAdmin={isActivUserAdmin} isActivUserProfil={isActivUserProfil} id={id} />
-            </form>
-        </>
+        <div className="form-user">
+            <EmailSection user={user} setUser={setUser}  />
+            <RolesSection user={user} setUser={setUser} />
+            <PasswordSection setUser={setUser}/>
+        </div>
     )
 }
 

@@ -21,7 +21,6 @@ export default function LocalCalendar({ value, onChange }) {
     
 
     return (
-        <div className="card flex justify-content-center">
             <Calendar 
                 id="calendar-24h" 
                 name='date'
@@ -31,7 +30,7 @@ export default function LocalCalendar({ value, onChange }) {
                 showTime 
                 hourFormat="24" 
                 minDate={currentDate}
+                placeholder="Date"
             />
-        </div>
     );
 }
