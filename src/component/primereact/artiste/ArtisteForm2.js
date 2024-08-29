@@ -100,7 +100,7 @@ export default function ArtisteForm2({ artist, setArtist }) {
                 <div className="form-artist-p2">
                     <SocialAccountField artist={artist} socialField={socialField} setFields={setFields} addSocialField={addSocialField} onChange={handleChange} />
                     <div>
-                        <AddNewButton rounded icon="pi pi-check" aria-label="Filter" handleOnClick={addSocialField} />
+                        <AddNewButton tooltip='Ajouter réseau social' icon="pi pi-plus" aria-label="Filter" handleOnClick={addSocialField} />
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@ export default function ArtisteForm2({ artist, setArtist }) {
                 <div className="form-artist-p3">
                     <ActivityBloc activities={activities} activityField={activityField} handleChange={handleChange}></ActivityBloc>
                     <div>
-                        <AddNewButton rounded icon="pi pi-check" aria-label="Filter" handleOnClick={addActivityField} />
+                        <AddNewButton tooltip='Ajouter activité' icon="pi pi-plus" aria-label="Filter" handleOnClick={addActivityField} />
                     </div>
                 </div>
             </div>
@@ -131,7 +131,7 @@ const NameField = ({ onChange, artist }) => {
                     onChange(e);
                 }}
                 placeholder="Nom de l'artist"
-                
+                tooltip="Nom"
             />
         </div>
     );
@@ -151,7 +151,7 @@ function ChooseStyleInput({ onChange, artist }) {
                 }}
                 separator=","
                 placeholder="Entrez les styles et appuyez sur Entrée"
-                
+                tooltip="Styles"
             />
         </div>
     );
@@ -172,6 +172,7 @@ const DescriptionField = ({ onChange, artist }) => {
                 rows={5}
                 placeholder="Description de l'artist"
                 className="w-100"
+                tooltip="Description"
             />
         </div>
     );
@@ -183,20 +184,9 @@ const SocialAccountField = ({ socialField, onChange }) => {
         <>
             {socialField.map((field, index) => (
                 <div key={index} className="container-socialAccount-artist">
-                    <InputText
-                        name={`plateforme_${index}`}
-                        value={field.plateforme}
-                        onChange={(e) => {onChange(e)}}
-                        placeholder="Facebook, Tiktok..."
-                    />
-                    <InputText
-                        name={`url_${index}`}
-                        value={field.url}
-                        onChange={(e) => {onChange(e)}}
-                        placeholder="URL"
-                    />
-                    <DeleteButton2 
-                    name={`deleteSocial_${index}`}  
+                    <InputText name={`plateforme_${index}`} value={field.plateforme} onChange={(e) => {onChange(e)}} placeholder="Facebook, Tiktok..." />
+                    <InputText name={`url_${index}`} value={field.url} onChange={(e) => {onChange(e)}} placeholder="URL" />
+                    <DeleteButton2 name={`deleteSocial_${index}`}  
                     onClick={(e) => {
                         onChange({
                             target: {
@@ -204,8 +194,9 @@ const SocialAccountField = ({ socialField, onChange }) => {
                                 value: index
                             }
                         });
-    }}
-/>
+                         }}
+                         tooltip='Supprimer compte'
+                    />
                 </div>
             ))}
         </>
@@ -216,13 +207,7 @@ const ActivityBloc = ({ activityField, handleChange, activities }) => {
     return (
         <>
         {activityField.map((activity, index) => (
-            <ActiviteForm2 
-                key={index}
-                index={index}
-                activity={activity}
-                onChange={handleChange}
-                activities={activities}
-            />
+            <ActiviteForm2  key={index} index={index} activity={activity} onChange={handleChange} activities={activities}/>
             ))}
         </>
     )

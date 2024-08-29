@@ -28,6 +28,7 @@ function artistesReducer(state, action) {
       };
     case 'deleteArtist':
       const updatedArtist = state.artistes.filter(artiste => artiste.id !== action.payload);
+      console.log('dispatch deleteArtist')
       return {
         ...state,
         artistes : updatedArtist

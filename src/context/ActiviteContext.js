@@ -31,10 +31,11 @@ function ActiviteReducer(state, action) {
                 activities: [...state.activities, action.payload]  // Corrigé pour ajouter une nouvelle activité
             }
             case 'deleteActivite':
-                const updatedList = state.activites.filter(activite => activite.id !== action.payload)
+                const updatedList = state.activities.filter(activite => activite.id !== action.payload)
+                console.log(updatedList)
                 return {
                     ...state,
-                    activites: updatedList
+                    activities: updatedList
                 }
             
         default:

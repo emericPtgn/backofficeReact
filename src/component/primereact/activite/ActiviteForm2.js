@@ -58,7 +58,7 @@ export const ActiviteForm2 = ({ activity, onChange, index, activities }) => {
                             Participants : {artistLinks.length > 0 ? artistLinks : "Aucun"}
                         </span>
                     </div>
-                    <DeleteButton2  onClick={handleDeleteField}/>
+                    <DeleteButton2 tooltip='Supprimer activité'  onClick={handleDeleteField}/>
                 </div>
                 <div className="form-activity-p2">
                     <div>

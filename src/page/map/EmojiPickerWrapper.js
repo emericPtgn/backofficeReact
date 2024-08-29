@@ -34,7 +34,7 @@ const EmojiPickerWrapper = ({item, resetEmojiPicker, onEmojiClick, onDeleteMarke
                 onReactionClick={onEmojiClick}
             />
             <div style={{width: '30px', height : '30px'}}>
-                <DeleteButton2 onClick={onDeleteMarker} />
+                <DeleteButton2 tooltip="Effacer marker" onClick={onDeleteMarker} />
             </div>
         </div>
     );

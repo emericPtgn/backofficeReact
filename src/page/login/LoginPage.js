@@ -67,10 +67,7 @@ function LoginPage() {
   return (
     <>
       {isAuthenticated ? 'redirection en cours' : (
-        <div>
-          <h1>Connexion</h1>
-          <LoginForm onSubmit={handleSubmit} />
-        </div>
+        <LoginForm onSubmit={handleSubmit} />
       )}
     </>
   );

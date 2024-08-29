@@ -1,7 +1,7 @@
 import React from "react";
 import '../../../App.css';
-import { Button } from 'primereact/button';
 import AddNewButton from "../../common/button/AddNewButton";
+import { Button } from "primereact/button";
 
 const Header = () => {
     // Extract the current pathname and determine the page title
@@ -12,10 +12,28 @@ const Header = () => {
     // Capitalize the first letter of pageTitle
     const capitalizedPageTitle = pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
     const lowercase = capitalizedPageTitle.toLowerCase();
+
+    // Handle links and labels based on the path structure
+    let link = '';
+    let label = '';
+    let tooltip = '';
+    let icon = '';
+
+    if (lowercase.split('-').length === 1) {
+        link = `/${lowercase}-new`;
+        label = `Ajouter ${capitalizedPageTitle}`;
+        tooltip = label
+        icon = 'pi pi-plus'
+    } else {
+        link = `/${lowercase.split('-')[0]}`;
+        label = 'Retour';
+        tooltip = '';
+        icon = 'pi pi-arrow-circle-left'
+    }
     
     // Function to handle button click
     const handleButtonClick = () => {
-        window.location.href = `/${lowercase}-new`;
+        window.location.href = link;
     };
 
     return (
@@ -25,11 +43,11 @@ const Header = () => {
                     <h1>{capitalizedPageTitle}</h1>
                 </div>
                 <div>
-                    <AddNewButton label={` Ajouter ${capitalizedPageTitle}`} handleOnClick={handleButtonClick} />
+                    <Button icon={icon} tooltip={tooltip} label={label} onClick={handleButtonClick} />
                 </div>
             </div>
             <div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
             </div>
         </div>
     );

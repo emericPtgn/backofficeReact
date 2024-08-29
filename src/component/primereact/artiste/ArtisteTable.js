@@ -37,12 +37,18 @@ export default function ArtistsTable() {
     navigate(`/artiste-edit/${id}`);
   }, [navigate]);
 
-  const handleDelete = useCallback((id, dispatch) => {
-    const response = deleteArtiste(id, dispatch);
-    if(response.statut == 'success'){
-      show()
+  const handleDelete = useCallback(async (id) => {
+    try {
+      const response = await deleteArtiste(id, dispatch); // Attendre la résolution de la promesse
+      console.log(response);
+      if (response && response.status === 'success') {
+        show(); // Afficher le toast si la suppression est réussie
+      }
+    } catch (error) {
+      console.error('Error during delete:', error.message);
     }
   }, [dispatch]);
+  
 
   const actionBodyTemplate = useCallback((rowData) => {
     return (<ActionButtons id={rowData.id} onEdit={handleEdit} onDelete={handleDelete} />)
@@ -55,6 +61,7 @@ export default function ArtistsTable() {
 
   return (
     <div className="card">
+      <Toast ref={toast} />
       <DataTable 
         value={artists} 
         selection={selectedArtists} 
@@ -69,7 +76,7 @@ export default function ArtistsTable() {
         <Column sortable field="nom" header="Nom"></Column>
         <Column sortable field="styles" header="Style"></Column>
         <Column sortable field="description" header="Description"></Column>
-        <Toast ref={toast} />
+
         <Column field="actions" header="Actions" body={actionBodyTemplate} className='default-column-width'></Column>
       </DataTable>
     </div>

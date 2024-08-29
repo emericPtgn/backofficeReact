@@ -629,6 +629,65 @@ p {
   width: 100%;
 }
 
+.p-button-rounded {
+  border-radius: 50% !important; /* Ajustez la valeur en fonction de l'arrondi souhaité */
+}
+
+#container-form {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  background-color: var(--background-gris-1);
+}
+
+#wrapper-form {
+  display: flex;
+  margin: 0 auto;
+}
+
+#form-login{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 15px;
+  width: 300px;
+  height: 340px;
+  border : 1pt solid var(--background-gris-2);
+  justify-content: space-around;
+  border-radius: 2%;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 4px rgb(0, 0, 0, .1);
+}
+
+#form-header {
+  text-align: center;
+}
+
+#form-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 40%;
+}
+
+#form-body input {
+  border-radius: 5px;
+}
+
+#form-footer {
+  display: flex;
+  justify-content: center;
+}
+
+#form-footer > button {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.form-login input {
+  background-color: var(--background-gris-2);
+}
+
 @media (max-width: 768px) {
   .ham-menu {
     display: flex;

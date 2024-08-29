@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 
-export const CommerceTypes2 = ({ onChange, commerces, commerce}) => {
+export const CommerceTypes2 = ({ tooltip, onChange, commerces, commerce}) => {
   const [items, setItems] = useState([]);
-  const [value, setValue] = useState(commerce?.typeCommerce?.nom || '');
+  const [value, setValue] = useState(commerce?.groupe || '');
 
   useEffect(() => {
     if (commerces && commerces.length > 0) {
-      const uniqueItems = Array.from(new Set(commerces.map(commerce => commerce?.typeCommerce?.nom)));
+      const uniqueItems = Array.from(new Set(commerces.map(commerce => commerce?.groupe)));
       setItems(uniqueItems);
     }
   }, [commerces]);
@@ -15,10 +15,10 @@ export const CommerceTypes2 = ({ onChange, commerces, commerce}) => {
   const search = (e) => {
     let filteredItems;
     if (!e.query.trim().length) {
-      filteredItems = Array.from(new Set(commerces.map(commerce => commerce?.typeCommerce?.nom)));
+      filteredItems = Array.from(new Set(commerces.map(commerce => commerce?.groupe)));
     } else {
       filteredItems = commerces
-        .map(commerce => commerce?.typeCommerce?.nom)
+        .map(commerce => commerce?.groupe)
         .filter(item => item && item.toLowerCase().includes(e.query.toLowerCase()));
       filteredItems = Array.from(new Set(filteredItems));
     }
@@ -29,7 +29,7 @@ export const CommerceTypes2 = ({ onChange, commerces, commerce}) => {
     <AutoComplete
       className="mb-0"
       value={value || ''}
-      name="typeCommerce"
+      name="groupe"
       suggestions={items || []}
       completeMethod={search}
       onChange={(e) => {
@@ -38,6 +38,7 @@ export const CommerceTypes2 = ({ onChange, commerces, commerce}) => {
       }}
       dropdown
       placeholder="type commerce.."
+      tooltip={tooltip || 'Type commerce'}
     />
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Tooltip } from "primereact/tooltip";
 
 const DescriptionField = ({ value, onChange }) => {
     return (
@@ -11,6 +12,7 @@ const DescriptionField = ({ value, onChange }) => {
                 onChange={(e) => onChange("description", e.target.value)} 
                 rows={5} 
                 placeholder="Description.."
+                tooltip='Description ..'
             />
         </div>
     );

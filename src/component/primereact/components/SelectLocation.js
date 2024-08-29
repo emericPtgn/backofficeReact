@@ -36,6 +36,7 @@ export default function SelectLocation({ onChange, typeActivity, activity }) {
                 onChange(e.value, e.target.name);
             }} 
             options={options} 
+            tooltip="Lieu activité"
         />
     );
 }

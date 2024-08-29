@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import NameField from './NameField';
 import DescriptionField from './DescriptionField';
 
+
 const SceneForm = ({ scene, setScene }) => {
     const handleChange = useCallback((name, value) => {
         setScene(prevScene => ({

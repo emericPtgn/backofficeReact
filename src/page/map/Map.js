@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { APIProvider, Map, AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow } from "@vis.gl/react-google-maps";
 import { useMarkerState } from "../../context/MarkerContext";
 import iconeScene from '../../ressources/icon_scene_24x24.png';
 import iconeCommerce from '../../ressources/icon_shop_24x24.png';
@@ -10,7 +10,8 @@ const MyMap = ({ handleClick, item }) => {
     const initLat = parseFloat(process.env.REACT_APP_GOOGLE_MAPS_INIT_LAT);
     const initLng = parseFloat(process.env.REACT_APP_GOOGLE_MAPS_INIT_LNG);
 
-    // Parse the path to determine the item type
+    const [selectedMarker, setSelectedMarker] = useState(null); // État pour suivre le marqueur sélectionné
+
     const url = window.location.pathname;
     let pathParts = url.split('/');
     let findItem = pathParts[1].split('-')[0];
@@ -27,11 +28,10 @@ const MyMap = ({ handleClick, item }) => {
     } else if (findItem === 'commerce') {
         filter = 'commerce';
         iconeMarker = iconeCommerce;
-    } else if (findItem === 'map') {
-        filter = 'scene';
+    } else if (findItem === 'carte') {
+        filter = null;
     }
 
-    // Update existing marker or add a new one
     const newMarkers = markers.map(marker => {
         if (marker?.nom === item?.nom && marker?.type === item?.type) {
             return { ...marker, ...item };
@@ -39,7 +39,6 @@ const MyMap = ({ handleClick, item }) => {
         return marker;
     });
 
-    // If the item is not in newMarkers, add it
     if (!newMarkers.find(marker => marker?.nom === item?.nom && marker.type === item.type)) {
         newMarkers.push(item);
     }
@@ -60,6 +59,8 @@ const MyMap = ({ handleClick, item }) => {
         .filter(marker => {
             if (filter === 'commerce') {
                 return marker.type !== 'scene' && marker.type !== 'fanzone' && marker.type !== 'gamezone';
+            } else if (filter === null) {
+                return marker;
             }
             return marker.type === filter;
         });
@@ -67,7 +68,7 @@ const MyMap = ({ handleClick, item }) => {
     return (
         <APIProvider apiKey={apiKey}>
             <Map
-                style={{ width: '100', height: '500px' }}
+                style={{ width: '100%', height: '500px' }}
                 defaultCenter={{ lat: initLat, lng: initLng }}
                 defaultZoom={19}
                 gestureHandling={'greedy'}
@@ -76,16 +77,33 @@ const MyMap = ({ handleClick, item }) => {
                 onClick={(position) => handleClick(position)}
             >
                 {formattedMarkers.map(marker => (
-                    <Marker key={marker.key} marker={marker} />
+                    <Marker 
+                        key={marker.key} 
+                        marker={marker} 
+                        onClick={() => setSelectedMarker(marker)} 
+                    />
                 ))}
+
+                {selectedMarker && (
+                    <InfoWindow 
+                        position={selectedMarker.position} 
+                        onCloseClick={() => setSelectedMarker(null)} 
+                    >
+                        <div className="info-window-map">
+                            <h4>{selectedMarker.nom}</h4>
+                            <p>Type: {selectedMarker.type}</p>
+                            
+                        </div>
+                    </InfoWindow>
+                )}
             </Map>
         </APIProvider>
     );
 }
 
-const Marker = ({ marker }) => {
+const Marker = ({ marker, onClick }) => {
     return (
-        <AdvancedMarker position={marker.position} gmpDraggable={false}>
+        <AdvancedMarker position={marker.position} gmpDraggable={false} onClick={onClick}>
             {marker.icone === iconeScene ? (
                 <img src={marker.icone} alt="Icon" style={{ width: '32px', height: '32px' }} />
             ) : (

@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
-import { useCommercesDispatch, useCommercesState } from '../../../context/CommerceContext';
 import { Toast } from 'primereact/toast';
 import ActionButtons from '../../primereact/components/ActionButtons';
 import { deleteCommerce } from '../../../service/api';
-
+import { useMarkerDispatch, useMarkerState } from '../../../context/MarkerContext';
+import { deleteMarker } from '../../../service/api';
 // const ActionsButtons = React.memo(({id, onEdit, onDelete}) => (
 //     <ButtonGroup>
 //         <Button onClick={() => onEdit(id)}>edit</Button>
@@ -17,13 +17,18 @@ import { deleteCommerce } from '../../../service/api';
 
 const CommerceTable = () => {
 
-    const state = useCommercesState();
-    const dispatch = useCommercesDispatch();
+    const {markers} = useMarkerState();
+    const dispatch = useMarkerDispatch();
     const [selectedCommerce, setSelectedCommerce] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const commerces = useMemo(()=> state.commerces, [ state.commerces ]);
+
+    const commerces = useMemo(() => {
+        if (!markers) return [];
+        return markers.filter(marker => marker.type === 'commerce');
+    }, [markers]);
+
     const toast = useRef(null);
 
     const show = () => {
@@ -34,9 +39,9 @@ const CommerceTable = () => {
         setLoading(false);
       }, [commerces]);
 
-    const handleDelete = useCallback((id)=>{
-        const response = deleteCommerce(id, dispatch)
-        if(response.statut == 'success'){
+    const handleDelete = useCallback( async (id)=>{
+        const response = await deleteMarker(id, dispatch)
+        if(response.status == 'success'){
             show();
         }
     }, [dispatch]);
@@ -56,9 +61,9 @@ const CommerceTable = () => {
         return <div>loading..</div>
     }
 
-    console.log(state.commerces)
     return (
         <>
+        <Toast ref={toast} />
         <DataTable 
         value={commerces} 
         selection={selectedCommerce} 
@@ -69,9 +74,10 @@ const CommerceTable = () => {
         rows={10} // Display 10 users per page
         responsiveLayout="scroll"
          >
-            <Column sortable field="nom" header="Nom"></Column>
-            <Column sortable field="typeCommerce.nom" header="Type"></Column>
-            <Column sortable field="typeProduit.nom" header="Produit"></Column>
+            <Column sortable field="nom" header="nom"></Column>
+            <Column sortable field="groupe" header="groupe"></Column>
+            <Column sortable field="sousGroupe" header="produit"></Column>
+            <Column sortable field="icone" header="icone"></Column>
             <Toast ref={toast} />
             <Column  header="Actions" body={actionsButtons} className='default-column-width'></Column>
         </DataTable>

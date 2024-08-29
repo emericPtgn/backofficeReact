@@ -47,7 +47,7 @@ export default function MarkerProvider({ children }) {
     const [state, dispatch] = useReducer(markerReducer, initialMarkerState);
 
     useEffect(() => {
-        getMarkers({dispatch});
+        getMarkers(dispatch);
     }, []);
 
     return (

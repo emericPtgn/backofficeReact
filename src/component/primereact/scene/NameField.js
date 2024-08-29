@@ -1,5 +1,6 @@
 import React from "react";
 import { InputText } from "primereact/inputtext";
+import { Tooltip } from 'primereact/tooltip';
 
 const NameField = ({ value, onChange }) => {
     return (
@@ -10,6 +11,7 @@ const NameField = ({ value, onChange }) => {
                 value={value} 
                 onChange={(e) => onChange("nom", e.target.value)}
                 placeholder="Nom de la scène ..."
+                tooltip='Nom de la scène'
             />
         </div>
     );

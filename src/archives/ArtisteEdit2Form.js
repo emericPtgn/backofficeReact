@@ -5,7 +5,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Card } from 'primereact/card';
 import { ActiviteForm2 } from "../activite/ActiviteForm2";
 import { Button } from "primereact/button";
-
+import { Tooltip } from "primereact/tooltip";
 
 export default function ArtisteEdit2Form ({artist, setArtist}){
 
@@ -108,6 +108,7 @@ const NameField = ({ onChange, artist }) => {
                 }}
                 placeholder="Nom de l'artist"
                 className="w-100"
+                tooltip="Nom"
             />
         </div>
     );

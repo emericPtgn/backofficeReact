@@ -1,6 +1,6 @@
 import { InputText } from "primereact/inputtext";
 
-export const NameField = ({ value, onChange }) => {
+export const NameField = ({ tooltip, value, onChange }) => {
     return (
         <div>
             <InputText
@@ -9,6 +9,7 @@ export const NameField = ({ value, onChange }) => {
                 onChange={onChange}
                 placeholder="Nom"
                 className="w-100"
+                tooltip={tooltip || 'Nom'}
             />
         </div>
     );

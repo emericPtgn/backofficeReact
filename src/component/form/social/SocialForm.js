@@ -19,7 +19,7 @@ const SocialForm = ({ social, onChange, onRemove }) => {
                 onChange={(e) => onChange('url', e.target.value)}
                 placeholder="URL du profil"
             />
-            <button type="button" onClick={onRemove}>Supprimer</button>
+
         </div>
     );
 };

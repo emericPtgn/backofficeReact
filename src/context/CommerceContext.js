@@ -39,9 +39,7 @@ function commercesReducer(state, action) {
     }
   }
   
-  
 
-// Fournit les deux contextes dans un seul fournisseur
 export function CommercesProvider({ children }) {
   const [state, dispatch] = useReducer(commercesReducer, commercesInitialState);
   useEffect(()=>{

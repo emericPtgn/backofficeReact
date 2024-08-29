@@ -19,11 +19,14 @@ import Cookies from 'js-cookie';
 //
 // Similaire pour les artistes, activités, etc.
 
-export const getMarkers = async ({dispatch}) => {
+export const getMarkers = async ( dispatch ) => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_MARKER, {method: 'GET'});
-    dispatch({type: 'getMarkers', payload: data})
-    return data;
+    const response = await AuthenticatedFetch(`/public${ENDPOINT_MARKER}`, {method: 'GET'});
+    if(response.status == 'success'){
+      console.log(response)
+      dispatch({type: 'getMarkers', payload: response.data})
+    }
+    return response.data;
   } catch (error) {
     console.error('error while fetching markers', error.message)
   }
@@ -31,12 +34,15 @@ export const getMarkers = async ({dispatch}) => {
 
 export const addMarker = async (marker, dispatch) => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_MARKER, {
+    const response = await AuthenticatedFetch(ENDPOINT_MARKER, {
       method: 'POST',
       body: JSON.stringify(marker)
     });
-    dispatch({type: 'addMarker', payload: data})
-    return data;
+    if(response.status === 'success'){
+      dispatch({type: 'addMarker', payload: response.data})
+      return response;
+    }
+
   } catch (error) {
     console.error('error, while fetching markers', error.message);
   }
@@ -44,12 +50,12 @@ export const addMarker = async (marker, dispatch) => {
 
 export const updateMarker = async (id, marker, dispatch) => {
   try {
-    const data = await AuthenticatedFetch(`${ENDPOINT_MARKER}/${id}`, {
+    const response = await AuthenticatedFetch(`${ENDPOINT_MARKER}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(marker),
     })
-    dispatch({type: 'updateMarker', payload: {id: id, data : data}});
-    return data;
+    dispatch({type: 'updateMarker', payload: {id: id, data : response.data}});
+    return response;
   } catch (error) {
     console.error('error occured', error.message);
   }
@@ -60,7 +66,8 @@ export const deleteMarker = async (id, dispatch) => {
     let response = await AuthenticatedFetch(`${ENDPOINT_MARKER}/${id}`, {
       method: 'DELETE',
     })
-    if(response.statut == 'success'){
+    console.log(response);
+    if(response.status == 'success'){
       dispatch({type: 'deleteMarker', payload: id});
     }
     return response;
@@ -71,7 +78,7 @@ export const deleteMarker = async (id, dispatch) => {
 
 export const getArtistes = async (dispatch) => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_ARTISTE, { method: 'GET' });
+    const data = await AuthenticatedFetch(`/public${ENDPOINT_ARTISTE}`, { method: 'GET' });
     dispatch({ type: 'getArtistes', payload: data });
     return data;
   } catch (error) {
@@ -82,7 +89,7 @@ export const getArtistes = async (dispatch) => {
 
 export const getArtiste = async (id) => {
   try {
-    const data = await AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, { method: 'GET' });
+    const data = await AuthenticatedFetch(`/public${ENDPOINT_ARTISTE}/${id}`, { method: 'GET' });
     return data;
   } catch (error) {
     throw error;
@@ -91,24 +98,31 @@ export const getArtiste = async (id) => {
 
 export const updateArtiste = async (id, artist, dispatch) => {
   try {
-    const data = await AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, {
+    const response = await AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(artist)  // Convertir l'objet artiste en JSON
     });
-    dispatch({ type: 'updateArtiste', payload: artist });
-    return data;
+    console.log(response)
+    if(response.status === 'success'){
+      dispatch({type: 'updateArtiste', payload: {id: id, data : response.data}});
+      return response;
+    }
   } catch (error) {
     throw error;
   }
 };
 
-export const addNewArtiste = async (artiste) => {
+export const addNewArtiste = async (artiste, dispatch) => {
   try {
     const response = await AuthenticatedFetch(ENDPOINT_ARTISTE, {
       method: 'POST',
       body: JSON.stringify(artiste)
     });
-    return response;
+    console.log(response)
+    if(response.status === 'success'){
+      dispatch({type: 'addNewArtist', payload: response.data});
+      return response;
+    }
   } catch (error) {
     throw error;
   }
@@ -116,13 +130,13 @@ export const addNewArtiste = async (artiste) => {
 
 export const deleteArtiste = async (id, dispatch) => {
   try {
-    const response = AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, {
+    const response = await AuthenticatedFetch(`${ENDPOINT_ARTISTE}/${id}`, {
       method: 'DELETE',
     });
-    if(response.statut = 'success'){
+    console.log(response)
+    if(response.status == 'success'){
       dispatch({type: 'deleteArtist', payload: id})
-      return response;
-    } 
+    };
     return response;
   } catch (error) {
     console.error('error occured :', error.message);
@@ -144,7 +158,7 @@ export const addActivity = async (activity, dispatch) => {
 
 export const getActivities = async (dispatch) => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_ACTIVITE, { method: 'GET' });
+    const data = await AuthenticatedFetch(`/public${ENDPOINT_ACTIVITE}`, { method: 'GET' });
     dispatch({ type: 'getActivities', payload: data });
   } catch (error) {
     dispatch({ type: 'fetchError', payload: error.message });
@@ -154,7 +168,7 @@ export const getActivities = async (dispatch) => {
 
 export const getActivity = async (id) => {
   try {
-    const data = await AuthenticatedFetch(`${ENDPOINT_ACTIVITE}/${id}`, { method: 'GET' });
+    const data = await AuthenticatedFetch(`/public${ENDPOINT_ACTIVITE}/${id}`, { method: 'GET' });
     return data;
   } catch (error) {
     throw error;
@@ -179,7 +193,8 @@ export const deleteActivity = async (id, dispatch) => {
     const response = await AuthenticatedFetch(`${ENDPOINT_ACTIVITE}/${id}`, {
       method: 'DELETE'
     })
-    if(response.statut == 'success'){
+    console.log(response)
+    if(response.status === 'success'){
       dispatch({type: 'deleteActivite', payload : id}) 
     };
     return response;
@@ -188,19 +203,9 @@ export const deleteActivity = async (id, dispatch) => {
   }
 }
 
-
-export const getEvents = async () => {
-  try {
-    const data = await AuthenticatedFetch(ENDPOINT_EVENTS, { method: 'GET' });
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const getCommerces = async (dispatch) => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_COMMERCES, { method: 'GET' });
+    const data = await AuthenticatedFetch(`/public${ENDPOINT_COMMERCES}`, { method: 'GET' });
     dispatch({ type: 'getCommerces', payload: data });
   } catch (error) {
     dispatch({ type: 'fetchError', payload: error.message });
@@ -210,7 +215,7 @@ export const getCommerces = async (dispatch) => {
 
 export const getCommerce = async (id) => {
   try {
-    const response = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, { method: 'GET' });
+    const response = await AuthenticatedFetch(`/public${ENDPOINT_COMMERCES}/${id}`, { method: 'GET' });
     return response;
   } catch (error) {
     throw error;
@@ -253,20 +258,18 @@ export const addCommerce = async (dispatch, commerce) => {
 
     const commerceData = {
       nom: commerce.nom,
-      description: commerce.description,
-      typeCommerce: commerce.typeCommerce,
-      typeProduit: commerce.typeProduit,
       marker : commerce.marker,
       photos: []
     };
 
-    const addedCommerce = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}`, {
+    const response = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}`, {
       method: 'POST',
       body: JSON.stringify(commerceData)
     });
-
-    dispatch({ type: 'addCommerce', payload: addedCommerce });
-    return addedCommerce;
+    if(response.status == 'success'){
+      dispatch({ type: 'addCommerce', payload: response.data });
+    }
+    return response;
   } catch (error) {
     console.error('An error occurred:', error.message);
   }
@@ -277,7 +280,8 @@ export const deleteCommerce = async (id, dispatch) => {
     const response = await AuthenticatedFetch(`${ENDPOINT_COMMERCES}/${id}`, {
       method: 'DELETE'
     })
-    if(response.statut == 'success'){
+    if(response.status == 'success'){
+      console.log(response)
       dispatch({type: 'deleteCommerce', payload : id})
     }
     return response;
@@ -288,7 +292,7 @@ export const deleteCommerce = async (id, dispatch) => {
 
 export const getTypeCommerces = async () => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_TYPECOMMERCE, { method: 'GET' });
+    const data = await AuthenticatedFetch(`/public${ENDPOINT_TYPECOMMERCE}`, { method: 'GET' });
     return data;
   } catch (error) {
     throw error;
@@ -297,7 +301,7 @@ export const getTypeCommerces = async () => {
 
 export const getTypeCommerce = async (id) => {
   try {
-    const response = await AuthenticatedFetch(`${ENDPOINT_TYPECOMMERCE}/${id}`, { method: 'GET' });
+    const response = await AuthenticatedFetch(`/public${ENDPOINT_TYPECOMMERCE}/${id}`, { method: 'GET' });
     return response;
   } catch (error) {
     throw error;
@@ -306,7 +310,7 @@ export const getTypeCommerce = async (id) => {
 
 export const getTypesProduits = async () => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_TYPEPRODUIT, { method: 'GET' });
+    const data = await AuthenticatedFetch(`/public${ENDPOINT_TYPEPRODUIT}`, { method: 'GET' });
     return data;
   } catch (error) {
     throw error;
@@ -315,61 +319,17 @@ export const getTypesProduits = async () => {
 
 export const getTypeProduit = async (id) => {
   try {
-    const response = await AuthenticatedFetch(`${ENDPOINT_TYPEPRODUIT}/${id}`, { method: 'GET' });
+    const response = await AuthenticatedFetch(`/public${ENDPOINT_TYPEPRODUIT}/${id}`, { method: 'GET' });
     return response;
   } catch (error) {
     throw error;
   }
 };
 
-export const getScenes = async (dispatch) => {
-  try {
-    const data = await AuthenticatedFetch(ENDPOINT_SCENES, { method: 'GET' });
-    dispatch({ type: 'getScenes', payload: data });
-  } catch (error) {
-    dispatch({ type: 'fetchError', payload: error.message });
-    throw error;
-  }
-};
-
-export const updateScene = async (id, scene, dispatch) => {
-  try {
-    const data = await AuthenticatedFetch(`${ENDPOINT_SCENES}/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(scene)
-    });
-    dispatch({ type: 'updateScene', payload: data });
-  } catch (error) {
-    dispatch({ type: 'fetchError', payload: error.message });
-    throw error;
-  }
-};
-
-export const addScene = async (scene, dispatch) => {
-  try {
-    const data = await AuthenticatedFetch(ENDPOINT_SCENES, {
-      method: 'POST',
-      body: JSON.stringify(scene)
-    });
-    dispatch({ type: 'addNewScene', payload: data });
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getEmplacements = async (dispatch) => {
-  try {
-    const data = await AuthenticatedFetch(ENDPOINT_EMPLACEMENT, { method: 'GET' });
-    dispatch({ type: 'getEmplacements', payload: data });
-  } catch (error) {
-    dispatch({ type: 'fetchError', payload: error.message });
-    throw error;
-  }
-}
 
 export const getProgrammations = async (dispatch) => {
   try {
-    const data = await AuthenticatedFetch(ENDPOINT_PROGRAMMATIONS, { method: 'GET' });
+    const data = await AuthenticatedFetch(`/public${ENDPOINT_PROGRAMMATIONS}`, { method: 'GET' });
     dispatch({ type: 'getProgrammations', payload: data });
   } catch (error) {
     dispatch({ type: 'fetchError', payload: error.message });
@@ -379,7 +339,7 @@ export const getProgrammations = async (dispatch) => {
 
 export const getProgrammation = async (id) => {
   try {
-    const response = await AuthenticatedFetch(`${ENDPOINT_PROGRAMMATIONS}/${id}`, { method: 'GET' });
+    const response = await AuthenticatedFetch(`/public${ENDPOINT_PROGRAMMATIONS}/${id}`, { method: 'GET' });
     return response;
   } catch (error) {
     throw error;

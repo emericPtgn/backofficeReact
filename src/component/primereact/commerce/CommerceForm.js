@@ -24,42 +24,14 @@ const CommerceForm = ({ commerce, commerces, setCommerce, onChange }) => {
         }
     }, [commerce]);
 
-    const onSelect = (e) => {
-        const selectedFiles = Array.from(e.files);
-        const newFiles = selectedFiles.map(file => ({
-            url: URL.createObjectURL(file),
-            file,
-            isNew: true,
-        }));
-
-        setCommerce(prevCommerce => ({
-            ...prevCommerce,
-            photos: [...(prevCommerce.photos || []), ...newFiles]
-        }));
-        setFiles(prevFiles => [...prevFiles, ...newFiles]);
-    };
-
-    const onRemove = (index) => {
-        setFiles(prevFiles => {
-            const newFiles = prevFiles.filter((_, i) => i !== index);
-            setCommerce(prevCommerce => ({
-                ...prevCommerce,
-                photos: newFiles.map(file => file.file || file.url)
-            }));
-            if (prevFiles[index].file instanceof Blob) {
-                URL.revokeObjectURL(prevFiles[index].url); // Révoquer l'URL pour éviter les fuites de mémoire
-            }
-            return newFiles;
-        });
-    };
 
     return (
         <div className="form-commerce">
-            <NameField name='nom' value={commerce?.nom || ''} placeholder="test" onChange={onChange} />
-            <InputTextarea name="description" value={commerce?.description || ''} onChange={onChange} />
+            <NameField tooltip='Nom commerce' name='nom' value={commerce?.nom || ''} placeholder="test" onChange={onChange} />
+            <InputTextarea tooltip="Description commerce" name="description" value={commerce?.description || ''} onChange={onChange} />
             <div className="form-commerce-p2">
-                <CommerceTypes2 name="typeCommerce" commerce={commerce} commerces={commerces} value={commerce?.typeCommerce?.nom || ''} onChange={onChange} />
-                <ProductType name="typeProduit" commerce={commerce} commerces={commerces} value={commerce?.typeProduit?.nom || ''} onChange={onChange} />
+                <CommerceTypes2 tooltip="Type Commerce" name="groupe" commerce={commerce} commerces={commerces} value={commerce?.groupe || ''} onChange={onChange} />
+                <ProductType tooltip="Type Produit" name="sousGroupe" commerce={commerce} commerces={commerces} value={commerce?.sousGroupe || ''} onChange={onChange} />
             </div>
             {/* <FileUpload2 name="photos" commerce={commerce} value={commerce?.photos} setCommerce={setCommerce} onSelect={onSelect} files={files} setFiles={setFiles} onRemove={onRemove} /> */}
         </div>
