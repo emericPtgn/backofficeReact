@@ -1,13 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import EmojiPicker from 'emoji-picker-react';
-import DeleteButton from '../../component/common/button/DeleteButton2';
+import React, { useEffect, useRef } from "react";
+import EmojiPicker from "emoji-picker-react";
 import DeleteButton2 from '../../component/common/button/DeleteButton2';
-import DisplayInfosMap from './DisplayInfoMap';
 
-const EmojiPickerWrapper = ({item, resetEmojiPicker, onEmojiClick, onDeleteMarker, emojiPickerKey }) => {
+const EmojiPickerWrapper = ({ item, resetEmojiPicker, onEmojiClick, onDeleteMarker, emojiPickerKey }) => {
     const emojiPickerRef = useRef(null);
-    const containerRef = useRef(null);
-    const reactions = ["1f600", "1f601", "1f602", "1f603"];
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -22,9 +18,11 @@ const EmojiPickerWrapper = ({item, resetEmojiPicker, onEmojiClick, onDeleteMarke
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [resetEmojiPicker]);
-    
+
+    const reactions = ["1f600", "1f601", "1f602", "1f603"];
+
     return (
-        <div className='emoji-wrapper' ref={emojiPickerRef}>
+        <div className="emoji-wrapper" ref={emojiPickerRef}>
             <EmojiPicker
                 key={emojiPickerKey}
                 reactionsDefaultOpen={true}
@@ -33,7 +31,7 @@ const EmojiPickerWrapper = ({item, resetEmojiPicker, onEmojiClick, onDeleteMarke
                 previewConfig={{ showPreview: false }}
                 onReactionClick={onEmojiClick}
             />
-            <div style={{width: '30px', height : '30px'}}>
+            <div style={{ width: '30px', height: '30px' }}>
                 <DeleteButton2 tooltip="Effacer marker" onClick={onDeleteMarker} />
             </div>
         </div>

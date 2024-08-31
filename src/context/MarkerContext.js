@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { getMarkers } from "../service/api";
 
-// Create contexts
 const MarkerStateContext = createContext();
 const MarkerDispatchContext = createContext();
 
+// MarkerContext.js
 const initialMarkerState = {
-    markers: []
+    markers: [],
+    editedMarkers: {} // Ajout d'un état pour les marqueurs modifiés
 };
 
 function markerReducer(state, action) {
@@ -16,34 +17,54 @@ function markerReducer(state, action) {
                 ...state,
                 markers: action.payload,
             };
-        case 'addMarker':
-            return {
-                ...state,
-                markers: [...state.markers, action.payload]
-            };
-        case 'updateMarker': 
-            const updatedMarkers = state.markers.map(marker =>
-                marker.id === action.payload.id
-                    ? { ...marker, ...action.payload.data }
-                    : marker
-            );
-            return {
-                ...state,
-                markers: updatedMarkers
-            };
-        case 'deleteMarker':
-            const updatedMarker = state.markers.filter(marker => marker.id !== action.payload)
-            return {
-                ...state,
-                markers : updatedMarker
-            }
-        
-        default:
-            throw new Error(`Unhandled action type: ${action.type}`);
-    }
+            case 'updateMarker':
+                const updatedMarkers = state.markers.map(marker =>
+                    marker.id === action.payload.id
+                        ? { ...marker, latitude : action.payload.latitude, longitude : action.payload.longitude }
+                        : marker)
+                return {
+                    ...state,
+                    markers: updatedMarkers,
+                    editedMarkers: updatedMarkers
+                };
+    
+            case 'updateEmoji':
+                const updatedEmojiMarkers = state.markers.map(marker =>
+                    marker.id === action.payload.id ? 
+                    { ...marker, icone: action.payload.icone }
+                    : marker)
+                return {
+                    ...state,
+                    markers: updatedEmojiMarkers,
+                    editedMarkers: updatedEmojiMarkers
+                };
+    
+            case 'deleteMarker':
+                const markersAfterDelete = state.markers.filter(marker => marker.id !== action.payload)
+                return {
+                    ...state,
+                    markers: markersAfterDelete
+                };
+    
+            case 'resetMarker':
+                const originalMarker = state.markers.find(marker => marker.id === action.payload);
+                return {
+                    ...state,
+                    markers: state.markers.map(marker =>
+                        marker.id === action.payload
+                            ? originalMarker
+                            : marker
+                    )
+                };
+    
+            default:
+                throw new Error(`Unhandled action type: ${action.type}`);
+        }
+    
 }
 
-export default function MarkerProvider({ children }) {
+
+export function MarkerProvider({ children }) {
     const [state, dispatch] = useReducer(markerReducer, initialMarkerState);
 
     useEffect(() => {

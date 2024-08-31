@@ -2,7 +2,7 @@
 import React from 'react';
 import { ArtistesProvider } from './ArtisteContext';
 import { CommercesProvider } from './CommerceContext';
-import MarkerProvider from './MarkerContext';
+import { MarkerProvider } from './MarkerContext';
 import { ActiviteProvider } from './ActiviteContext';
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css"; // Choisis le thème que tu utilises

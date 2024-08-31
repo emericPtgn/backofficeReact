@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 import SetCommerceMap from "./SetCommerceMap";
 import { addMarker } from "../../service/api";
 import handleClicktoAdd from "../../utils/handleClickToAdd";
+import { useMarkerState } from "../../context/MarkerContext";
 
 const CommerceNew = () => {
     const markerModel = { 
@@ -21,12 +22,13 @@ const CommerceNew = () => {
         sousGroupe: ''}
 
     const [commerce, setCommerce] = useState(markerModel);
-    const { commerces } = useCommercesState();
+    const { markers } = useMarkerState();
     const dispatch = useCommercesDispatch();
     const toast = useRef(null);
 
 
     const handleChange = (e) => {
+        console.log('click')
         const { name, value } = e.target;
         console.log('name:', name, 'value:', value)
         setCommerce((commerce) =>
@@ -54,7 +56,7 @@ const CommerceNew = () => {
                     <h2>Contenu principal</h2>
                     <p>Ici se trouve le contenu principal de votre page d'édition.</p>
                     <CommerceForm commerce={commerce} setCommerce={setCommerce} 
-                    commerces={commerces} onChange={handleChange} />
+                    commerces={markers} onChange={handleChange} />
                     <SetCommerceMap commerce={commerce} setCommerce={setCommerce} />
                 </div>
                 <RightSidebar handleOnClick={onClickUpdate} />

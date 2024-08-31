@@ -103,7 +103,7 @@ const MyMap = ({ handleClick, item }) => {
 
 const Marker = ({ marker, onClick }) => {
     return (
-        <AdvancedMarker position={marker.position} gmpDraggable={false} onClick={onClick}>
+        <AdvancedMarker position={marker.position} gmpDraggable={true} onClick={onClick}>
             {marker.icone === iconeScene ? (
                 <img src={marker.icone} alt="Icon" style={{ width: '32px', height: '32px' }} />
             ) : (
