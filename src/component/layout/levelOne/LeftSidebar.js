@@ -7,27 +7,27 @@ const LeftSidebar = () => {
     [
         {
             nom : 'Artiste',
-            iconePathFile : '/uploads/artiste.png'
+            iconePathFile : 'https://api.testdwm.fr/uploads/artiste.png'
         },
         {
             nom : 'Scene',
-            iconePathFile : '/uploads/scene.png'
+            iconePathFile : 'https://api.testdwm.fr/uploads/scene.png'
         },
         {
             nom : 'Activite',
-            iconePathFile : '/uploads/concert.png'
+            iconePathFile : 'https://api.testdwm.fr/uploads/concert.png'
         },
         {
             nom: 'Commerce',
-            iconePathFile : '/uploads/retail.png'
+            iconePathFile : 'https://api.testdwm.fr/uploads/retail.png'
         }, 
         {
             nom : 'Carte',
-            iconePathFile : '/uploads/marker.png'
+            iconePathFile : 'https://api.testdwm.fr/uploads/marker.png'
         },
         {
             nom: 'Utilisateur',
-            iconePathFile : '/uploads/users.png'
+            iconePathFile : 'https://api.testdwm.fr/uploads/users.png'
         }
     ];
     return (

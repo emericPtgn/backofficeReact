@@ -1,4 +1,4 @@
-export const DOMAINE_URL = 'https://localhost'; 
+export const DOMAINE_URL = 'https://api.testdwm.fr'; 
 export const ENDPOINT_ARTISTE = '/api/artiste';
 export const ENDPOINT_ACTIVITE = '/api/activity';
 export const ENDPOINT_ALLDATAS = '/api/alldatas';

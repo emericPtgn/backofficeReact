@@ -22,7 +22,7 @@ const SetCommerceMap = ({ commerce, setCommerce }) => {
         setCommerce((prevCommerce) => ({ ...prevCommerce, latitude : null, longitude : null, icone : null }));
         // let response = deleteMarker(scene.id, dispatch)
         // if(response === 'Marker successfully deleted')
-        // redirect('https://localhost:3000/scene')
+        // redirect('https://pro.testdwm.fr/scene')
     }
 
     return (
