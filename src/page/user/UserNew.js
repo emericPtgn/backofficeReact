@@ -21,7 +21,7 @@ export default UserNew;
 const NewUserForm = () => {
     const [user, setUser] = useState({
         email : '',
-        roles : []
+        newMail : '',
     });
     const toast = useRef(null);
     const show = () => toast.current.show({severity : 'info', summary: 'info', detail : 'Nouvel utilisateur ajouté ✅'})

@@ -38,7 +38,7 @@ const CommerceNew = () => {
         )
     }
 
-    const onClickUpdate = async () => {
+    const onClickAdd = async () => {
         try {
             await handleClicktoAdd( dispatch, commerce, addMarker, toast )
         } catch (error) {
@@ -59,7 +59,7 @@ const CommerceNew = () => {
                     commerces={markers} onChange={handleChange} />
                     <SetCommerceMap commerce={commerce} setCommerce={setCommerce} />
                 </div>
-                <RightSidebar handleOnClick={onClickUpdate} />
+                <RightSidebar handleOnClick={onClickAdd} />
             </div>
         </div>
     );

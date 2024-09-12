@@ -75,8 +75,6 @@ const UserEdit = () => {
             if(responseUpdateUser.status === 'success'){
                 console.log(responseUpdateUser.status)
                 show();
-                await HandleLogout(setIsAuthenticated, setToken);
-                navigate('/login');
             } else if (responseUpdateUser.status == 'invalid password'){
                 console.log(responseUpdateUser.status)
             }

@@ -31,7 +31,7 @@ const ResetPass = () => {
         console.log(name, value)
         if(name === 'password'){
             setValue((prev) => ({...prev, password: value}));
-        } else if (name === 'confirmPassword')
+        } else if (name === 'confirmedPassword')
             setConfirmedPassword((prev) => ({...prev, confirmedPassword: value}));
     };
 

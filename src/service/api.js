@@ -450,6 +450,7 @@ export const validateUser = async (data, token) => {
       method: 'POST',
       body: JSON.stringify(data)
     });
+    console.log(response)
     return response;
   } catch (error) {
     console.error('error occured during post request : ', error.message);

@@ -51,9 +51,6 @@ function LoginPage() {
 
       if (responseData.token && responseData.refreshToken) {
         await setToken(responseData.token, responseData.refreshToken);
-        // Store token in cookies
-        // Cookies.set('token', responseData.token);
-        // Cookies.set('refreshToken', responseData.refreshToken);
         navigate('/dashboard');
       } else {
         throw new Error('Token or refreshToken not received');

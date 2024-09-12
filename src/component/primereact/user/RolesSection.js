@@ -5,7 +5,7 @@ import { useUserState } from "../../../context/UserContext";
 import { useParams } from "react-router-dom";
 
 const RolesSection = ({ user, setUser }) => {
-    const [selectedRole, setSelectedRole] = useState(user?.roles || null);
+    const [selectedRole, setSelectedRole] = useState(user?.roles || 'ROLE_USER');
     const [enable, setEnable] = useState(false);
     const [nbAdmin, setNbAdmin] = useState(0);
     const [infoMessage, setInfoMessage] = useState('');
@@ -37,8 +37,10 @@ const RolesSection = ({ user, setUser }) => {
 
     const handleChange = (e) => {
         const newRole = e.target.value;
+        console.log(newRole)
         setSelectedRole(newRole);
-        setUser((user) => ({ ...user, roles: [newRole] }));
+        console.log('selected Role:', selectedRole)
+        setUser((user) => ({ ...user, roles: newRole }));
     };
 
     const roles = [
