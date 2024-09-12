@@ -1,12 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DOMAINE_URL } from '../../config';
 import { useAuth } from '../../context/Context';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from '../../component/form/login/LoginForm';
+import Cookies from 'js-cookie';
 
 function LoginPage() {
-  const { setToken } = useAuth();
+  const [isLoading, setIsLoading] = useState(true); // State for handling loading
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // State for authentication check
   const navigate = useNavigate();
+  const { setToken } = useAuth();
+
+  useEffect(() => {
+    // Check if the user is already authenticated
+    const checkAuthentication = async () => {
+      // Simulate a delay for checking the authentication status
+      await new Promise(resolve => setTimeout(resolve, 100)); // Adjust delay as needed
+
+      // Check token from cookies
+      const token = Cookies.get('token');
+      if (token) {
+        navigate('/dashboard');
+      } else {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+      }
+    };
+
+    checkAuthentication();
+  }, [navigate]);
 
   const handleSubmit = async ({ _username, _password }) => {
     try {
@@ -27,12 +49,11 @@ function LoginPage() {
 
       const responseData = await response.json();
 
-      if (responseData.token) {
-        await setToken(responseData.token);
-        console.log(responseData.token)
+      if (responseData.token && responseData.refreshToken) {
+        await setToken(responseData.token, responseData.refreshToken);
         navigate('/dashboard');
       } else {
-        throw new Error('Token not received');
+        throw new Error('Token or refreshToken not received');
       }
     } catch (error) {
       console.error('Erreur de connexion :', error);
@@ -41,10 +62,11 @@ function LoginPage() {
   };
 
   return (
-    <div>
-      <h1>Connexion</h1>
-      <LoginForm onSubmit={handleSubmit}/>
-    </div>
+    <>
+      {isAuthenticated ? 'redirection en cours' : (
+        <LoginForm onSubmit={handleSubmit} />
+      )}
+    </>
   );
 }
 

@@ -6,7 +6,6 @@ function PrivateRoute() {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated === null) {
-    // Optionnel : ajouter un état de chargement si nécessaire
     return <div>Loading...</div>;
   }
 

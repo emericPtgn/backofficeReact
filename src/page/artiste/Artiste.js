@@ -1,16 +1,16 @@
 import React from "react";
-import ArtisteTable from "../../component/table/artiste/ArtisteTable";
 import Header from "../../component/layout/levelTwo/Header";
+import ArtistsTable from "../../component/primereact/artiste/ArtisteTable";
 
 const Artiste = () => {
+
     return (
         <>
         <div className="container-level2">
         <Header />
         <div className="container-main-content-level2">
-            <ArtisteTable />
+            <ArtistsTable />
         </div>
-
         </div>
         </>
     )

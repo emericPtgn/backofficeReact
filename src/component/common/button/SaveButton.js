@@ -1,11 +1,8 @@
 import React from "react";
+import {Button} from 'primereact/button'
 
-const SaveButton = ({handleOnClick}) => {
+export default function SaveButton ({handleOnClick}) {
     return (
-        <>
-        <button className="btn-primary" type='button' onClick={handleOnClick}>Enregistrer</button>
-        </>
+        <Button label="Enregistrer" icon="pi pi-check" size="small"  onClick={handleOnClick}/>
     )
 }
-
-export default SaveButton;

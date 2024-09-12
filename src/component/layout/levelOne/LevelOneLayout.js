@@ -4,7 +4,7 @@ import LeftSidebar from './LeftSidebar';
 import Header from './Header';
 import '../../.././App.css'
 
-function LevelOneLayout({ setIsAuthenticated, theme }) {
+function LevelOneLayout({ setIsAuthenticated }) {
 
   return (
     <div>
